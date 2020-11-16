@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.0)
+
+project (RenderTest)
+
+set(sources 
+	"src/main.c"
+	"src/scene/mesh.c"
+	"src/scene/render-object.c"
+	"src/scene/texture.c"
+	"src/scene/scene.c")
+
+set(headers 
+	"src/scene/mesh.h"
+	"src/scene/render-object.h"
+	"src/scene/texture.h"
+	"src/scene/scene.h")
+
+set(libsInclude "extern/glew/include" "extern/glfw/include")
+set(libsLink "glew32s" "glfw3" "opengl32")
+set(libs "extern/glew/lib" "extern/glfw/lib")
+
+add_executable(RenderTest ${sources} ${headers})
+
+target_include_directories(RenderTest PRIVATE ${libsInclude})
+
+target_link_directories(RenderTest PRIVATE ${libs})
+target_link_libraries(RenderTest PRIVATE ${libsLink})
+
+target_compile_definitions(RenderTest PRIVATE "GLEW_STATIC")
+
+file(COPY "res" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
