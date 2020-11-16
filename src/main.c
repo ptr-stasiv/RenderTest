@@ -4,6 +4,8 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
+#include "scene/scene.h"
+
 char* ReadFile(const char* filepath)
 {
    FILE* file = fopen(filepath, "rb");
@@ -24,108 +26,6 @@ char* ReadFile(const char* filepath)
    fclose(file);
 
    return buffer;
-}
-
-typedef struct MeshDataStructure
-{
-   GLuint VaoId;
-   int VerticesCount;
-} Mesh;
-
-Mesh* CreateMesh(float* vertices, const int verticesCount)
-{
-   Mesh* resMesh = malloc(sizeof(Mesh));
-   if (!resMesh)
-      return NULL;
-
-   resMesh->VerticesCount = verticesCount;
-
-   GLuint vbo;
-   
-   glGenVertexArrays(1, &resMesh->VaoId);
-   glGenBuffers(1, &vbo);
-
-   glBindVertexArray(resMesh->VaoId);
-   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount, vertices, GL_STATIC_DRAW);
-
-   glEnableVertexAttribArray(0);
-   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-   glBindBuffer(GL_ARRAY_BUFFER, 0);
-   glBindVertexArray(0);
-
-   return resMesh;
-}
-
-typedef struct TextureDataStructure
-{
-   char* Data;
-   int Width;
-   int Height;
-} Texture;
-
-
-typedef struct RenderSceneObjectStructure
-{
-   Mesh* MeshData;
-   Texture* TextureData;
-} RenderObject;
-
-RenderObject* CreateRenderObject(Mesh* mesh, Texture* texture)
-{
-   RenderObject* res = malloc(sizeof(RenderObject));
-   if (!res)
-      return NULL;
-
-   res->MeshData = mesh;
-   res->TextureData = texture;
-
-   return res;
-}
-
-
-#define MAX_SCENE_OBJECTS 32
-
-typedef struct SceneStructure
-{
-   RenderObject** RenderObjectList;
-   int RenderObjectCount;
-} Scene;
-
-Scene* CreateScene()
-{
-   Scene* res = malloc(sizeof(Scene));
-   if (!res)
-      return NULL;
-
-   res->RenderObjectList = malloc(sizeof(RenderObject) * MAX_SCENE_OBJECTS);
-   res->RenderObjectCount = 0;
-}
-
-void AddRenderObject(Scene* scene, RenderObject* renderObject)
-{
-   if (scene->RenderObjectCount >= MAX_SCENE_OBJECTS)
-      return;
-
-   scene->RenderObjectList[scene->RenderObjectCount] = renderObject;
-   scene->RenderObjectCount++;
-}
-
-
-void RenderScene(Scene* scene)
-{
-   for (int i = 0; i < scene->RenderObjectCount; ++i)
-   {
-      RenderObject* r = scene->RenderObjectList[i];
-
-      glBindVertexArray(r->MeshData->VaoId);
-
-      glDrawArrays(GL_TRIANGLES, 0, r->MeshData->VerticesCount);
-
-      glBindVertexArray(0);
-   }
 }
 
 GLuint CreateShader(const GLenum shaderType, const char* shaderSrc)
@@ -182,9 +82,10 @@ int main()
       0.5f, -0.5f
    };
 
-
    Scene* scene = CreateScene();
    AddRenderObject(scene, CreateRenderObject(CreateMesh(quadVertices, 6), NULL));
+
+   glUseProgram(shaderProgram);
 
    while (!glfwWindowShouldClose(window))
    {
