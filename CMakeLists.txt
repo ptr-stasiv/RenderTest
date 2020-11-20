@@ -7,13 +7,19 @@ set(sources
 	"src/scene/mesh.c"
 	"src/scene/render-object.c"
 	"src/scene/texture.c"
-	"src/scene/scene.c")
+	"src/scene/scene.c"
+	"src/math/vectors/vector3.c"
+	"src/math/vectors/vector4.c"
+	"src/math/matrices/matrix4x4.c")
 
 set(headers 
 	"src/scene/mesh.h"
 	"src/scene/render-object.h"
 	"src/scene/texture.h"
-	"src/scene/scene.h")
+	"src/scene/scene.h"
+	"src/math/vectors/vector3.h"
+	"src/math/vectors/vector4.h"
+	"src/math/matrices/matrix4x4.h")
 
 set(libsInclude "extern/glew/include" "extern/glfw/include")
 set(libsLink "glew32s" "glfw3" "opengl32")

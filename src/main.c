@@ -6,6 +6,8 @@
 
 #include "scene/scene.h"
 
+#include "math/matrices/matrix4x4.h"
+
 char* ReadFile(const char* filepath)
 {
    FILE* file = fopen(filepath, "rb");
@@ -63,6 +65,13 @@ int main()
 
    if (glewInit() != GLEW_OK)
       return -1;
+
+   Matrix4 m1 = CreateIdentityMatrix4();
+   Matrix4 m2 = CreateTranslateMatrix((Vector3){ 5.0f, 3.0f, 7.0f });
+
+   Vector4 pos = (Vector4){10.0f, 6.0f, 10.0f, 1.0f};
+
+   pos = multiply_vmatrix4(pos, m1);
 
    const char* vertexShaderSrc = ReadFile("res/shaders/test-display.vs");
    const char* fragmentShaderSrc = ReadFile("res/shaders/test-display.fs");
