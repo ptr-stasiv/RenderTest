@@ -1,6 +1,7 @@
 #include "matrix4x4.h"
 
 #include <stdio.h>
+#include <math.h>
 
 Matrix4 CreateIdentityMatrix4()
 {
@@ -27,12 +28,41 @@ Matrix4 CreateTranslateMatrix(const Vector3 offset)
 
 Matrix4 CreateScaleMatrix(const Vector3 scale)
 {
+   Matrix4 res = { 0 };
 
+   res.Data[3]  = scale.x;
+   res.Data[7]  = scale.y;
+   res.Data[11] = scale.z;
+   res.Data[15] = 1.0f;
+
+   return res;
 }
 
 Matrix4 CreateRotationMatrix(const float a, const Vector3 axis)
 {
+   float c = cos(a);
+   float s = sin(a);
 
+   Matrix4 zAxis = CreateIdentityMatrix4();
+   zAxis.Data[0] = c;
+   zAxis.Data[1] = -s;
+   zAxis.Data[4] = s;
+   zAxis.Data[5] = c;
+
+   Matrix4 yAxis = CreateIdentityMatrix4();
+   zAxis.Data[0]  = c;
+   zAxis.Data[2]  = -s;
+   zAxis.Data[8]  = s;
+   zAxis.Data[10] = c;
+
+   Matrix4 xAxis = CreateIdentityMatrix4();
+   xAxis.Data[5]  = c;
+   xAxis.Data[6]  = -s;
+   xAxis.Data[9]  = s;
+   xAxis.Data[10] = c;
+
+   Matrix4 res = multiply_matrix(multiply_matrix(xAxis, yAxis), zAxis);
+   return res;
 }
 
 Vector4 multiply_vmatrix4(const Vector4 v, const Matrix4 m)

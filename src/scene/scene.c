@@ -23,17 +23,3 @@ void AddRenderObject(Scene* scene, RenderObject* renderObject)
    scene->RenderObjectList[scene->RenderObjectCount] = renderObject;
    scene->RenderObjectCount++;
 }
-
-void RenderScene(Scene* scene)
-{
-   for (int i = 0; i < scene->RenderObjectCount; ++i)
-   {
-      RenderObject* r = scene->RenderObjectList[i];
-
-      glBindVertexArray(r->MeshData->VaoId);
-
-      glDrawArrays(GL_TRIANGLES, 0, r->MeshData->VerticesCount);
-
-      glBindVertexArray(0);
-   }
-}

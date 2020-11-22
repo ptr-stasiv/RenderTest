@@ -12,5 +12,3 @@ typedef struct SceneStructure
 Scene* CreateScene();
 
 void AddRenderObject(Scene* scene, RenderObject* renderObject);
-
-void RenderScene(Scene* scene);
