@@ -19,9 +19,9 @@ Matrix4 CreateTranslateMatrix(const Vector3 offset)
 {
    Matrix4 res = CreateIdentityMatrix4();
 
-   res.Data[3]  = offset.x;
-   res.Data[7]  = offset.y;
-   res.Data[11] = offset.z;
+   res.Data[12]  = offset.x;
+   res.Data[13]  = offset.y;
+   res.Data[14] = offset.z;
 
    return res;
 }

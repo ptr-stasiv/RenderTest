@@ -22,6 +22,8 @@ void UpdateForwardRender(Scene* scene)
    {
       RenderObject* r = scene->RenderObjectList[i];
 
+      SetShaderMatrix4(g_MainShaderProgram, "model", r->Transform);
+      
       glBindVertexArray(r->MeshData->VaoId);
       glDrawArrays(GL_TRIANGLES, 0, r->MeshData->VerticesCount);
       glBindVertexArray(0);

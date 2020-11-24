@@ -35,13 +35,13 @@ int main()
 
    float quadVertices[] =
    {
-      -0.5f, -0.5f,
-      -0.25f, 0.5f,
-      0.5f, -0.5f
+      -0.5f, -0.5f, -1.0f,
+      -0.25f, 0.5f, -1.0f,
+      0.5f, -0.5f, -1.0f
    };
 
    Scene* scene = CreateScene();
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(quadVertices, 6), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(quadVertices, 9), NULL, CreateTranslateMatrix((Vector3) { 0.5f, 0.0f, 0.0f })));
 
    InitializeForwardRender();
 
