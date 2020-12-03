@@ -15,6 +15,19 @@ Matrix4 CreateIdentityMatrix4()
    return res;
 }
 
+Matrix4 CreatePerspectiveMatrix(const float aspect, const float fov, const float near, const float far)
+{
+   Matrix4 res = { 0 };
+
+   res.Data[0] = 1.0f / (aspect * tan(fov / 2.0f));
+   res.Data[5] = 1.0f / tan(fov / 2.0f);
+   res.Data[10] = -((far + near) / (far - near));
+   res.Data[11] = -1.0f;
+   res.Data[14] = (-2 * far * near) / (far - near);
+
+   return res;
+}
+
 Matrix4 CreateTranslateMatrix(const Vector3 offset)
 {
    Matrix4 res = CreateIdentityMatrix4();

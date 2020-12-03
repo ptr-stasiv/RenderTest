@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Mesh* CreateMesh(float* vertices, const int verticesCount)
+#include "../math/vectors/vector3.h"
+
+Mesh* CreateMesh(Vector3* vertices, const int verticesCount)
 {
    Mesh* resMesh = (Mesh*)(malloc(sizeof(Mesh)));
    if (!resMesh)
@@ -19,7 +21,7 @@ Mesh* CreateMesh(float* vertices, const int verticesCount)
    glBindVertexArray(resMesh->VaoId);
    glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-   glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesCount, vertices, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3) * verticesCount, vertices, GL_STATIC_DRAW);
 
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);

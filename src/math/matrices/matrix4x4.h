@@ -8,6 +8,7 @@ typedef struct Matrix4Structure
 }Matrix4;
 
 Matrix4 CreateIdentityMatrix4();
+Matrix4 CreatePerspectiveMatrix(const float aspect, const float fov, const float near, const float far);
 Matrix4 CreateTranslateMatrix(const Vector3 offset);
 Matrix4 CreateScaleMatrix(const Vector3 scale);
 Matrix4 CreateRotationMatrix(const float a, const Vector3 axis);

@@ -9,6 +9,12 @@
 #include "math/matrices/matrix4x4.h"
 #include "scene/renders/forward-render.h"
 
+#include "asset-manager/obj-loader.h"
+
+#include "math/math_utils.h"
+
+#include <string.h>
+
 int main()
 {
    if (!glfwInit())
@@ -26,6 +32,8 @@ int main()
    if (glewInit() != GLEW_OK)
       return -1;
 
+   MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
+
    Matrix4 m1 = CreateIdentityMatrix4();
    Matrix4 m2 = CreateTranslateMatrix((Vector3){ 5.0f, 3.0f, 7.0f });
 
@@ -33,15 +41,10 @@ int main()
 
    pos = multiply_vmatrix4(pos, m1);
 
-   float quadVertices[] =
-   {
-      -0.5f, -0.5f, -1.0f,
-      -0.25f, 0.5f, -1.0f,
-      0.5f, -0.5f, -1.0f
-   };
-
    Scene* scene = CreateScene();
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(quadVertices, 9), NULL, CreateTranslateMatrix((Vector3) { 0.5f, 0.0f, 0.0f })));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.PositionsCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, -5.0f })));
+
+   Camera* camera = CreateCamera((Vector3) { 0.0f, 0.0f, 0.0f }, PI / 4, 1.7f, 10.0f);
 
    InitializeForwardRender();
 
@@ -50,7 +53,7 @@ int main()
       glfwPollEvents();
       glClear(GL_COLOR_BUFFER_BIT);
 
-      UpdateForwardRender(scene);
+      UpdateForwardRender(scene, camera);
 
       glfwSwapBuffers(window);
    }

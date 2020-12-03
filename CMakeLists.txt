@@ -10,9 +10,12 @@ set(headers
 	"src/math/vectors/vector3.h"
 	"src/math/vectors/vector4.h"
 	"src/math/matrices/matrix4x4.h"
+	"src/math/math_utils.h"
 	"src/scene/renders/forward-render.h"
 	"src/debug/gassert.h"
-	"src/bgl/shader.h")
+	"src/bgl/shader.h"
+	"src/asset-manager/obj-loader.h"
+	"src/graphics/camera.h")
 
 set(sources 
 	"src/main.c"
@@ -24,7 +27,9 @@ set(sources
 	"src/math/vectors/vector4.c"
 	"src/math/matrices/matrix4x4.c"
 	"src/scene/renders/forward-render.c"
-	"src/bgl/shader.c")
+	"src/bgl/shader.c"
+	"src/asset-manager/obj-loader.c"
+	"src/graphics/camera.c")
 
 set(libsInclude "extern/glew/include" "extern/glfw/include")
 set(libsLink "glew32s" "glfw3" "opengl32")
