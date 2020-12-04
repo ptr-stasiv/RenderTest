@@ -11,9 +11,9 @@ Camera* CreateCamera(const Vector3 position, const float fov, const float aspect
 
    newCamera->Position = position;
 
-   newCamera->ForwardAxis = (Vector3){ 0.0f, 0.0f, 1.0f };
-   newCamera->RightAxis   = normalize_vector3(cross_vector3((Vector3) { 0.0f, 1.0f, 0.0f }, newCamera->ForwardAxis));
-   newCamera->UpAxis      = cross_vector3(newCamera->ForwardAxis, newCamera->RightAxis);
+   newCamera->ForwardAxis = (Vector3){ 0.0f, 0.0f, -1.0f };
+   newCamera->RightAxis   = normalize_vector3(cross_vector3(newCamera->ForwardAxis, (Vector3){ 0.0f, 1.0f, 0.0f }));
+   newCamera->UpAxis      = cross_vector3(newCamera->RightAxis, newCamera->ForwardAxis);
 
    newCamera->Fov    = fov;
    newCamera->Aspect = aspect;
@@ -27,12 +27,12 @@ void MoveCamera(Camera* camera, const CameraMoveType moveType)
 {
    switch (moveType)
    {
-   case CameraMoveForward: camera->Position = add_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
+   case CameraMoveForward:  camera->Position = add_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
    case CameraMoveBackward: camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
-   case CameraMoveRight: camera->Position = add_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed)); break;
-   case CameraMoveLeft: camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed));  break;
-   case CameraMoveUp: camera->Position = add_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
-   case CameraMoveDown: camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
+   case CameraMoveRight:    camera->Position = add_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed)); break;
+   case CameraMoveLeft:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed));  break;
+   case CameraMoveUp:       camera->Position = add_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
+   case CameraMoveDown:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
    }
 }
 
@@ -43,5 +43,5 @@ Matrix4 GetCameraViewMatrix(const Camera* camera)
 
 Matrix4 GetCameraProjection(const Camera* camera)
 {
-   return CreatePerspectiveMatrix(camera->Aspect, camera->Fov, 0.1f, 1000.0f);
+   return CreatePerspectiveMatrix(camera->Aspect, camera->Fov, 0.01f, 1000.0f);
 }

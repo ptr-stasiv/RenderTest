@@ -15,6 +15,33 @@
 
 #include <string.h>
 
+char g_KeyStates[1024];
+Camera* g_MainCamera;
+
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+   if (action == GLFW_PRESS)
+      g_KeyStates[key] = 1;
+   if (action == GLFW_RELEASE)
+      g_KeyStates[key] = 0;
+}
+
+void InputHandle()
+{
+   if (g_KeyStates[GLFW_KEY_W])
+      MoveCamera(g_MainCamera, CameraMoveForward);
+   if(g_KeyStates[GLFW_KEY_S])
+      MoveCamera(g_MainCamera, CameraMoveBackward);
+   if(g_KeyStates[GLFW_KEY_D])
+      MoveCamera(g_MainCamera, CameraMoveRight);
+   if (g_KeyStates[GLFW_KEY_A])
+      MoveCamera(g_MainCamera, CameraMoveLeft);
+   if (g_KeyStates[GLFW_KEY_E])
+      MoveCamera(g_MainCamera, CameraMoveUp);
+   if (g_KeyStates[GLFW_KEY_Q])
+      MoveCamera(g_MainCamera, CameraMoveDown);
+}
+
 int main()
 {
    if (!glfwInit())
@@ -32,6 +59,8 @@ int main()
    if (glewInit() != GLEW_OK)
       return -1;
 
+   glfwSetKeyCallback(window, KeyCallback);
+      
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
 
    Matrix4 m1 = CreateIdentityMatrix4();
@@ -44,16 +73,18 @@ int main()
    Scene* scene = CreateScene();
    AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.PositionsCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, -5.0f })));
 
-   Camera* camera = CreateCamera((Vector3) { 0.0f, 0.0f, 0.0f }, PI / 4, 1.7f, 10.0f);
+   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 0.0f }, PI / 4, 1.7f, 1.0f);
 
    InitializeForwardRender();
 
    while (!glfwWindowShouldClose(window))
    {
       glfwPollEvents();
+      InputHandle();
+
       glClear(GL_COLOR_BUFFER_BIT);
 
-      UpdateForwardRender(scene, camera);
+      UpdateForwardRender(scene, g_MainCamera);
 
       glfwSwapBuffers(window);
    }
