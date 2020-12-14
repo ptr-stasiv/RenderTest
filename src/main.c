@@ -26,6 +26,11 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
       g_KeyStates[key] = 0;
 }
 
+void CursorCallback(GLFWwindow* window, double posX, double posY)
+{
+   RotateCamera(g_MainCamera, posX, posY);
+}
+
 void InputHandle()
 {
    if (g_KeyStates[GLFW_KEY_W])
@@ -60,7 +65,10 @@ int main()
       return -1;
 
    glfwSetKeyCallback(window, KeyCallback);
-      
+   glfwSetCursorPosCallback(window, CursorCallback);
+
+   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
 
    Matrix4 m1 = CreateIdentityMatrix4();
@@ -73,7 +81,7 @@ int main()
    Scene* scene = CreateScene();
    AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.PositionsCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, -5.0f })));
 
-   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 0.0f }, PI / 4, 1.7f, 1.0f);
+   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 1.0f);
 
    InitializeForwardRender();
 

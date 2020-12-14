@@ -19,8 +19,8 @@ Matrix4 CreatePerspectiveMatrix(const float aspect, const float fov, const float
 {
    Matrix4 res = { 0 };
 
-   res.Data[0] = 1.0f / (aspect * tan(fov / 2.0f));
-   res.Data[5] = 1.0f / tan(fov / 2.0f);
+   res.Data[0]  = 1.0f / (aspect * tan(fov / 2.0f));
+   res.Data[5]  = 1.0f / tan(fov / 2.0f);
    res.Data[10] = -((far + near) / (far - near));
    res.Data[11] = -1.0f;
    res.Data[14] = (-2 * far * near) / (far - near);
@@ -32,8 +32,8 @@ Matrix4 CreateTranslateMatrix(const Vector3 offset)
 {
    Matrix4 res = CreateIdentityMatrix4();
 
-   res.Data[12]  = offset.x;
-   res.Data[13]  = offset.y;
+   res.Data[12] = offset.x;
+   res.Data[13] = offset.y;
    res.Data[14] = offset.z;
 
    return res;
@@ -75,6 +75,32 @@ Matrix4 CreateRotationMatrix(const float a, const Vector3 axis)
    xAxis.Data[10] = c;
 
    Matrix4 res = multiply_matrix(multiply_matrix(xAxis, yAxis), zAxis);
+   return res;
+}
+
+Matrix4 CreateLookAtMatrix(const Vector3 axisX, const Vector3 axisY, const Vector3 axisZ, const Vector3 offset)
+{
+   Matrix4 res = CreateIdentityMatrix4();
+
+   res.Data[12] = dot_vector3(axisX, offset);
+   res.Data[13] = dot_vector3(axisY, offset);
+   res.Data[14] = dot_vector3(axisZ, offset);
+   
+   //X axis
+   res.Data[0] = axisX.x;
+   res.Data[4] = axisX.y;
+   res.Data[8] = axisX.z;
+
+   //Y axis 
+   res.Data[1] = axisY.x;
+   res.Data[5] = axisY.y;
+   res.Data[9] = axisY.z;
+
+   //Z axis
+   res.Data[2]  = axisZ.x;
+   res.Data[6]  = axisZ.y;
+   res.Data[10] = axisZ.z;
+
    return res;
 }
 

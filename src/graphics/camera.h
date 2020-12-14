@@ -31,6 +31,7 @@ typedef enum CameraMoveTypeEnum
 Camera* CreateCamera(const Vector3 position, const float fov, const float aspect, const float speed);
 
 void MoveCamera(Camera* camera, const CameraMoveType moveType);
+void RotateCamera(Camera* camera, const float posX, const float posY);
 
 Matrix4 GetCameraViewMatrix(const Camera* camera);
 Matrix4 GetCameraProjection(const Camera* camera);
