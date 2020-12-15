@@ -8,9 +8,9 @@
 
 void CameraComputeBasis(Camera* camera)
 {
-   camera->ForwardAxis.x = cos(DegToRad(camera->Yaw));
+   camera->ForwardAxis.x = cos(DegToRad(camera->Yaw)) * cos(DegToRad(camera->Pitch));
    camera->ForwardAxis.y = sin(DegToRad(camera->Pitch));
-   camera->ForwardAxis.z = sin(DegToRad(camera->Yaw));
+   camera->ForwardAxis.z = sin(DegToRad(camera->Yaw)) * cos(DegToRad(camera->Pitch));
 
    camera->ForwardAxis = normalize_vector3(camera->ForwardAxis);
 

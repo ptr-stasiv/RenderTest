@@ -3,16 +3,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Scene* CreateScene()
+Scene* CreateScene(Camera* camera)
 {
-   Scene* res = (Scene*)malloc(sizeof(Scene));
-   if (!res)
+   Scene* newScene = (Scene*)malloc(sizeof(Scene));
+   if (!newScene)
       return NULL;
 
-   res->RenderObjectList = malloc(sizeof(RenderObject) * 32);
-   res->RenderObjectCount = 0;
+   newScene->RenderObjectList = malloc(sizeof(RenderObject) * 32);
+   newScene->RenderObjectCount = 0;
 
-   return res;
+   newScene->Camera = camera;
+
+   return newScene;
 }
 
 void AddRenderObject(Scene* scene, RenderObject* renderObject)

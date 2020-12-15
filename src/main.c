@@ -69,19 +69,12 @@ int main()
 
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-   MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
-
-   Matrix4 m1 = CreateIdentityMatrix4();
-   Matrix4 m2 = CreateTranslateMatrix((Vector3){ 5.0f, 3.0f, 7.0f });
-
-   Vector4 pos = (Vector4){10.0f, 6.0f, 10.0f, 1.0f};
-
-   pos = multiply_vmatrix4(pos, m1);
-
-   Scene* scene = CreateScene();
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.PositionsCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, -5.0f })));
-
    g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 1.0f);
+
+   Scene* scene = CreateScene(g_MainCamera);
+
+   MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.PositionsCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, -5.0f })));
 
    InitializeForwardRender();
 
@@ -92,7 +85,7 @@ int main()
 
       glClear(GL_COLOR_BUFFER_BIT);
 
-      UpdateForwardRender(scene, g_MainCamera);
+      UpdateForwardRender(scene);
 
       glfwSwapBuffers(window);
    }

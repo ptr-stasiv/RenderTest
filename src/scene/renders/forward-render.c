@@ -14,7 +14,7 @@ void InitializeForwardRender()
    glLinkProgram(g_MainShaderProgram);
 }
 
-void UpdateForwardRender(Scene* scene, const Camera* camera)
+void UpdateForwardRender(Scene* scene)
 {
    glUseProgram(g_MainShaderProgram);
 
@@ -23,8 +23,8 @@ void UpdateForwardRender(Scene* scene, const Camera* camera)
       RenderObject* r = scene->RenderObjectList[i];
 
       SetShaderMatrix4(g_MainShaderProgram, "model", r->Transform);
-      SetShaderMatrix4(g_MainShaderProgram, "view", GetCameraViewMatrix(camera));
-      SetShaderMatrix4(g_MainShaderProgram, "projection", GetCameraProjection(camera));
+      SetShaderMatrix4(g_MainShaderProgram, "view", GetCameraViewMatrix(scene->Camera));
+      SetShaderMatrix4(g_MainShaderProgram, "projection", GetCameraProjection(scene->Camera));
       
       glBindVertexArray(r->MeshData->VaoId);
       glDrawArrays(GL_TRIANGLES, 0, r->MeshData->VerticesCount);
