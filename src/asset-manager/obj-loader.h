@@ -5,7 +5,9 @@
 typedef struct MeshDataStructure
 {
    Vector3* Positions;
-   uint32_t PositionsCount;
+   Vector3* Normals;
+
+   uint32_t FacesCount;
 } MeshData;
 
 MeshData LoadMesh(const char* filepath);

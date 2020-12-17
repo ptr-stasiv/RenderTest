@@ -42,12 +42,12 @@ void MoveCamera(Camera* camera, const CameraMoveType moveType)
 {
    switch (moveType)
    {
-   case CameraMoveForward:  camera->Position = add_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
-   case CameraMoveBackward: camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
-   case CameraMoveRight:    camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed)); break;
-   case CameraMoveLeft:     camera->Position = add_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed));  break;
-   case CameraMoveUp:       camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
-   case CameraMoveDown:     camera->Position = add_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
+   case CameraMoveForward:  camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
+   case CameraMoveBackward: camera->Position = add_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
+   case CameraMoveRight:    camera->Position = add_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed)); break;
+   case CameraMoveLeft:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed));  break;
+   case CameraMoveUp:       camera->Position = add_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
+   case CameraMoveDown:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
    }
 }
 

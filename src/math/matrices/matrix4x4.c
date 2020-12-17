@@ -82,9 +82,9 @@ Matrix4 CreateLookAtMatrix(const Vector3 axisX, const Vector3 axisY, const Vecto
 {
    Matrix4 res = CreateIdentityMatrix4();
 
-   res.Data[12] = dot_vector3(axisX, offset);
-   res.Data[13] = dot_vector3(axisY, offset);
-   res.Data[14] = dot_vector3(axisZ, offset);
+   res.Data[12] = -dot_vector3(axisX, offset);
+   res.Data[13] = -dot_vector3(axisY, offset);
+   res.Data[14] = -dot_vector3(axisZ, offset);
    
    //X axis
    res.Data[0] = axisX.x;

@@ -8,4 +8,4 @@ typedef struct MeshStructure
    int VerticesCount;
 } Mesh;
 
-Mesh* CreateMesh(Vector3* vertices, const int verticesCount);
+Mesh* CreateMesh(Vector3* vertices, Vector3* normals, const int facesCount);

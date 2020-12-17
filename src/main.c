@@ -64,17 +64,19 @@ int main()
    if (glewInit() != GLEW_OK)
       return -1;
 
+   glEnable(GL_DEPTH_TEST);
+
    glfwSetKeyCallback(window, KeyCallback);
    glfwSetCursorPosCallback(window, CursorCallback);
 
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 1.0f);
+   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 0.1f);
 
    Scene* scene = CreateScene(g_MainCamera);
 
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.PositionsCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, -5.0f })));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
 
    InitializeForwardRender();
 
@@ -83,7 +85,7 @@ int main()
       glfwPollEvents();
       InputHandle();
 
-      glClear(GL_COLOR_BUFFER_BIT);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       UpdateForwardRender(scene);
 

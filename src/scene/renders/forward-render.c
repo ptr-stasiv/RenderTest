@@ -25,6 +25,8 @@ void UpdateForwardRender(Scene* scene)
       SetShaderMatrix4(g_MainShaderProgram, "model", r->Transform);
       SetShaderMatrix4(g_MainShaderProgram, "view", GetCameraViewMatrix(scene->Camera));
       SetShaderMatrix4(g_MainShaderProgram, "projection", GetCameraProjection(scene->Camera));
+
+      SetShaderVector3(g_MainShaderProgram, "CameraPosition", scene->Camera->Position);
       
       glBindVertexArray(r->MeshData->VaoId);
       glDrawArrays(GL_TRIANGLES, 0, r->MeshData->VerticesCount);
