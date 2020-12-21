@@ -30,7 +30,7 @@ Camera* CreateCamera(const Vector3 position, const float fov, const float aspect
    newCamera->Aspect = aspect;
    newCamera->Speed  = speed;
 
-   newCamera->Yaw   = -90.0f;
+   newCamera->Yaw   = 90.0f;
    newCamera->Pitch = 0.0f;
 
    CameraComputeBasis(newCamera);

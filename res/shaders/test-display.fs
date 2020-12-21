@@ -1,5 +1,7 @@
 #version 460 core
 
+#define MAX_LIGHTS  32
+
 out vec4 OutColor;
 
 in vec3 Normal;
@@ -7,27 +9,43 @@ in vec3 FragPos;
 
 uniform vec3 CameraPosition;
 
-vec3 lightPos = vec3(1.2f, 1.0f, 2.0f);
-vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
+struct Light
+{
+    vec3 Position;
+    vec3 Color;
+};
 
-float ambientIntensity = 0.08f;
+uniform Light LightsArray[MAX_LIGHTS];
+uniform int LightsCount = 0;
 
-vec3 specularIntensity = vec3(1.0f, 1.0f, 1.0f); 
-float specularExponent = 256.0f;
+float ambientIntensity = 0.03;
+
+vec3 specularIntensity = vec3(1.0f, 1.0f, 1.0f);
+float specularExponent = 16.0f;
 
 void main()
 {
-    vec3 ambientComponent = lightColor * ambientIntensity;
+    vec3 resColor = vec3(1.0f, 0.2f, 0.2f);
 
-    vec3 lightDir = normalize(lightPos - FragPos);
-    float diffCof = max(dot(Normal, lightDir), 0.0f);
-    vec3 diffuseComponent = lightColor * diffCof;
+    for(int i = 0; i < min(LightsCount, MAX_LIGHTS); ++i)
+    {
+        vec3 lightPos = LightsArray[i].Position;
+        vec3 ligthColor = LightsArray[i].Color;
 
-    vec3 viewDir = normalize(CameraPosition - FragPos);
-    vec3 reflectDir = reflect(-lightDir, Normal);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
-    vec3 specular = 0.5f * spec * lightColor;  
+        vec3 ambientComponent = ligthColor * ambientIntensity;
+        
+        vec3 lightDir = normalize((lightPos - FragPos));
 
-    vec3 resColor = vec3(1.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specular);
+        float diffCof = max(dot(Normal, lightDir), 0.0f);
+        vec3 diffuseComponent = ligthColor * diffCof;
+
+        vec3 viewDir = normalize(CameraPosition - FragPos);
+        vec3 halfwayVec = normalize(viewDir + lightDir);
+        float specCof = pow(max(dot(Normal, halfwayVec), 0.0f), specularExponent);
+        vec3 specularComponent = ligthColor * specCof * specularIntensity;
+
+        vec3 resColor = resColor * (ambientComponent + diffuseComponent + specularComponent);
+    }
+
     OutColor = vec4(resColor, 1.0f);
 }

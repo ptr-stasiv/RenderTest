@@ -9,8 +9,11 @@ Scene* CreateScene(Camera* camera)
    if (!newScene)
       return NULL;
 
-   newScene->RenderObjectList = malloc(sizeof(RenderObject) * 32);
+   newScene->RenderObjectList = malloc(sizeof(RenderObject) * MAX_SCENE_OBJECTS);
    newScene->RenderObjectCount = 0;
+
+   newScene->LightsArray = malloc(sizeof(Light) * MAX_SCENE_LIGHTS);
+   newScene->LightsCount = 0;
 
    newScene->Camera = camera;
 
@@ -24,4 +27,13 @@ void AddRenderObject(Scene* scene, RenderObject* renderObject)
 
    scene->RenderObjectList[scene->RenderObjectCount] = renderObject;
    scene->RenderObjectCount++;
+}
+
+void AddPhongLight(Scene* scene, const Light light)
+{
+   if (scene->LightsCount >= MAX_SCENE_LIGHTS)
+      return;
+
+   scene->LightsArray[scene->LightsCount] = light;
+   scene->LightsCount++;
 }

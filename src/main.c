@@ -76,7 +76,7 @@ int main()
    Scene* scene = CreateScene(g_MainCamera);
 
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, -2.0f, 0.0f })));
 
    InitializeForwardRender();
 

@@ -15,7 +15,8 @@ set(headers
 	"src/debug/gassert.h"
 	"src/bgl/shader.h"
 	"src/asset-manager/obj-loader.h"
-	"src/graphics/camera.h")
+	"src/graphics/camera.h"
+	"src/graphics/light.h")
 
 set(sources 
 	"src/main.c"
