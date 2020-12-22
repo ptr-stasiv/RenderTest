@@ -78,6 +78,9 @@ int main()
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
    AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, -2.0f, 0.0f })));
 
+   AddPhongLight(scene, CreateLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }));
+   AddPhongLight(scene, CreateLight((Vector3) { 1.2f, 1.0f, -2.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }));
+
    InitializeForwardRender();
 
    while (!glfwWindowShouldClose(window))

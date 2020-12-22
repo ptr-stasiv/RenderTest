@@ -25,7 +25,7 @@ float specularExponent = 16.0f;
 
 void main()
 {
-    vec3 resColor = vec3(1.0f, 0.2f, 0.2f);
+    vec3 resColor = vec3(0.0f);
 
     for(int i = 0; i < min(LightsCount, MAX_LIGHTS); ++i)
     {
@@ -44,7 +44,7 @@ void main()
         float specCof = pow(max(dot(Normal, halfwayVec), 0.0f), specularExponent);
         vec3 specularComponent = ligthColor * specCof * specularIntensity;
 
-        vec3 resColor = resColor * (ambientComponent + diffuseComponent + specularComponent);
+        resColor += vec3(1.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent);
     }
 
     OutColor = vec4(resColor, 1.0f);

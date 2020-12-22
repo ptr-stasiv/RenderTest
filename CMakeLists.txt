@@ -30,7 +30,8 @@ set(sources
 	"src/scene/renders/forward-render.c"
 	"src/bgl/shader.c"
 	"src/asset-manager/obj-loader.c"
-	"src/graphics/camera.c")
+	"src/graphics/camera.c"
+	"src/graphics/light.c")
 
 set(libsInclude "extern/glew/include" "extern/glfw/include")
 set(libsLink "glew32s" "glfw3" "opengl32")
