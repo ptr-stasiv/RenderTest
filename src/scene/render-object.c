@@ -3,15 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-RenderObject* CreateRenderObject(Mesh* mesh, Texture* texture, Matrix4 transform)
+RenderObject CreateRenderObject(Mesh* mesh, Texture* texture, Matrix4 transform)
 {
-   RenderObject* res = malloc(sizeof(RenderObject));
-   if (!res)
-      return NULL;
+   RenderObject ro;
 
-   res->MeshData     = mesh;
-   res->TextureData  = texture;
-   res->Transform    = transform;
+   ro.MeshData = mesh;
+   ro.TextureData = texture;
+   ro.Transform = transform;
 
-   return res;
+   return ro;
 } 

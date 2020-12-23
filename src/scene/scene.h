@@ -8,7 +8,7 @@
 
 typedef struct SceneStructure
 {
-   RenderObject** RenderObjectList;
+   RenderObject* RenderObjectList;
    int RenderObjectCount;
 
    Light* LightsArray;
@@ -19,5 +19,5 @@ typedef struct SceneStructure
 
 Scene* CreateScene(Camera* camera);
 
-void AddRenderObject(Scene* scene, RenderObject* renderObject);
+void AddRenderObject(Scene* scene, const RenderObject renderObject);
 void AddPhongLight(Scene* scene, const Light light);

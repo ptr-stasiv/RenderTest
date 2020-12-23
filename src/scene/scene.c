@@ -20,9 +20,9 @@ Scene* CreateScene(Camera* camera)
    return newScene;
 }
 
-void AddRenderObject(Scene* scene, RenderObject* renderObject)
+void AddRenderObject(Scene* scene, const RenderObject renderObject)
 {
-   if (scene->RenderObjectCount >= MAX_SCENE_OBJECTS)
+   if (scene->RenderObjectCount > MAX_SCENE_OBJECTS)
       return;
 
    scene->RenderObjectList[scene->RenderObjectCount] = renderObject;
@@ -31,7 +31,7 @@ void AddRenderObject(Scene* scene, RenderObject* renderObject)
 
 void AddPhongLight(Scene* scene, const Light light)
 {
-   if (scene->LightsCount >= MAX_SCENE_LIGHTS)
+   if (scene->LightsCount > MAX_SCENE_LIGHTS)
       return;
 
    scene->LightsArray[scene->LightsCount] = light;

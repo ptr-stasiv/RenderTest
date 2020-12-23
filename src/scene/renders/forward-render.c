@@ -62,7 +62,7 @@ void UpdateForwardRender(Scene* scene)
 
    for (int i = 0; i < scene->RenderObjectCount; ++i)
    {
-      RenderObject r = *scene->RenderObjectList[i];
+      RenderObject r = scene->RenderObjectList[i];
 
       SetShaderMatrix4(g_MainShaderProgram, "model", r.Transform);
       SetShaderMatrix4(g_MainShaderProgram, "view", GetCameraViewMatrix(scene->Camera));

@@ -9,4 +9,4 @@ typedef struct RenderSceneObjectStructure
    Matrix4 Transform;
 } RenderObject;
 
-RenderObject* CreateRenderObject(Mesh* mesh, Texture* texture, Matrix4 transform);
+RenderObject CreateRenderObject(Mesh* mesh, Texture* texture, Matrix4 transform);
