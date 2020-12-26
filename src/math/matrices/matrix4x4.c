@@ -43,9 +43,9 @@ Matrix4 CreateScaleMatrix(const Vector3 scale)
 {
    Matrix4 res = { 0 };
 
-   res.Data[3]  = scale.x;
-   res.Data[7]  = scale.y;
-   res.Data[11] = scale.z;
+   res.Data[0] = scale.x;
+   res.Data[5] = scale.y;
+   res.Data[10] = scale.z;
    res.Data[15] = 1.0f;
 
    return res;
@@ -120,15 +120,16 @@ Matrix4 multiply_matrix(const Matrix4 m1, const Matrix4 m2)
 {
    Matrix4 res;
    
-   for(int row = 0; row < 12; row += 4)
+   for (int row = 0; row < 16; row += 4)
    {
-      for(int column = 0; column < 4; ++column)
-      {
-         Vector4 m1Vec = (Vector4){ m1.Data[row], m1.Data[row + 1], m1.Data[row + 2], m1.Data[row + 3] };
-         Vector4 m2Vec = (Vector4){ m2.Data[0 + column], m2.Data[1 * 4 + column], m2.Data[2 * 4 + column], m2.Data[3 * 4 + column] };
-         float e = dot_vector4(m1Vec, m2Vec);
+      Vector4 rowVector = (Vector4){ m1.Data[row], m1.Data[row + 1], m1.Data[row + 2], m1.Data[row + 3] }; 
 
-         res.Data[row + column] = e;
+      for (int column = 0; column < 4; ++column)
+      {
+         Vector4 columnVector = (Vector4){ m2.Data[column], m2.Data[column + 4], m2.Data[column + 8], m2.Data[column + 12] };
+
+         float elem = dot_vector4(rowVector, columnVector);
+         res.Data[row + column] = elem;
       }
    }
 

@@ -79,8 +79,13 @@ int main()
 
    Scene* scene = CreateScene(g_MainCamera);
 
-   MeshData cubeMeshData = LoadMesh("res/meshes/pistol/pistol.obj");
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
+   MeshData pistolMeshData = LoadMesh("res/meshes/pistol/pistol.obj");
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData.Positions, pistolMeshData.Normals, pistolMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
+
+   MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
+   Matrix4 cubeTransform = CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f });
+   cubeTransform = multiply_matrix(cubeTransform, CreateIdentityMatrix4());
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, cubeTransform));
 
    AddPhongLight(scene, CreateLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }));
 
