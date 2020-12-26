@@ -3,4 +3,4 @@
 #include "../../graphics/camera.h"
 
 void InitializeForwardRender();
-void UpdateForwardRender(Scene* scene);
+void UpdateForwardRender(Scene* scene, const float deltaTime);

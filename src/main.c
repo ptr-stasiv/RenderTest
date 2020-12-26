@@ -14,9 +14,13 @@
 #include "math/math_utils.h"
 
 #include <string.h>
+#include <Windows.h>
 
 char g_KeyStates[1024];
 Camera* g_MainCamera;
+
+float g_DeltaTime = 1.0f / 60.0f;
+
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -28,23 +32,23 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 void CursorCallback(GLFWwindow* window, double posX, double posY)
 {
-   RotateCamera(g_MainCamera, posX, posY);
+   RotateCamera(g_MainCamera, posX, posY, g_DeltaTime);
 }
 
 void InputHandle()
 {
    if (g_KeyStates[GLFW_KEY_W])
-      MoveCamera(g_MainCamera, CameraMoveForward);
+      MoveCamera(g_MainCamera, CameraMoveForward, g_DeltaTime);
    if(g_KeyStates[GLFW_KEY_S])
-      MoveCamera(g_MainCamera, CameraMoveBackward);
+      MoveCamera(g_MainCamera, CameraMoveBackward, g_DeltaTime);
    if(g_KeyStates[GLFW_KEY_D])
-      MoveCamera(g_MainCamera, CameraMoveRight);
+      MoveCamera(g_MainCamera, CameraMoveRight, g_DeltaTime);
    if (g_KeyStates[GLFW_KEY_A])
-      MoveCamera(g_MainCamera, CameraMoveLeft);
+      MoveCamera(g_MainCamera, CameraMoveLeft, g_DeltaTime);
    if (g_KeyStates[GLFW_KEY_E])
-      MoveCamera(g_MainCamera, CameraMoveUp);
+      MoveCamera(g_MainCamera, CameraMoveUp, g_DeltaTime);
    if (g_KeyStates[GLFW_KEY_Q])
-      MoveCamera(g_MainCamera, CameraMoveDown);
+      MoveCamera(g_MainCamera, CameraMoveDown, g_DeltaTime);
 }
 
 int main()
@@ -71,7 +75,7 @@ int main()
 
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 0.1f);
+   g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 5.0f);
 
    Scene* scene = CreateScene(g_MainCamera);
 
@@ -82,16 +86,31 @@ int main()
 
    InitializeForwardRender();
 
+   LARGE_INTEGER freq;
+   QueryPerformanceFrequency(&freq);
+
    while (!glfwWindowShouldClose(window))
    {
+      LARGE_INTEGER startFrameTicks;
+      QueryPerformanceCounter(&startFrameTicks);
+
+
       glfwPollEvents();
       InputHandle();
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      UpdateForwardRender(scene);
+      UpdateForwardRender(scene, g_DeltaTime);
 
       glfwSwapBuffers(window);
+
+
+      LARGE_INTEGER endFrameTicks;
+      QueryPerformanceCounter(&endFrameTicks);
+
+      g_DeltaTime = endFrameTicks.QuadPart - startFrameTicks.QuadPart;
+      g_DeltaTime /= freq.QuadPart / 1000.0f;
+      g_DeltaTime = 1.0f / g_DeltaTime;
    }
 
    glfwTerminate();

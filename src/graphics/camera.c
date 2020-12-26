@@ -38,20 +38,22 @@ Camera* CreateCamera(const Vector3 position, const float fov, const float aspect
    return newCamera;
 }
 
-void MoveCamera(Camera* camera, const CameraMoveType moveType)
+void MoveCamera(Camera* camera, const CameraMoveType moveType, const float deltaTime)
 {
+   float speed = camera->Speed * deltaTime;
+
    switch (moveType)
    {
-   case CameraMoveForward:  camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
-   case CameraMoveBackward: camera->Position = add_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, camera->Speed)); break;
-   case CameraMoveRight:    camera->Position = add_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed)); break;
-   case CameraMoveLeft:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->RightAxis, camera->Speed));  break;
-   case CameraMoveUp:       camera->Position = add_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
-   case CameraMoveDown:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->UpAxis, camera->Speed)); break;
+   case CameraMoveForward:  camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, speed)); break;
+   case CameraMoveBackward: camera->Position = add_vector3(camera->Position, muliply_svector3(camera->ForwardAxis, speed)); break;
+   case CameraMoveRight:    camera->Position = add_vector3(camera->Position, muliply_svector3(camera->RightAxis, speed)); break;
+   case CameraMoveLeft:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->RightAxis, speed));  break;
+   case CameraMoveUp:       camera->Position = add_vector3(camera->Position, muliply_svector3(camera->UpAxis, speed)); break;
+   case CameraMoveDown:     camera->Position = subtract_vector3(camera->Position, muliply_svector3(camera->UpAxis, speed)); break;
    }
 }
 
-void RotateCamera(Camera* camera, const float posX, const float posY)
+void RotateCamera(Camera* camera, const float posX, const float posY, const float deltaTime)
 {
    static char init = 0;
 
@@ -65,8 +67,8 @@ void RotateCamera(Camera* camera, const float posX, const float posY)
       init = 1;
    }
 
-   camera->Yaw += posX - lastX;
-   camera->Pitch += posY - lastY;
+   camera->Yaw += (posX - lastX) * deltaTime * 7.0f;
+   camera->Pitch += (posY - lastY) * deltaTime * 7.0f;
 
    lastX = posX;
    lastY = posY;

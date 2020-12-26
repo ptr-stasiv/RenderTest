@@ -42,7 +42,7 @@ char* ArrayMemberToStr(const char* arrStr, const int index, const char* memberSt
    return res;
 }
 
-void UpdateForwardRender(Scene* scene)
+void UpdateForwardRender(Scene* scene, const float deltaTime)
 {
    glUseProgram(g_MainShaderProgram);
 
