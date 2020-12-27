@@ -51,6 +51,20 @@ void InputHandle()
       MoveCamera(g_MainCamera, CameraMoveDown, g_DeltaTime);
 }
 
+void GLAPIENTRY
+MessageCallback(GLenum source,
+   GLenum type,
+   GLuint id,
+   GLenum severity,
+   GLsizei length,
+   const GLchar* message,
+   const void* userParam)
+{
+   fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+      (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+      type, severity, message);
+}
+
 int main()
 {
    if (!glfwInit())
@@ -75,6 +89,10 @@ int main()
 
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+   // During init, enable debug output
+   glEnable(GL_DEBUG_OUTPUT);
+   glDebugMessageCallback(MessageCallback, 0);
+   
    g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 5.0f);
 
    Scene* scene = CreateScene(g_MainCamera);
@@ -83,12 +101,13 @@ int main()
    AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData.Positions, pistolMeshData.Normals, pistolMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
 
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
-   Matrix4 cubeTransform = CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f });
-   cubeTransform = multiply_matrix(cubeTransform, CreateIdentityMatrix4());
+   Matrix4 cubeTransform = CreateTranslateMatrix((Vector3) { 0.0f, -2.0f, 0.0f });
+   cubeTransform = multiply_matrix(cubeTransform, CreateScaleMatrix((Vector3){5.0f, 1.0f, 5.0f}));
    AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, cubeTransform));
-
-   AddPhongLight(scene, CreateLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }));
-
+   
+   //AddPhongLight(scene, CreateLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }));
+   AddPointLight(scene, CreatePointLight((Vector3) { 1.2f, 1.0f, 2.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, 5.0f, 1.0f, 1.0f));
+   
    InitializeForwardRender();
 
    LARGE_INTEGER freq;

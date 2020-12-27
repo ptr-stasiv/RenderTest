@@ -15,6 +15,9 @@ Scene* CreateScene(Camera* camera)
    newScene->LightsArray = malloc(sizeof(Light) * MAX_SCENE_LIGHTS);
    newScene->LightsCount = 0;
 
+   newScene->PointLightsArray = malloc(sizeof(PointLight) * MAX_SCENE_LIGHTS);
+   newScene->PointLightsCount = 0;
+
    newScene->Camera = camera;
 
    return newScene;
@@ -36,4 +39,13 @@ void AddPhongLight(Scene* scene, const Light light)
 
    scene->LightsArray[scene->LightsCount] = light;
    scene->LightsCount++;
+}
+
+void AddPointLight(Scene* scene, const PointLight light)
+{
+   if (scene->PointLightsCount > MAX_SCENE_LIGHTS)
+      return;
+
+   scene->PointLightsArray[scene->PointLightsCount] = light;
+   scene->PointLightsCount++;
 }

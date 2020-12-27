@@ -11,3 +11,4 @@ void SetShaderMatrix4(const GLuint program, const char* paramName, const Matrix4
 void SetShaderVector4(const GLuint program, const char* paramName, const Vector4 vector);
 void SetShaderVector3(const GLuint program, const char* paramName, const Vector3 vector);
 void SetShaderInt(const GLuint program, const char* paramName, const int scalar);
+void SetShaderFloat(const GLuint program, const char* paramName, const float scalar);

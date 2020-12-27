@@ -47,6 +47,7 @@ void UpdateForwardRender(Scene* scene, const float deltaTime)
    glUseProgram(g_MainShaderProgram);
 
    SetShaderInt(g_MainShaderProgram, "LightsCount", scene->LightsCount);
+   SetShaderInt(g_MainShaderProgram, "PointLightsCount", scene->PointLightsCount);
 
    for (int i = 0; i < scene->LightsCount; ++i)
    {
@@ -58,6 +59,27 @@ void UpdateForwardRender(Scene* scene, const float deltaTime)
 
       free(posMemberStr);
       free(colorMemberStr);
+   }
+
+   for (int i = 0; i < scene->PointLightsCount; ++i)
+   {
+      char* posMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Position");
+      char* colorMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Color");
+      char* linearMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Linear");
+      char* quadraticMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Quadratic");
+      char* constantMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Constant");
+
+      SetShaderVector3(g_MainShaderProgram, ArrayMemberToStr("PointLightsArray[", i, "].Position"), (Vector3) { 1.2f, 1.0f, 2.0f });
+      SetShaderVector3(g_MainShaderProgram, ArrayMemberToStr("PointLightsArray[", i, "].Color"), (Vector3) { 1.0f, 1.0f, 1.0f });
+      SetShaderFloat(g_MainShaderProgram, ArrayMemberToStr("PointLightsArray[", i, "].Linear"), 0.09f);
+      SetShaderFloat(g_MainShaderProgram, ArrayMemberToStr("PointLightsArray[", i, "].Quadratic"), 0.02f);
+      SetShaderFloat(g_MainShaderProgram, ArrayMemberToStr("PointLightsArray[", i, "].Constant"), 1.0f);
+
+      free(posMemberStr);
+      free(colorMemberStr);
+      free(linearMemberStr);
+      free(quadraticMemberStr);
+      free(constantMemberStr);
    }
 
    for (int i = 0; i < scene->RenderObjectCount; ++i)

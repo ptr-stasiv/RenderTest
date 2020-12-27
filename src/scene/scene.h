@@ -14,10 +14,15 @@ typedef struct SceneStructure
    Light* LightsArray;
    int LightsCount;
 
+   PointLight* PointLightsArray;
+   int PointLightsCount;
+
    Camera* Camera;
 } Scene;
 
 Scene* CreateScene(Camera* camera);
 
 void AddRenderObject(Scene* scene, const RenderObject renderObject);
+
 void AddPhongLight(Scene* scene, const Light light);
+void AddPointLight(Scene* scene, const PointLight light);

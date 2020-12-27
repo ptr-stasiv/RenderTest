@@ -62,3 +62,8 @@ void SetShaderInt(const GLuint program, const char* paramName, const int scalar)
 {
    glUniform1i(glGetUniformLocation(program, paramName), scalar);
 }
+
+void SetShaderFloat(const GLuint program, const char* paramName, const float scalar)
+{
+   glUniform1f(glGetUniformLocation(program, paramName), scalar);
+}
