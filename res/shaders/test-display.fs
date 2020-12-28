@@ -90,7 +90,7 @@ void main()
         diffuseComponent  *= attenuation;
         specularComponent *= attenuation;
 
-        resColor += vec3(1.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent); 
+        resColor += vec3(0.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent); 
     }
 
     OutColor = vec4(resColor, 1.0f);

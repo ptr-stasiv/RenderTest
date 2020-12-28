@@ -47,3 +47,4 @@ target_link_libraries(RenderTest PRIVATE ${libsLink})
 target_compile_definitions(RenderTest PRIVATE "GLEW_STATIC")
 
 file(COPY "res" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET RenderTest PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/res"  "${PROJECT_SOURCE_DIR}/build/res")
