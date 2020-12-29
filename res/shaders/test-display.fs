@@ -21,7 +21,7 @@ struct PointLight
     vec3 Color;
 
     float Linear;
-    float Qudratic;
+    float Quadratic;
     float Constant;
 };
 
@@ -80,7 +80,7 @@ void main()
         vec3 specularComponent = lightColor * specC * specularIntensity;
 
         float linear = PointLightsArray[i].Linear;
-        float quadratic = PointLightsArray[i].Qudratic;
+        float quadratic = PointLightsArray[i].Quadratic;
         float constant = PointLightsArray[i].Constant;
 
         float lightDist = abs(length(lightPos - FragPos));

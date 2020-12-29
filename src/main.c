@@ -104,7 +104,7 @@ int main()
    cubeTransform = multiply_matrix(cubeTransform, CreateScaleMatrix((Vector3){5.0f, 1.0f, 5.0f}));
    AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData), NULL, cubeTransform));
    
-   AddPointLight(scene, CreatePointLight((Vector3) { 1.2f, 1.0f, 2.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, 0.09f, 0.032f, 1.0f));
+   AddPointLight(scene, CreatePointLight((Vector3) { 1.2f, 1.0f, 2.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, 0.09f, 1.0f, 0.032f));
    
    InitializeForwardRender();
 
