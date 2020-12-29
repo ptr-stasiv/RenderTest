@@ -1,5 +1,6 @@
 #pragma once
 #include "GL/glew.h"
+#include "../asset-manager/obj-loader.h"
 #include "../math/matrices/matrix4x4.h"
 
 typedef struct MeshStructure
@@ -8,4 +9,4 @@ typedef struct MeshStructure
    int VerticesCount;
 } Mesh;
 
-Mesh* CreateMesh(Vector3* vertices, Vector3* normals, const int facesCount);
+Mesh* CreateMesh(const MeshData meshData);

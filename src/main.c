@@ -89,7 +89,6 @@ int main()
 
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-   // During init, enable debug output
    glEnable(GL_DEBUG_OUTPUT);
    glDebugMessageCallback(MessageCallback, 0);
    
@@ -98,15 +97,14 @@ int main()
    Scene* scene = CreateScene(g_MainCamera);
 
    MeshData pistolMeshData = LoadMesh("res/meshes/pistol/pistol.obj");
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData.Positions, pistolMeshData.Normals, pistolMeshData.FacesCount), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
 
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
    Matrix4 cubeTransform = CreateTranslateMatrix((Vector3) { 0.0f, -2.0f, 0.0f });
    cubeTransform = multiply_matrix(cubeTransform, CreateScaleMatrix((Vector3){5.0f, 1.0f, 5.0f}));
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData.Positions, cubeMeshData.Normals, cubeMeshData.FacesCount), NULL, cubeTransform));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData), NULL, cubeTransform));
    
-   //AddPhongLight(scene, CreateLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }));
-   AddPointLight(scene, CreatePointLight((Vector3) { 1.2f, 1.0f, 2.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, 5.0f, 1.0f, 1.0f));
+   AddPointLight(scene, CreatePointLight((Vector3) { 1.2f, 1.0f, 2.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, 0.09f, 0.032f, 1.0f));
    
    InitializeForwardRender();
 
