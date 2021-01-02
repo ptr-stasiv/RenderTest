@@ -95,17 +95,20 @@ void main()
 
     vec3 spotLightDir = vec3(0.0f, -1.0f, 0.0f);
     vec3 spotLightPos = vec3(0.0f, 10.0f, 0.0f);
-    float cutOffAngle = radians(10);
+    float cutOffAngle = radians(10.5f);
+    float innOffAngle = radians(7.5f);
 
     vec3 lightDir = normalize(spotLightPos - FragPos);
-    float curAngle = dot(spotLightDir, -lightDir);
+    float theta = acos(dot(spotLightDir, -lightDir));
+    float diff = cutOffAngle - innOffAngle;
+    float intensity = clamp((cutOffAngle - theta) / diff, 0.0f, 1.0f);
 
     vec3 ambientComponent = vec3(1.0f, 1.0f, 1.0f) * ambientIntensity;
 
     float diffC = max(dot(Normal, lightDir), 0);
     vec3 diffuseComponent = vec3(1.0f, 1.0f, 1.0f) * diffC;
 
-    resColor += (vec3(0.0f, 0.2f, 0.2f) * (diffuseComponent + ambientComponent));
+    resColor += (vec3(0.0f, 0.2f, 0.2f) * (diffuseComponent + ambientComponent)) * intensity;
 
     OutColor = vec4(resColor, 1.0f);
 }
