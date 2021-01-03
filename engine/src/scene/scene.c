@@ -18,6 +18,9 @@ Scene* CreateScene(Camera* camera)
    newScene->PointLightsArray = malloc(sizeof(PointLight) * MAX_SCENE_LIGHTS);
    newScene->PointLightsCount = 0;
 
+   newScene->SpotlightsArray = malloc(sizeof(Spotlight) * MAX_SCENE_LIGHTS);
+   newScene->SpotlightsCount = 0;
+
    newScene->Camera = camera;
 
    return newScene;
@@ -48,4 +51,13 @@ void AddPointLight(Scene* scene, const PointLight light)
 
    scene->PointLightsArray[scene->PointLightsCount] = light;
    scene->PointLightsCount++;
+}
+
+void AddSpotlight(Scene* scene, const Spotlight light)
+{
+   if (scene->SpotlightsCount > MAX_SCENE_LIGHTS)
+      return;
+
+   scene->SpotlightsArray[scene->SpotlightsCount] = light;
+   scene->SpotlightsCount++;
 }

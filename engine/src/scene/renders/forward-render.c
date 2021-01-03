@@ -82,6 +82,27 @@ void UpdateForwardRender(Scene* scene, const float deltaTime)
       free(constantMemberStr);
    }
 
+   for (int i = 0; i < scene->SpotlightsCount; ++i)
+   {
+      char* posMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].Position");
+      char* colorMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].Color");
+      char* directionMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].Direction");
+      char* outerAngleMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].OuterAngle");
+      char* innerAngleMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].InnerAngle");
+
+      SetShaderVector3(g_MainShaderProgram, posMemberStr, scene->SpotlightsArray[i].Position);
+      SetShaderVector3(g_MainShaderProgram, directionMemberStr, scene->SpotlightsArray[i].Direction);
+      SetShaderVector3(g_MainShaderProgram, colorMemberStr, scene->SpotlightsArray[i].Color);
+      SetShaderFloat(g_MainShaderProgram, outerAngleMemberStr, scene->SpotlightsArray[i].OuterAngle);
+      SetShaderFloat(g_MainShaderProgram, innerAngleMemberStr, scene->SpotlightsArray[i].InnerAngle);
+
+      free(posMemberStr);
+      free(colorMemberStr);
+      free(directionMemberStr);
+      free(outerAngleMemberStr);
+      free(innerAngleMemberStr);
+   }
+
    for (int i = 0; i < scene->RenderObjectCount; ++i)
    {
       RenderObject r = scene->RenderObjectList[i];

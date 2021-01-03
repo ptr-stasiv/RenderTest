@@ -17,5 +17,16 @@ typedef struct PointLightStruct
    float Quadratic;
 } PointLight;
 
+typedef struct SpotlightStruct
+{
+   Vector3 Position;
+   Vector3 Direction;
+   Vector3 Color;
+
+   float OuterAngle;
+   float InnerAngle;
+} Spotlight;
+
 Light CreateLight(const Vector3 position, const Vector3 color);
 PointLight CreatePointLight(const Vector3 position, const Vector3 color, const float linear, const float constant, const float quadractic);
+Spotlight CreateSpotlight(const Vector3 position, const Vector3 direction, const Vector3 color, const float outerAngle, const float innerAngle);

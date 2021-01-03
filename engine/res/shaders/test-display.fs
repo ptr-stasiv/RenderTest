@@ -25,8 +25,21 @@ struct PointLight
     float Constant;
 };
 
+struct Spotlight
+{
+    vec3 Position;
+    vec3 Direction;
+    vec3 Color;
+
+    float OuterAngle;
+    float InnerAngle;
+};
+
 uniform PointLight PointLightsArray[MAX_LIGHTS];
-uniform int PointLightsCount;
+uniform int PointLightsCount = 0;
+
+uniform Spotlight SpotlightsArray[MAX_LIGHTS];
+uniform int SpotlightsCount = 0;
 
 uniform Light LightsArray[MAX_LIGHTS];
 uniform int LightsCount = 0;
@@ -86,29 +99,37 @@ void main()
         float lightDist = abs(length(lightPos - FragPos));
         float attenuation = 1 / (constant + linear * lightDist + quadratic * lightDist * lightDist);
 
-        ambientComponent  *= attenuation;
-        diffuseComponent  *= attenuation;
-        specularComponent *= attenuation;
-
-        //resColor += vec3(0.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent); 
+        resColor += vec3(0.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent) * attenuation; 
     }
 
-    vec3 spotLightDir = vec3(0.0f, -1.0f, 0.0f);
-    vec3 spotLightPos = vec3(0.0f, 10.0f, 0.0f);
-    float cutOffAngle = radians(10.5f);
-    float innOffAngle = radians(7.5f);
+    for(int i = 0; i < min(SpotlightsCount, MAX_LIGHTS); ++i)
+    {   
+        vec3 lightPos   = SpotlightsArray[i].Position;
+        vec3 lightColor = SpotlightsArray[i].Color;
 
-    vec3 lightDir = normalize(spotLightPos - FragPos);
-    float theta = acos(dot(spotLightDir, -lightDir));
-    float diff = cutOffAngle - innOffAngle;
-    float intensity = clamp((cutOffAngle - theta) / diff, 0.0f, 1.0f);
+        vec3 lightDir = normalize(lightPos - FragPos);
 
-    vec3 ambientComponent = vec3(1.0f, 1.0f, 1.0f) * ambientIntensity;
+        vec3 viewDir = normalize(CameraPosition - FragPos);
 
-    float diffC = max(dot(Normal, lightDir), 0);
-    vec3 diffuseComponent = vec3(1.0f, 1.0f, 1.0f) * diffC;
+        vec3 ambientComponent = lightColor * ambientIntensity;
 
-    resColor += (vec3(0.0f, 0.2f, 0.2f) * (diffuseComponent + ambientComponent)) * intensity;
+        float diffC = max(dot(Normal, lightDir), 0);
+        vec3 diffuseComponent = lightColor * diffC;
+
+        vec3 halfwayVector = normalize(viewDir + lightDir);
+        float specC = pow(max(dot(halfwayVector, Normal), 0), specularExponent);
+        vec3 specularComponent = lightColor * specC * specularIntensity;
+
+        vec3 spotLightDir = SpotlightsArray[i].Direction;
+        float cutOffAngle = SpotlightsArray[i].OuterAngle;
+        float innOffAngle = SpotlightsArray[i].InnerAngle;
+
+        float theta = acos(dot(spotLightDir, -lightDir));
+        float diff = cutOffAngle - innOffAngle;
+        float intensity = clamp((cutOffAngle - theta) / diff, 0.0f, 1.0f);
+
+        resColor += vec3(0.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent) * intensity;
+    }
 
     OutColor = vec4(resColor, 1.0f);
 }

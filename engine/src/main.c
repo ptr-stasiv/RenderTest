@@ -107,7 +107,8 @@ int main()
    AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData), NULL, cubeTransform));
    
    AddPointLight(scene, CreatePointLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }, 0.09f, 1.0f, 0.032f));
-   
+   AddSpotlight(scene, CreateSpotlight((Vector3) { 0.0f, 10.0f, 0.0f }, (Vector3) { 0.0f, -1.0f, 0.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, PI / 12, PI / 15));
+
    InitializeForwardRender();
 
    LARGE_INTEGER freq;

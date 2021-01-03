@@ -10,3 +10,8 @@ PointLight CreatePointLight(const Vector3 position, const Vector3 color, const f
 {
    return (PointLight){ position, color, linear, constant, quadractic};
 }
+
+Spotlight CreateSpotlight(const Vector3 position, const Vector3 direction, const Vector3 color, const float outerAngle, const float innerAngle)
+{
+   return (Spotlight){ position, direction, color, outerAngle, innerAngle };
+}
