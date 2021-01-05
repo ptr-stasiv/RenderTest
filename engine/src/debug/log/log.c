@@ -16,39 +16,38 @@ void PrintLog(const LogLevels level, const char* filepath, const int line, const
    SYSTEMTIME st;
    GetLocalTime(&st);
 
-   int colorMode;
    char message[8];
 
    switch (level)
    {
    case LL_MESSAGE:
-      {
-         colorMode = 0;
-         strcpy(message, "Message");
-      }break;
+         strcpy(message, "Message"); break;
    case LL_ERROR:
-      {
-         colorMode = 1;
-         strcpy(message, "Error");
-      }break;
+         strcpy(message, "Error"); break;
    case LL_WARNING:
-      {
-         colorMode = 2;
-         strcpy(message, "Warning");
-      }break;
+         strcpy(message, "Warning"); break;
    default:
       break;
    }
 
-   printf(g_FontColorModes[colorMode]);
-
-   printf("- %d:%d:%d %s %s:%d ", st.wHour, st.wMinute, st.wSecond, message, filepath, line);
+   printf("%s- %d:%d:%d %s %s:%d ", g_FontColorModes[level], st.wHour, st.wMinute, st.wSecond, message, filepath, line);
   
    va_list args;
    va_start(args, format);
    vprintf(format, args);
    va_end(args);
 
-   printf(g_FontColorModes[0]);
-   printf("\n");
+   printf("%s\n", g_FontColorModes[0]);
+}
+
+void PrintLogWD(const LogLevels level, const const char* format, ...)
+{
+   printf("%s- ", g_FontColorModes[level]);
+
+   va_list args;
+   va_start(args, format);
+   vprintf(format, args);
+   va_end(args);
+
+   printf("%s\n", g_FontColorModes[0]);
 }

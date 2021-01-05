@@ -55,16 +55,10 @@ void InputHandle()
       MoveCamera(g_MainCamera, CameraMoveDown, g_DeltaTime);
 }
 
-void GLAPIENTRY
-MessageCallback(GLenum source,
-   GLenum type,
-   GLuint id,
-   GLenum severity,
-   GLsizei length,
-   const GLchar* message,
-   const void* userParam)
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
+                                GLsizei length, const GLchar* message, const void* userParam)
 {
-   fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+   LOG_ERROR(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
       (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
       type, severity, message);
 }
@@ -74,8 +68,8 @@ int main()
    if (!glfwInit())
       return -1;
 
-   //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-   //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
    GLFWwindow* window = glfwCreateWindow(1280, 720, "RenderTest", NULL, NULL);
    if (!window)
@@ -86,6 +80,15 @@ int main()
    if (glewInit() != GLEW_OK)
       return -1;
 
+   const char* vendorInfo   = glGetString(GL_VENDOR);
+   const char* rendererInfo = glGetString(GL_RENDERER);
+   const char* versionInfo  = glGetString(GL_VERSION);
+   const char* glslInfo     = glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+   WD_LOG_MESSAGE("%s %s", vendorInfo, rendererInfo);
+   WD_LOG_MESSAGE("Opengl %s", versionInfo);
+   WD_LOG_MESSAGE("GLSL %s", glslInfo);
+
    glEnable(GL_DEPTH_TEST);
 
    glfwSetKeyCallback(window, KeyCallback);
@@ -94,7 +97,7 @@ int main()
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
    glEnable(GL_DEBUG_OUTPUT);
-   //glDebugMessageCallback(MessageCallback, 0);
+   glDebugMessageCallback(MessageCallback, 0);
    
    g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 5.0f);
 
