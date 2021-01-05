@@ -3,6 +3,8 @@
 #include "Ultralight/Ultralight.h"
 #include "AppCore/Platform.h"
 
+#include <stdio.h>
+
 static ultralight::RefPtr<ultralight::Renderer> g_Renderer;
 static ultralight::RefPtr<ultralight::View> g_View;
 

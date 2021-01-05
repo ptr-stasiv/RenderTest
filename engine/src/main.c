@@ -19,6 +19,8 @@
 #include "gui.h"
 #include "bgl/shader.h"
 
+#include "debug/log/log.h"
+
 char g_KeyStates[1024];
 Camera* g_MainCamera;
 
@@ -92,7 +94,7 @@ int main()
    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
    glEnable(GL_DEBUG_OUTPUT);
-   glDebugMessageCallback(MessageCallback, 0);
+   //glDebugMessageCallback(MessageCallback, 0);
    
    g_MainCamera = CreateCamera((Vector3) { 0.0f, 0.0f, 10.0f }, PI / 4, 1.7f, 5.0f);
 
