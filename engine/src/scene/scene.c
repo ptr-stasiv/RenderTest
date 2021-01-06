@@ -21,6 +21,9 @@ Scene* CreateScene(Camera* camera)
    newScene->SpotlightsArray = malloc(sizeof(Spotlight) * MAX_SCENE_LIGHTS);
    newScene->SpotlightsCount = 0;
 
+   newScene->MaterialsArray = malloc(sizeof(Material) * MAX_SCENE_MATERIALS);
+   newScene->MaterialsCount = 0;
+
    newScene->Camera = camera;
 
    return newScene;
@@ -31,8 +34,7 @@ void AddRenderObject(Scene* scene, const RenderObject renderObject)
    if (scene->RenderObjectCount > MAX_SCENE_OBJECTS)
       return;
 
-   scene->RenderObjectList[scene->RenderObjectCount] = renderObject;
-   scene->RenderObjectCount++;
+   scene->RenderObjectList[scene->RenderObjectCount++] = renderObject;
 }
 
 void AddPhongLight(Scene* scene, const Light light)
@@ -40,8 +42,7 @@ void AddPhongLight(Scene* scene, const Light light)
    if (scene->LightsCount > MAX_SCENE_LIGHTS)
       return;
 
-   scene->LightsArray[scene->LightsCount] = light;
-   scene->LightsCount++;
+   scene->LightsArray[scene->LightsCount++] = light;
 }
 
 void AddPointLight(Scene* scene, const PointLight light)
@@ -49,8 +50,7 @@ void AddPointLight(Scene* scene, const PointLight light)
    if (scene->PointLightsCount > MAX_SCENE_LIGHTS)
       return;
 
-   scene->PointLightsArray[scene->PointLightsCount] = light;
-   scene->PointLightsCount++;
+   scene->PointLightsArray[scene->PointLightsCount++] = light;
 }
 
 void AddSpotlight(Scene* scene, const Spotlight light)
@@ -58,6 +58,14 @@ void AddSpotlight(Scene* scene, const Spotlight light)
    if (scene->SpotlightsCount > MAX_SCENE_LIGHTS)
       return;
 
-   scene->SpotlightsArray[scene->SpotlightsCount] = light;
-   scene->SpotlightsCount++;
+   scene->SpotlightsArray[scene->SpotlightsCount++] = light;
+}
+
+uint8_t AddObjectMaterial(Scene* scene, const Material material)
+{
+   if (scene->MaterialsCount > MAX_SCENE_MATERIALS)
+      return;
+
+   scene->MaterialsArray[scene->MaterialsCount] = material;
+   return scene->MaterialsCount++;
 }

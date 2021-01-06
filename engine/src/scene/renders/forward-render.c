@@ -104,6 +104,24 @@ void UpdateForwardRender(Scene* scene, const float deltaTime)
       free(innerAngleMemberStr);
    }
 
+   for (int i = 0; i < scene->MaterialsCount; ++i)
+   {
+      char* colorMemberStr = ArrayMemberToStr("MaterialsArray[", i, "].Color");
+      char* specMemberStr  = ArrayMemberToStr("MaterialsArray[", i, "].Specular");
+      char* emisMemberStr  = ArrayMemberToStr("MaterialsArray[", i, "].Emissive");
+      char* expMemberStr   = ArrayMemberToStr("MaterialsArray[", i, "].ShineExponent");
+
+      SetShaderVector3(g_MainShaderProgram, colorMemberStr, scene->MaterialsArray[i].Color);
+      SetShaderVector3(g_MainShaderProgram, specMemberStr, scene->MaterialsArray[i].Specular);
+      SetShaderVector3(g_MainShaderProgram, emisMemberStr, scene->MaterialsArray[i].Emissive);
+      SetShaderFloat(g_MainShaderProgram, expMemberStr, scene->MaterialsArray[i].ShineExponent);
+
+      free(colorMemberStr);
+      free(specMemberStr);
+      free(emisMemberStr);
+      free(expMemberStr);
+   }
+
    for (int i = 0; i < scene->RenderObjectCount; ++i)
    {
       RenderObject r = scene->RenderObjectList[i];
@@ -111,6 +129,8 @@ void UpdateForwardRender(Scene* scene, const float deltaTime)
       SetShaderMatrix4(g_MainShaderProgram, "model", r.Transform);
       SetShaderMatrix4(g_MainShaderProgram, "view", GetCameraViewMatrix(scene->Camera));
       SetShaderMatrix4(g_MainShaderProgram, "projection", GetCameraProjection(scene->Camera));
+
+      SetShaderInt(g_MainShaderProgram, "MaterialId", r.MaterialRef);
 
       SetShaderVector3(g_MainShaderProgram, "CameraPosition", scene->Camera->Position);
       

@@ -96,13 +96,15 @@ int main()
 
    Scene* scene = CreateScene(g_MainCamera);
 
+   uint8_t basicMaterial = AddObjectMaterial(scene, CreateMaterial((Vector3) { 0.0f, 0.2f, 0.2f }, (Vector3) { 1.0f, 1.0f, 1.0f }, 16.0f, (Vector3) { 0.0f }));
+
    MeshData pistolMeshData = LoadMesh("res/meshes/pistol/pistol.obj");
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f })));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData), NULL, CreateTranslateMatrix((Vector3) { 0.0f, 0.0f, 0.0f }), basicMaterial));
 
    MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
    Matrix4 cubeTransform = CreateTranslateMatrix((Vector3){ 0.0f, -2.0f, 0.0f });
    cubeTransform = multiply_matrix(cubeTransform, CreateScaleMatrix((Vector3){5.0f, 1.0f, 5.0f}));
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData), NULL, cubeTransform));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData), NULL, cubeTransform, basicMaterial));
    
    AddPointLight(scene, CreatePointLight((Vector3){ 1.2f, 1.0f, 2.0f }, (Vector3){ 1.0f, 1.0f, 1.0f }, 0.09f, 1.0f, 0.032f));
    AddSpotlight(scene, CreateSpotlight((Vector3) { 0.0f, 10.0f, 0.0f }, (Vector3) { 0.0f, -1.0f, 0.0f }, (Vector3) { 1.0f, 1.0f, 1.0f }, PI / 12, PI / 15));

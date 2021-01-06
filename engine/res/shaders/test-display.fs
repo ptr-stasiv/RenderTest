@@ -1,6 +1,7 @@
 #version 460 core
 
-#define MAX_LIGHTS  32
+#define MAX_LIGHTS    32
+#define MAX_MATERIALS 32
 
 out vec4 OutColor;
 
@@ -35,6 +36,14 @@ struct Spotlight
     float InnerAngle;
 };
 
+struct Material
+{
+    vec3  Color;
+    vec3  Specular;
+    vec3  Emissive;
+    float ShineExponent;
+};
+
 uniform PointLight PointLightsArray[MAX_LIGHTS];
 uniform int PointLightsCount = 0;
 
@@ -44,14 +53,19 @@ uniform int SpotlightsCount = 0;
 uniform Light LightsArray[MAX_LIGHTS];
 uniform int LightsCount = 0;
 
-float ambientIntensity = 0.03f;
+uniform Material MaterialsArray[MAX_MATERIALS];
+uniform int MaterialId;
 
-vec3 specularIntensity = vec3(1.0f, 1.0f, 1.0f);
-float specularExponent = 32.0f;
+float ambientIntensity = 0.03f;
 
 void main()
 {
     vec3 resColor = vec3(0.0f);
+
+    vec3 objectColor = MaterialsArray[MaterialId].Color;
+    vec3 specularIntensity = MaterialsArray[MaterialId].Specular;
+    vec3 emissive = MaterialsArray[MaterialId].Emissive;
+    float specularExponent = MaterialsArray[MaterialId].ShineExponent;
 
     for(int i = 0; i <= min(LightsCount, MAX_LIGHTS); ++i)
     {
@@ -71,7 +85,7 @@ void main()
         float specC = pow(max(dot(halfwayVector, Normal), 0), specularExponent);
         vec3 specularComponent = lightColor * specC * specularIntensity;
 
-        resColor += vec3(1.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent); 
+        resColor += objectColor * (ambientComponent + diffuseComponent + specularComponent + emissive); 
     }
 
     for(int i = 0; i < min(PointLightsCount, MAX_LIGHTS); ++i)
@@ -99,7 +113,7 @@ void main()
         float lightDist = abs(length(lightPos - FragPos));
         float attenuation = 1 / (constant + linear * lightDist + quadratic * lightDist * lightDist);
 
-        resColor += vec3(0.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent) * attenuation; 
+        resColor += objectColor * (ambientComponent + diffuseComponent + specularComponent + emissive) * attenuation; 
     }
 
     for(int i = 0; i < min(SpotlightsCount, MAX_LIGHTS); ++i)
@@ -128,7 +142,7 @@ void main()
         float diff = cutOffAngle - innOffAngle;
         float intensity = clamp((cutOffAngle - theta) / diff, 0.0f, 1.0f);
 
-        resColor += vec3(0.0f, 0.2f, 0.2f) * (ambientComponent + diffuseComponent + specularComponent) * intensity;
+        resColor += objectColor * (ambientComponent + diffuseComponent + specularComponent + emissive) * intensity;
     }
 
     OutColor = vec4(resColor, 1.0f);

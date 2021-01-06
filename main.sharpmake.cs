@@ -70,6 +70,7 @@ namespace sharpmake
 
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glfw/include");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glew/include");
+            config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/src");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/gui/src");
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glfw/lib");
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glew/lib");
