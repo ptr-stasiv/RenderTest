@@ -2,6 +2,16 @@
 
 #include <math.h>
 
+Vector3 vec3(const float x, const float y, const float z)
+{
+   return (Vector3){ x, y, z };
+}
+
+Vector3 svec3(const float s)
+{
+   return (Vector3){ s };
+}
+
 Vector3 add_vector3(const Vector3 a, const Vector3 b)
 {
    Vector3 res;

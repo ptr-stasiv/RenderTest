@@ -31,7 +31,6 @@ MeshData LoadMesh(const char* filepath)
 
    rewind(file);
 
-
    Vector3* positionArray = malloc(sizeof(Vector3) * positionCount);
    uint32_t positionCounter = 0;
 

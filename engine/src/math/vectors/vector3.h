@@ -5,6 +5,8 @@ typedef struct Vector3Structure
    float x, y, z;
 }Vector3;
 
+Vector3 vec3(const float x, const float y, const float z);
+Vector3 svec3(const float s);
 
 Vector3 add_vector3(const Vector3 a, const Vector3 b);
 
