@@ -82,6 +82,10 @@ int main()
    WD_LOG_MESSAGE("Opengl %s", versionInfo);
    WD_LOG_MESSAGE("GLSL %s\n", glslInfo);
 
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glBlendEquation(GL_FUNC_ADD);
+
    glEnable(GL_DEPTH_TEST);
 
    glfwSetKeyCallback(window, KeyCallback);
@@ -119,7 +123,7 @@ int main()
    int width = 1280;
    int height = 720;
 
-   InitializeGUI("file:///test.html", width, height);
+   InitializeGUI("file:///res/gui/web/main.html", width, height);
 
    GLuint surfaceTexture;
    glCreateTextures(GL_TEXTURE_2D, 1, &surfaceTexture);
@@ -170,10 +174,12 @@ int main()
 
    float vertices[] =
    {
-      -1.0f, -1.0f, 0.0f, 1.0f,
+      - 1.0f, -1.0f, 0.0f, 1.0f,
       -1.0f, 1.0f, 0.0f, 0.0f,
       1.0f, 1.0f, 1.0f, 0.0f,
+      1.0f, 1.0f, 1.0f, 0.0f,
       1.0f, -1.0f, 1.0f, 1.0f
+      - 1.0f, -1.0f, 0.0f, 1.0f,
    };
 
    GLuint vao;
@@ -215,17 +221,18 @@ int main()
 
       SetShaderInt(shaderProgram, "Texture", 0);
 
+      SetTestCounterJS(1.0f / g_DeltaTime);
+
       void* pixels;
       GetWebWindowInfo(&width, &height, &pixels);
 
       glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
 
-      //glBindVertexArray(vao);
-      //glDrawArrays(GL_QUADS, 0, 8);
-      //glBindVertexArray(0);
+      glBindVertexArray(vao);
+      glDrawArrays(GL_TRIANGLES, 0, 12);
+      glBindVertexArray(0);
 
       glfwSwapBuffers(window);
-
 
       LARGE_INTEGER endFrameTicks;
       QueryPerformanceCounter(&endFrameTicks);

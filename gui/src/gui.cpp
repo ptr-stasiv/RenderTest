@@ -4,6 +4,7 @@
 #include "AppCore/Platform.h"
 
 #include <stdio.h>
+#include <string>
 
 static ultralight::RefPtr<ultralight::Renderer> g_Renderer;
 static ultralight::RefPtr<ultralight::View> g_View;
@@ -32,7 +33,7 @@ void InitializeGUI(const char* url, const int width, const int height)
    //UL renderer  
    g_Renderer = ultralight::Renderer::Create();
 
-   g_View = g_Renderer->CreateView(width, height, false, nullptr);
+   g_View = g_Renderer->CreateView(width, height, true, nullptr);
 
    g_View->LoadURL(url);
 
@@ -55,4 +56,15 @@ void GetWebWindowInfo(int* width, int* height, void** winPixels)
    *winPixels = pixels;
 
    bm->UnlockPixels();
+}
+
+void RunJS(const char* jsCode)
+{
+   g_View->EvaluateScript(jsCode);
+}
+
+void SetTestCounterJS(const float s)
+{
+   std::string code = std::string("SetTestText('") + std::to_string(s) + std::string(" ms');");
+   RunJS(code.c_str());
 }
