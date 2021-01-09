@@ -64,12 +64,15 @@ namespace sharpmake
             config.Options.Add(Options.Vc.General.WindowsTargetPlatformVersion.Latest);
             config.Options.Add(Options.Vc.General.WarningLevel.EnableAllWarnings);
 
+            config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
+
             config.Defines.Add("GLEW_STATIC");
 
             config.ProjectPath = @"[project.SharpmakeCsPath]/engine";
 
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glfw/include");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glew/include");
+            config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/src");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/gui/src");
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glfw/lib");

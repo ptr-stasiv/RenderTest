@@ -7,6 +7,7 @@ out vec4 OutColor;
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec2 UV;
 
 uniform vec3 CameraPosition;
 

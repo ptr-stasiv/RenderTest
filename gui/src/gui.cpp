@@ -9,6 +9,14 @@
 static ultralight::RefPtr<ultralight::Renderer> g_Renderer;
 static ultralight::RefPtr<ultralight::View> g_View;
 
+class WebLoadListener : public ultralight::LoadListener
+{
+   void OnDOMReady(ultralight::View* view, uint64_t frameId, bool isMainFrame, const ultralight::String& url) override
+   {
+      
+   }
+};
+
 void InitializeGUI(const char* url, const int width, const int height)
 {
    ultralight::Config config;
@@ -22,7 +30,6 @@ void InitializeGUI(const char* url, const int width, const int height)
    ultralight::Platform::instance().set_config(config);
 
 
-   //UL Platform
    ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());
 
    ultralight::Platform::instance().set_file_system(ultralight::GetPlatformFileSystem("."));
@@ -30,10 +37,11 @@ void InitializeGUI(const char* url, const int width, const int height)
    ultralight::Platform::instance().set_logger(ultralight::GetDefaultLogger("ultralight.log"));
 
 
-   //UL renderer  
    g_Renderer = ultralight::Renderer::Create();
 
    g_View = g_Renderer->CreateView(width, height, true, nullptr);
+
+   g_View->set_load_listener(new WebLoadListener());
 
    g_View->LoadURL(url);
 
