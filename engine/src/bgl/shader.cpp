@@ -12,7 +12,7 @@ char* ReadFromFile(const char* filepath)
    long count = ftell(file);
    rewind(file);
 
-   char* buffer = malloc(count + 1);
+   char* buffer = (char*)malloc(count + 1);
    if (!buffer) //Replace with assert
       return NULL;
 

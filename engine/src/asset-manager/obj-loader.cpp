@@ -8,7 +8,7 @@ MeshData LoadMesh(const char* filepath)
 {
    FILE* file = fopen(filepath, "rb");
    if (!file)
-      return (MeshData){ 0 }; 
+      return { 0 }; 
 
    uint32_t positionCount = 0;
    uint32_t normalCount = 0;
@@ -35,23 +35,23 @@ MeshData LoadMesh(const char* filepath)
    rewind(file);
 
 
-   Vector3* positionArray = malloc(sizeof(Vector3) * positionCount);
+   Vector3* positionArray = (Vector3*)malloc(sizeof(Vector3) * positionCount);
    uint32_t positionCounter = 0;
 
-   Vector3* normalArray = malloc(sizeof(Vector3) * normalCount);
+   Vector3* normalArray = (Vector3*)malloc(sizeof(Vector3) * normalCount);
    uint32_t normalCounter = 0;
 
-   Vector2* uvArray = malloc(sizeof(Vector2) * uvCount);
+   Vector2* uvArray = (Vector2*)malloc(sizeof(Vector2) * uvCount);
    uint32_t uvCounter = 0;
 
 
-   uint32_t* positionIndicesArray = malloc(sizeof(uint32_t) * 3 * facesCount);
+   uint32_t* positionIndicesArray = (uint32_t*)malloc(sizeof(uint32_t) * 3 * facesCount);
    uint32_t positionIndicesCounter = 0;
 
-   uint32_t* normalIndicesArray = malloc(sizeof(uint32_t) * 3 * facesCount);
+   uint32_t* normalIndicesArray = (uint32_t*)malloc(sizeof(uint32_t) * 3 * facesCount);
    uint32_t normalIndicesCounter = 0;
 
-   uint32_t* uvIndicesArray = malloc(sizeof(uint32_t) * 3 * facesCount);
+   uint32_t* uvIndicesArray = (uint32_t*)malloc(sizeof(uint32_t) * 3 * facesCount);
    uint32_t uvIndicesCounter = 0;
 
    while (1)
@@ -110,9 +110,9 @@ MeshData LoadMesh(const char* filepath)
       }
    }
 
-   Vector3* resultPositionArray = malloc(sizeof(Vector3) * facesCount * 3);
-   Vector3* resultNormalArray   = malloc(sizeof(Vector3) * facesCount * 3);
-   Vector2* resultUvArray       = malloc(sizeof(Vector2) * facesCount * 3);
+   Vector3* resultPositionArray = (Vector3*)malloc(sizeof(Vector3) * facesCount * 3);
+   Vector3* resultNormalArray   = (Vector3*)malloc(sizeof(Vector3) * facesCount * 3);
+   Vector2* resultUvArray       = (Vector2*)malloc(sizeof(Vector2) * facesCount * 3);
 
    for (int i = 0; i < facesCount * 3; ++i)
    {
@@ -128,5 +128,5 @@ MeshData LoadMesh(const char* filepath)
    free(normalIndicesArray);
    free(uvIndicesArray);
 
-   return  (MeshData){ resultPositionArray, resultNormalArray, resultUvArray, facesCount * 3 };
+   return  { resultPositionArray, resultNormalArray, resultUvArray, facesCount * 3 };
 }

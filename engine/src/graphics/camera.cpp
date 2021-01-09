@@ -14,13 +14,13 @@ void CameraComputeBasis(Camera* camera)
 
    camera->ForwardAxis = normalize_vector3(camera->ForwardAxis);
 
-   camera->RightAxis = normalize_vector3(cross_vector3((Vector3) { 0.0f, 1.0f, 0.0f }, camera->ForwardAxis));
+   camera->RightAxis = normalize_vector3(cross_vector3({ 0.0f, 1.0f, 0.0f }, camera->ForwardAxis));
    camera->UpAxis = cross_vector3(camera->ForwardAxis, camera->RightAxis);
 }
 
 Camera* CreateCamera(const Vector3 position, const float fov, const float aspect, const float speed)
 {
-   Camera* newCamera = malloc(sizeof(Camera));
+   Camera* newCamera = (Camera*)malloc(sizeof(Camera));
    if (!newCamera)
       return NULL;
 

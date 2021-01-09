@@ -33,7 +33,7 @@ char* ArrayMemberToStr(const char* arrStr, const int index, const char* memberSt
    int indexStrSize  = strlen(indexStr);
    int memberStrSize = strlen(memberStr);
 
-   char* res = calloc(arrStrSize + indexStrSize + memberStrSize + 1, 1);
+   char* res = (char*)calloc(arrStrSize + indexStrSize + memberStrSize + 1, 1);
    
    strcat(res, arrStr);
    strcat(res + arrStrSize, indexStr);

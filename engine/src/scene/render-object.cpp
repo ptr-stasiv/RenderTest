@@ -5,5 +5,5 @@
 
 RenderObject CreateRenderObject(Mesh* mesh, Texture* texture, Matrix4 transform, const uint8_t materialRef)
 {
-   return (RenderObject) { mesh, texture, transform, materialRef };
+   return { mesh, texture, transform, materialRef };
 } 

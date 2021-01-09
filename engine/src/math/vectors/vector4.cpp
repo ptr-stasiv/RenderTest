@@ -2,12 +2,12 @@
 
 Vector4 vec4(const float x, const float y, const float z, const float w)
 {
-   return (Vector4){ x, y, z, w };
+   return { x, y, z, w };
 }
 
 Vector4 svec4(const float s)
 {
-   return (Vector4){ s };
+   return { s };
 }
 
 Vector4 add_vector4(const Vector4 a, const Vector4 b)

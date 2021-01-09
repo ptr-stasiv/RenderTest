@@ -108,10 +108,10 @@ Vector4 multiply_vmatrix4(const Vector4 v, const Matrix4 m)
 {
    Vector4 res;
 
-   res.x = dot_vector4(v, (Vector4){ m.Data[0], m.Data[1], m.Data[2], m.Data[3] });
-   res.y = dot_vector4(v, (Vector4){ m.Data[4], m.Data[5], m.Data[6], m.Data[7] });
-   res.z = dot_vector4(v, (Vector4){ m.Data[8], m.Data[9], m.Data[10], m.Data[11] });
-   res.w = dot_vector4(v, (Vector4){ m.Data[12], m.Data[13], m.Data[14], m.Data[15] });
+   res.x = dot_vector4(v, { m.Data[0], m.Data[1], m.Data[2], m.Data[3] });
+   res.y = dot_vector4(v, { m.Data[4], m.Data[5], m.Data[6], m.Data[7] });
+   res.z = dot_vector4(v, { m.Data[8], m.Data[9], m.Data[10], m.Data[11] });
+   res.w = dot_vector4(v, { m.Data[12], m.Data[13], m.Data[14], m.Data[15] });
 
    return res;
 }
@@ -122,11 +122,11 @@ Matrix4 multiply_matrix(const Matrix4 m1, const Matrix4 m2)
    
    for (int row = 0; row < 16; row += 4)
    {
-      Vector4 rowVector = (Vector4){ m1.Data[row], m1.Data[row + 1], m1.Data[row + 2], m1.Data[row + 3] }; 
+      Vector4 rowVector = { m1.Data[row], m1.Data[row + 1], m1.Data[row + 2], m1.Data[row + 3] }; 
 
       for (int column = 0; column < 4; ++column)
       {
-         Vector4 columnVector = (Vector4){ m2.Data[column], m2.Data[column + 4], m2.Data[column + 8], m2.Data[column + 12] };
+         Vector4 columnVector = { m2.Data[column], m2.Data[column + 4], m2.Data[column + 8], m2.Data[column + 12] };
 
          float elem = dot_vector4(rowVector, columnVector);
          res.Data[row + column] = elem;

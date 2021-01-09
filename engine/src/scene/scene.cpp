@@ -9,19 +9,19 @@ Scene* CreateScene(Camera* camera)
    if (!newScene)
       return NULL;
 
-   newScene->RenderObjectList = malloc(sizeof(RenderObject) * MAX_SCENE_OBJECTS);
+   newScene->RenderObjectList = (RenderObject*)malloc(sizeof(RenderObject) * MAX_SCENE_OBJECTS);
    newScene->RenderObjectCount = 0;
 
-   newScene->LightsArray = malloc(sizeof(Light) * MAX_SCENE_LIGHTS);
+   newScene->LightsArray = (Light*)malloc(sizeof(Light) * MAX_SCENE_LIGHTS);
    newScene->LightsCount = 0;
 
-   newScene->PointLightsArray = malloc(sizeof(PointLight) * MAX_SCENE_LIGHTS);
+   newScene->PointLightsArray = (PointLight*)malloc(sizeof(PointLight) * MAX_SCENE_LIGHTS);
    newScene->PointLightsCount = 0;
 
-   newScene->SpotlightsArray = malloc(sizeof(Spotlight) * MAX_SCENE_LIGHTS);
+   newScene->SpotlightsArray = (Spotlight*)malloc(sizeof(Spotlight) * MAX_SCENE_LIGHTS);
    newScene->SpotlightsCount = 0;
 
-   newScene->MaterialsArray = malloc(sizeof(Material) * MAX_SCENE_MATERIALS);
+   newScene->MaterialsArray = (Material*)malloc(sizeof(Material) * MAX_SCENE_MATERIALS);
    newScene->MaterialsCount = 0;
 
    newScene->Camera = camera;
@@ -64,7 +64,7 @@ void AddSpotlight(Scene* scene, const Spotlight light)
 uint8_t AddObjectMaterial(Scene* scene, const Material material)
 {
    if (scene->MaterialsCount > MAX_SCENE_MATERIALS)
-      return;
+      return -1;
 
    scene->MaterialsArray[scene->MaterialsCount] = material;
    return scene->MaterialsCount++;

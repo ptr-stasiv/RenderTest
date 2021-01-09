@@ -4,12 +4,12 @@
 
 Vector3 vec3(const float x, const float y, const float z)
 {
-   return (Vector3){ x, y, z };
+   return { x, y, z };
 }
 
 Vector3 svec3(const float s)
 {
-   return (Vector3){ s };
+   return { s };
 }
 
 Vector3 add_vector3(const Vector3 a, const Vector3 b)
@@ -48,12 +48,12 @@ Vector3 muliply_svector3(const Vector3 v, const float s)
 Vector3 normalize_vector3(const Vector3 v)
 {
    float d = length_vector3(v);
-   return (Vector3){ v.x / d, v.y / d, v.z / d };
+   return { v.x / d, v.y / d, v.z / d };
 }
 
 Vector3 cross_vector3(const Vector3 a, const Vector3 b)
 {
-   return (Vector3){ a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
+   return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
 }
 
 float length_vector3(const Vector3 v)

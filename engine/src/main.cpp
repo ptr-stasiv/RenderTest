@@ -20,7 +20,7 @@
 #include "bgl/shader.h"
 
 #include "debug/log/log.h"
-#include "ogl/debug/callback.h"
+#include "bgl/debug/callback.h"
 
 char g_KeyStates[1024];
 Camera* g_MainCamera;
@@ -73,10 +73,10 @@ int main()
    if (glewInit() != GLEW_OK)
       return -1;
 
-   const char* vendorInfo   = glGetString(GL_VENDOR);
-   const char* rendererInfo = glGetString(GL_RENDERER);
-   const char* versionInfo  = glGetString(GL_VERSION);
-   const char* glslInfo     = glGetString(GL_SHADING_LANGUAGE_VERSION);
+   const GLubyte* vendorInfo   = glGetString(GL_VENDOR);
+   const GLubyte* rendererInfo = glGetString(GL_RENDERER);
+   const GLubyte* versionInfo  = glGetString(GL_VERSION);
+   const GLubyte* glslInfo     = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
    WD_LOG_MESSAGE("%s %s", vendorInfo, rendererInfo);
    WD_LOG_MESSAGE("Opengl %s", versionInfo);
