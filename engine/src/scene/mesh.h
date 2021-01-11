@@ -1,12 +1,13 @@
 #pragma once
 #include "GL/glew.h"
-#include "../asset-manager/obj-loader.h"
-#include "../math/matrices/matrix4x4.h"
+#include "asset-manager/obj-loader.h"
+#include "asset-manager/asset-manager.h"
+#include "math/matrices/matrix4x4.h"
 
-typedef struct MeshStructure
+struct Mesh
 {
    GLuint VaoId;
    int VerticesCount;
-} Mesh;
+};
 
-Mesh* CreateMesh(const MeshData meshData);
+Mesh* CreateMesh(const assets::AssetRef assetRef);

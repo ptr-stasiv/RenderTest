@@ -10,6 +10,8 @@
 #include "scene/renders/forward-render.h"
 
 #include "asset-manager/obj-loader.h"
+#include "asset-manager/texture-loader.h"
+#include "asset-manager/asset-manager.h"
 
 #include "math/math_utils.h"
 
@@ -100,16 +102,19 @@ int main()
 
    Scene* scene = CreateScene(g_MainCamera);
 
+   assets::AssetManager assetManager;
+   assets::AssetRef pistolAssetRef = assetManager.RequireAsssetRef("res/meshes/pistol/pistol.obj");
+   assets::AssetRef cubeAssetRef = assetManager.RequireAsssetRef("res/meshes/cube.obj");
+   assetManager.Load();
+
    uint8_t floorMaterial = AddObjectMaterial(scene, CreateMaterial(vec3(0.0f, 0.2f, 0.2f), vec3(1.0f, 1.0f, 1.0f), 16.0f, svec3(0.0f)));
    uint8_t pistolMaterial = AddObjectMaterial(scene, CreateMaterial(vec3(0.7f, 0.2f, 0.2f), vec3(0.5f, 0.5f, 0.5f), 8.0f, svec3(0.0f)));
 
-   MeshData pistolMeshData = LoadMesh("res/meshes/pistol/pistol.obj");
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolMeshData), NULL, CreateTranslateMatrix(vec3(0.0f, 0.0f, 0.0f)), pistolMaterial));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolAssetRef), CreateTranslateMatrix(vec3(0.0f, 0.0f, 0.0f)), pistolMaterial));
 
-   MeshData cubeMeshData = LoadMesh("res/meshes/cube.obj");
    Matrix4 cubeTransform = CreateTranslateMatrix(vec3(0.0f, -2.0f, 0.0f ));
    cubeTransform = multiply_matrix(cubeTransform, CreateScaleMatrix(vec3(5.0f, 1.0f, 5.0f)));
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeMeshData), NULL, cubeTransform, floorMaterial));
+   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeAssetRef), cubeTransform, floorMaterial));
    
    AddPointLight(scene, CreatePointLight(vec3(1.2f, 1.0f, 2.0f), vec3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
    AddSpotlight(scene, CreateSpotlight(vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -1.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));
@@ -203,6 +208,32 @@ int main()
    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
    glBindVertexArray(0);
+
+   {
+      int maxX, maxY, maxZ, count;
+
+      glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &maxX);
+      glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &maxY);
+      glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &maxZ);
+      glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &count);
+
+      LOG_WARNING("MAX WORK GROUP ITEMS X %d", maxX);
+      LOG_WARNING("MAX WORK GROUP ITEMS Y %d", maxY);
+      LOG_WARNING("MAX WORK GROUP ITEMS Z %d", maxZ);
+      LOG_WARNING("MAX WORK GROUP INVOCATIONS %d", count);
+   }
+
+   {
+      int maxX, maxY, maxZ, count;
+
+      glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &maxX);
+      glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &maxY);
+      glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &maxZ);
+
+      LOG_WARNING("MAX WORK GROUP COUNT X %d", maxX);
+      LOG_WARNING("MAX WORK GROUP COUNT Y %d", maxY);
+      LOG_WARNING("MAX WORK GROUP COUNT Z %d", maxZ);
+   }
 
    while (!glfwWindowShouldClose(window))
    {

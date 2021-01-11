@@ -5,13 +5,15 @@
 
 #include "../math/vectors/vector3.h"
 
-Mesh* CreateMesh(const MeshData meshData)
+Mesh* CreateMesh(const assets::AssetRef assetRef)
 {
    Mesh* resMesh = (Mesh*)(malloc(sizeof(Mesh)));
    if (!resMesh)
       return NULL;
 
-   int facesCount = meshData.FacesCount;
+   auto meshData = assetRef.GetData<assets::MeshAssetData>();
+
+   int facesCount = meshData->FacesCount;
 
    resMesh->VerticesCount = facesCount;
 
@@ -30,7 +32,7 @@ Mesh* CreateMesh(const MeshData meshData)
 
    glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3) * facesCount, meshData.Positions, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3) * facesCount, meshData->Positions, GL_STATIC_DRAW);
 
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -38,7 +40,7 @@ Mesh* CreateMesh(const MeshData meshData)
    
    glBindBuffer(GL_ARRAY_BUFFER, nvbo);
 
-   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3) * facesCount, meshData.Normals, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3) * facesCount, meshData->Normals, GL_STATIC_DRAW);
 
    glEnableVertexAttribArray(1);
    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -46,7 +48,7 @@ Mesh* CreateMesh(const MeshData meshData)
 
    glBindBuffer(GL_ARRAY_BUFFER, uvbo);
 
-   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector2) * facesCount, meshData.UVs, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(Vector2) * facesCount, meshData->UVs, GL_STATIC_DRAW);
 
    glEnableVertexAttribArray(2);
    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
