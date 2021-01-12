@@ -10,7 +10,8 @@
 #include "scene/renders/forward-render.h"
 
 #include "asset-manager/obj-loader.h"
-#include "asset-manager/texture-loader.h"
+#include "asset-manager/image-loader.h"
+#include "asset-manager/text-loader.h"
 #include "asset-manager/asset-manager.h"
 
 #include "math/math_utils.h"
@@ -105,6 +106,7 @@ int main()
    assets::AssetManager assetManager;
    assets::AssetRef pistolAssetRef = assetManager.RequireAsssetRef("res/meshes/pistol/pistol.obj");
    assets::AssetRef cubeAssetRef = assetManager.RequireAsssetRef("res/meshes/cube.obj");
+  
    assetManager.Load();
 
    uint8_t floorMaterial = AddObjectMaterial(scene, CreateMaterial(vec3(0.0f, 0.2f, 0.2f), vec3(1.0f, 1.0f, 1.0f), 16.0f, svec3(0.0f)));

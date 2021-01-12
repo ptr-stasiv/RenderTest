@@ -4,7 +4,8 @@
 #include <string_view>
 
 #include "obj-loader.h"
-#include "texture-loader.h"
+#include "image-loader.h"
+#include "text-loader.h"
 
 namespace assets
 {
@@ -29,18 +30,23 @@ namespace assets
          {
          case assets::AssetType::None:
             {
-               assetData = std::make_shared<AssetData>();
+               TextAssetData text = LoadText(path.string());
+               assetData = std::make_shared<TextAssetData>(text);
             }break;
          case assets::AssetType::Mesh:
             {
-               MeshAssetData mesh = LoadMesh(path.string().c_str());
+               MeshAssetData mesh = LoadMesh(path.string());
                assetData = std::make_shared<MeshAssetData>(mesh);
             }break;
          case assets::AssetType::Image:
             {
-
+               ImageAssetData image = LoadImage(path.string());
+               assetData = std::make_shared<ImageAssetData>(image);
             }break;
          }
+
+         if (!assetData->Info.IsValid)
+            LOG_ERROR("Error loading asset in path: %s", path.string().c_str());
 
          AssetDataLookup[assetInfo.first] = assetData;
       }

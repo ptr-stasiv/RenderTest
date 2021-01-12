@@ -6,11 +6,15 @@
 
 namespace assets
 {
-   MeshAssetData LoadMesh(const char* filepath)
+   MeshAssetData LoadMesh(const std::string_view filepath)
    {
-      FILE* file = fopen(filepath, "rb");
+      MeshAssetData resData(nullptr, nullptr, nullptr, 0);
+      resData.Info.LoadTime = 0.0f;
+      resData.Info.IsValid  = false;
+
+      FILE* file = fopen(&filepath[0], "rb");
       if (!file)
-         return MeshAssetData(nullptr, nullptr, nullptr, 0);
+         return resData;
 
       uint32_t positionCount = 0;
       uint32_t normalCount = 0;
@@ -130,6 +134,15 @@ namespace assets
       free(normalIndicesArray);
       free(uvIndicesArray);
 
-      return  MeshAssetData(resultPositionArray, resultNormalArray, resultUvArray, facesCount * 3);
+
+      resData.FacesCount = facesCount * 3;
+      resData.Positions = resultPositionArray;
+      resData.Normals = resultNormalArray;
+      resData.UVs = resultUvArray;
+
+      resData.Info.LoadTime = 0.0f;
+      resData.Info.IsValid  = true;
+
+      return  resData;
    }
 }

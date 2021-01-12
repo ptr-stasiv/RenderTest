@@ -22,6 +22,12 @@ namespace assets
    class AssetData
    {
    public:
+      struct LoadingInfo
+      {
+         float LoadTime;
+         bool IsValid;
+      } Info;
+
       ASSET_TYPE(AssetType::None)
    };
 
@@ -70,6 +76,8 @@ namespace assets
       inline std::shared_ptr<T> GetAssetData(const uint16_t id) const
       {
          GASSERT(T::GetStaticType() == AssetDataLookup.at(id)->GetType(), "Wrong asset type is requested!");
+         GASSERT(AssetDataLookup.at(id)->Info.IsValid, "Invalid asset has been trying being used");
+
          return std::static_pointer_cast<T>(AssetDataLookup.at(id));
       }
    };

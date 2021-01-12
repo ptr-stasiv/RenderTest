@@ -23,5 +23,5 @@ namespace assets
       ASSET_TYPE(AssetType::Mesh)
    };
 
-   MeshAssetData LoadMesh(const char* filepath);
+   MeshAssetData LoadMesh(const std::string_view filepath);
 }

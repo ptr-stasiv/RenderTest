@@ -37,7 +37,7 @@ void PrintLog(const LogLevels level, const char* filepath, const int line, const
    vprintf(format, args);
    va_end(args);
 
-   printf("%s\n", g_FontColorModes[0]);
+   printf("%s\n\n", g_FontColorModes[0]);
 }
 
 void PrintLogWD(const LogLevels level, const const char* format, ...)
@@ -49,5 +49,5 @@ void PrintLogWD(const LogLevels level, const const char* format, ...)
    vprintf(format, args);
    va_end(args);
 
-   printf("%s\n", g_FontColorModes[0]);
+   printf("%s\n\n", g_FontColorModes[0]);
 }

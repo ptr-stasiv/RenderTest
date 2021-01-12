@@ -1,19 +1,20 @@
 #include "shader.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdint>
 
 char* ReadFromFile(const char* filepath)
 {
    FILE* file = fopen(filepath, "rb");
-   if (!file) //Replace with assert
+   if (!file)
       return NULL;
 
    fseek(file, 0, SEEK_END);
-   long count = ftell(file);
+   uint64_t count = ftell(file);
    rewind(file);
 
    char* buffer = (char*)malloc(count + 1);
-   if (!buffer) //Replace with assert
+   if (!buffer)
       return NULL;
 
    fread(buffer, 1, count, file);
