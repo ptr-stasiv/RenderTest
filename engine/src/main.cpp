@@ -103,14 +103,31 @@ int main()
 
    Scene* scene = CreateScene(g_MainCamera);
 
+
    assets::AssetManager assetManager;
+
    assets::AssetRef pistolAssetRef = assetManager.RequireAsssetRef("res/meshes/pistol/pistol.obj");
    assets::AssetRef cubeAssetRef = assetManager.RequireAsssetRef("res/meshes/cube.obj");
+
+   assets::AssetRef pistolTextureRef = assetManager.RequireAsssetRef("res/meshes/pistol/textures/handgun_C.jpg");
   
    assetManager.Load();
 
-   uint8_t floorMaterial = AddObjectMaterial(scene, CreateMaterial(vec3(0.0f, 0.2f, 0.2f), vec3(1.0f, 1.0f, 1.0f), 16.0f, svec3(0.0f)));
-   uint8_t pistolMaterial = AddObjectMaterial(scene, CreateMaterial(vec3(0.7f, 0.2f, 0.2f), vec3(0.5f, 0.5f, 0.5f), 8.0f, svec3(0.0f)));
+   graphics::Material floorM;
+   floorM.Color         = vec3(0.0f, 0.2f, 0.2f);
+   floorM.Specular      = svec3(1.0f);
+   floorM.ShineExponent = 10.0f;
+   floorM.Emissive      = svec3(0.0f);
+
+   graphics::Material pistolM;
+   pistolM.Color          = vec3(0.7f, 0.2f, 0.2f);
+   pistolM.DiffuseTexture = pistolTextureRef;
+   pistolM.Specular       = svec3(1.0f);
+   pistolM.ShineExponent  = 10.0f;
+   pistolM.Emissive       = svec3(0.0f);
+
+   uint8_t floorMaterial = AddObjectMaterial(scene, floorM);
+   uint8_t pistolMaterial = AddObjectMaterial(scene, pistolM);
 
    AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolAssetRef), CreateTranslateMatrix(vec3(0.0f, 0.0f, 0.0f)), pistolMaterial));
 
@@ -181,12 +198,12 @@ int main()
 
    float vertices[] =
    {
-      - 1.0f, -1.0f, 0.0f, 1.0f,
+      -1.0f, -1.0f, 0.0f, 1.0f,
       -1.0f, 1.0f, 0.0f, 0.0f,
       1.0f, 1.0f, 1.0f, 0.0f,
       1.0f, 1.0f, 1.0f, 0.0f,
-      1.0f, -1.0f, 1.0f, 1.0f
-      - 1.0f, -1.0f, 0.0f, 1.0f,
+      1.0f, -1.0f, 1.0f, 1.0f,
+      -1.0f, -1.0f, 0.0f, 1.0f
    };
 
    GLuint vao;
@@ -237,6 +254,29 @@ int main()
       LOG_WARNING("MAX WORK GROUP COUNT Z %d", maxZ);
    }
 
+   GLuint texOutput;
+
+   uint16_t texW = 512;
+   uint16_t texH = 512;
+
+   glCreateTextures(GL_TEXTURE_2D, 1, &texOutput);
+   glTextureStorage2D(texOutput, 1, GL_RGBA32F, texW, texH);
+   glTextureParameteri(texOutput, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTextureParameteri(texOutput, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glTextureParameteri(texOutput, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTextureParameteri(texOutput, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+   glBindTextureUnit(1, texOutput);
+
+   glBindImageTexture(0, texOutput, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+
+
+   GLuint cs = CreateShader(GL_COMPUTE_SHADER, ReadFromFile("res/shaders/compute/test.cs"));
+
+   GLuint csProg = glCreateProgram();
+   glAttachShader(csProg, cs);
+   glLinkProgram(csProg);
+
    while (!glfwWindowShouldClose(window))
    {
       LARGE_INTEGER startFrameTicks;
@@ -249,6 +289,11 @@ int main()
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       
       UpdateForwardRender(scene, g_DeltaTime);
+
+      glUseProgram(csProg);
+      glDispatchCompute(texW, texH, 1);
+
+      glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
       glUseProgram(shaderProgram);
 

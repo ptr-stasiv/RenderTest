@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+
 #include "render-object.h"
 #include "graphics/camera.h"
 #include "graphics/light.h"
@@ -22,7 +24,7 @@ typedef struct SceneStructure
    Spotlight* SpotlightsArray;
    int SpotlightsCount;
 
-   Material* MaterialsArray;
+   graphics::Material* MaterialsArray;
    int MaterialsCount;
 
    Camera* Camera;
@@ -36,4 +38,4 @@ void AddPhongLight(Scene* scene, const Light light);
 void AddPointLight(Scene* scene, const PointLight light);
 void AddSpotlight(Scene* scene, const Spotlight light);
 
-uint8_t AddObjectMaterial(Scene* scene, const Material material);
+uint8_t AddObjectMaterial(Scene* scene, const graphics::Material material);

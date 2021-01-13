@@ -1,9 +1,9 @@
 #include "forward-render.h"
 #include "../../bgl/shader.h"
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
 
 static GLuint g_MainShaderProgram;
 
@@ -40,6 +40,25 @@ char* ArrayMemberToStr(const char* arrStr, const int index, const char* memberSt
    strcat(res + indexStrSize, memberStr);
 
    return res;
+}
+
+GLuint CreateTexture(const assets::AssetRef& assetRef)
+{
+   auto assetData = assetRef.GetData<assets::ImageAssetData>();
+
+   GLenum format = assetData->Channels == 4 ? GL_RGBA : GL_RGB;
+   GLenum internalFormat = assetData->Channels == 4 ? GL_RGBA8 : GL_RGB8;
+
+   GLuint resTex;
+   glCreateTextures(GL_TEXTURE_2D, 1, &resTex);
+   glTextureStorage2D(resTex, 1, internalFormat, assetData->Width, assetData->Height);
+   glTextureSubImage2D(resTex, 0, 0, 0, assetData->Width, assetData->Height, format, GL_UNSIGNED_BYTE, assetData->Pixels);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+   return resTex;
 }
 
 void UpdateForwardRender(Scene* scene, const float deltaTime)
@@ -133,9 +152,26 @@ void UpdateForwardRender(Scene* scene, const float deltaTime)
       SetShaderInt(g_MainShaderProgram, "MaterialId", r.MaterialRef);
 
       SetShaderVector3(g_MainShaderProgram, "CameraPosition", scene->Camera->Position);
-      
+
+      GLuint texture = -1;
+
+      if (scene->MaterialsArray[r.MaterialRef].DiffuseTexture.Id != 0)
+      {
+         SetShaderInt(g_MainShaderProgram, "UseDiffuseTexture", 1);
+
+         texture = CreateTexture(scene->MaterialsArray[r.MaterialRef].DiffuseTexture);
+
+         glBindTextureUnit(2, texture);
+         SetShaderInt(g_MainShaderProgram, "DiffuseTexture", 2);
+      }
+      else
+         SetShaderInt(g_MainShaderProgram, "UseDiffuseTexture", 0);
+
       glBindVertexArray(r.MeshData->VaoId);
       glDrawArrays(GL_TRIANGLES, 0, r.MeshData->VerticesCount);
       glBindVertexArray(0);
+
+      if (texture != -1)
+         glDeleteTextures(1, &texture);
    }
 }

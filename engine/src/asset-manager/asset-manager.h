@@ -36,10 +36,12 @@ namespace assets
 
    class AssetRef
    {
-   private:
-      uint16_t Id;
-      AssetManager* AM;
    public:
+      uint16_t Id       = 0;
+      AssetManager* AM  = nullptr;
+
+      AssetRef() = default;
+
       inline AssetRef(const uint16_t id, AssetManager* am)
          : Id(id), AM(am) {}
 
@@ -56,7 +58,7 @@ namespace assets
       std::unordered_map<uint16_t, const char*> AssetInfoLookup;
       std::unordered_map<uint16_t, std::shared_ptr<AssetData>> AssetDataLookup;
 
-      uint16_t AssetInfoCounter = 0;
+      uint16_t AssetInfoCounter = 1;
    public:
       void Load();
 

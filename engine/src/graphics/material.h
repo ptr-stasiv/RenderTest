@@ -1,12 +1,17 @@
 #pragma once
 #include "math/vectors/vector3.h"
+#include "asset-manager/image-loader.h"
 
-typedef struct Material
+namespace graphics
 {
-   Vector3 Color;
-   Vector3 Specular;
-   Vector3 Emissive;
-   float   ShineExponent;
-} Material;
+   class Material
+   {
+   public:
+      Vector3 Color;
+      Vector3 Specular;
+      Vector3 Emissive;
+      float   ShineExponent;
 
-Material CreateMaterial(const Vector3 color, const Vector3 spec, const float exp, const Vector3 emissive);
+      assets::AssetRef DiffuseTexture;
+   };
+}

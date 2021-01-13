@@ -21,7 +21,7 @@ Scene* CreateScene(Camera* camera)
    newScene->SpotlightsArray = (Spotlight*)malloc(sizeof(Spotlight) * MAX_SCENE_LIGHTS);
    newScene->SpotlightsCount = 0;
 
-   newScene->MaterialsArray = (Material*)malloc(sizeof(Material) * MAX_SCENE_MATERIALS);
+   newScene->MaterialsArray = (graphics::Material*)malloc(sizeof(graphics::Material) * MAX_SCENE_MATERIALS);
    newScene->MaterialsCount = 0;
 
    newScene->Camera = camera;
@@ -61,7 +61,7 @@ void AddSpotlight(Scene* scene, const Spotlight light)
    scene->SpotlightsArray[scene->SpotlightsCount++] = light;
 }
 
-uint8_t AddObjectMaterial(Scene* scene, const Material material)
+uint8_t AddObjectMaterial(Scene* scene, const graphics::Material material)
 {
    if (scene->MaterialsCount > MAX_SCENE_MATERIALS)
       return -1;

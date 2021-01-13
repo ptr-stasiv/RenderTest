@@ -45,6 +45,9 @@ struct Material
     float ShineExponent;
 };
 
+uniform bool UseDiffuseTexture = false;
+uniform sampler2D DiffuseTexture;
+
 uniform PointLight PointLightsArray[MAX_LIGHTS];
 uniform int PointLightsCount = 0;
 
@@ -63,7 +66,12 @@ void main()
 {
     vec3 resColor = vec3(0.0f);
 
-    vec3 objectColor = MaterialsArray[MaterialId].Color;
+    vec3 objectColor;
+    if(UseDiffuseTexture) 
+        objectColor = texture(DiffuseTexture, UV).xyz;
+    else
+        objectColor = MaterialsArray[MaterialId].Color;
+
     vec3 specularIntensity = MaterialsArray[MaterialId].Specular;
     vec3 emissive = MaterialsArray[MaterialId].Emissive;
     float specularExponent = MaterialsArray[MaterialId].ShineExponent;
