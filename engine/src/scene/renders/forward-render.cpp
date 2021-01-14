@@ -61,27 +61,27 @@ namespace graphics
       return resTex;
    }
 
-   void ForwardRender::Update(const Scene& scene, const float deltaTime)
+   void ForwardRender::Update(const core::Scene& scene, const float deltaTime)
    {
       glUseProgram(RenderShader);
 
-      SetShaderInt(RenderShader, "LightsCount", scene.LightsCount);
-      SetShaderInt(RenderShader, "PointLightsCount", scene.PointLightsCount);
-      SetShaderInt(RenderShader, "SpotlightsCount", scene.SpotlightsCount);
+      SetShaderInt(RenderShader, "LightsCount", scene.LightsList.size());
+      SetShaderInt(RenderShader, "PointLightsCount", scene.PointLightsList.size());
+      SetShaderInt(RenderShader, "SpotlightsCount", scene.SpotlightsList.size());
 
-      for (int i = 0; i < scene.LightsCount; ++i)
+      for (int i = 0; i < scene.LightsList.size(); ++i)
       {
          char* posMemberStr = ArrayMemberToStr("LightsArray[", i, "].Position");
          char* colorMemberStr = ArrayMemberToStr("LightsArray[", i, "].Color");
 
-         SetShaderVector3(RenderShader, posMemberStr, scene.LightsArray[i].Position);
-         SetShaderVector3(RenderShader, colorMemberStr, scene.LightsArray[i].Color);
+         SetShaderVector3(RenderShader, posMemberStr, scene.LightsList.at(i).Position);
+         SetShaderVector3(RenderShader, colorMemberStr, scene.LightsList.at(i).Color);
 
          free(posMemberStr);
          free(colorMemberStr);
       }
 
-      for (int i = 0; i < scene.PointLightsCount; ++i)
+      for (int i = 0; i < scene.PointLightsList.size(); ++i)
       {
          char* posMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Position");
          char* colorMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Color");
@@ -89,11 +89,11 @@ namespace graphics
          char* quadraticMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Quadratic");
          char* constantMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Constant");
 
-         SetShaderVector3(RenderShader, posMemberStr, scene.PointLightsArray[i].Position);
-         SetShaderVector3(RenderShader, colorMemberStr, scene.PointLightsArray[i].Color);
-         SetShaderFloat(RenderShader, linearMemberStr, scene.PointLightsArray[i].Linear);
-         SetShaderFloat(RenderShader, quadraticMemberStr, scene.PointLightsArray[i].Quadratic);
-         SetShaderFloat(RenderShader, constantMemberStr, scene.PointLightsArray[i].Constant);
+         SetShaderVector3(RenderShader, posMemberStr, scene.PointLightsList.at(i).Position);
+         SetShaderVector3(RenderShader, colorMemberStr, scene.PointLightsList.at(i).Color);
+         SetShaderFloat(RenderShader, linearMemberStr, scene.PointLightsList.at(i).Linear);
+         SetShaderFloat(RenderShader, quadraticMemberStr, scene.PointLightsList.at(i).Quadratic);
+         SetShaderFloat(RenderShader, constantMemberStr, scene.PointLightsList.at(i).Constant);
 
          free(posMemberStr);
          free(colorMemberStr);
@@ -102,7 +102,7 @@ namespace graphics
          free(constantMemberStr);
       }
 
-      for (int i = 0; i < scene.SpotlightsCount; ++i)
+      for (int i = 0; i < scene.SpotlightsList.size(); ++i)
       {
          char* posMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].Position");
          char* colorMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].Color");
@@ -110,11 +110,11 @@ namespace graphics
          char* outerAngleMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].OuterAngle");
          char* innerAngleMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].InnerAngle");
 
-         SetShaderVector3(RenderShader, posMemberStr, scene.SpotlightsArray[i].Position);
-         SetShaderVector3(RenderShader, directionMemberStr, scene.SpotlightsArray[i].Direction);
-         SetShaderVector3(RenderShader, colorMemberStr, scene.SpotlightsArray[i].Color);
-         SetShaderFloat(RenderShader, outerAngleMemberStr, scene.SpotlightsArray[i].OuterAngle);
-         SetShaderFloat(RenderShader, innerAngleMemberStr, scene.SpotlightsArray[i].InnerAngle);
+         SetShaderVector3(RenderShader, posMemberStr, scene.SpotlightsList.at(i).Position);
+         SetShaderVector3(RenderShader, directionMemberStr, scene.SpotlightsList.at(i).Direction);
+         SetShaderVector3(RenderShader, colorMemberStr, scene.SpotlightsList.at(i).Color);
+         SetShaderFloat(RenderShader, outerAngleMemberStr, scene.SpotlightsList.at(i).OuterAngle);
+         SetShaderFloat(RenderShader, innerAngleMemberStr, scene.SpotlightsList.at(i).InnerAngle);
 
          free(posMemberStr);
          free(colorMemberStr);
@@ -123,17 +123,17 @@ namespace graphics
          free(innerAngleMemberStr);
       }
 
-      for (int i = 0; i < scene.MaterialsCount; ++i)
+      for (int i = 0; i < scene.MaterialsList.size(); ++i)
       {
          char* colorMemberStr = ArrayMemberToStr("MaterialsArray[", i, "].Color");
          char* specMemberStr = ArrayMemberToStr("MaterialsArray[", i, "].Specular");
          char* emisMemberStr = ArrayMemberToStr("MaterialsArray[", i, "].Emissive");
          char* expMemberStr = ArrayMemberToStr("MaterialsArray[", i, "].ShineExponent");
 
-         SetShaderVector3(RenderShader, colorMemberStr, scene.MaterialsArray[i].Color);
-         SetShaderVector3(RenderShader, specMemberStr, scene.MaterialsArray[i].Specular);
-         SetShaderVector3(RenderShader, emisMemberStr, scene.MaterialsArray[i].Emissive);
-         SetShaderFloat(RenderShader, expMemberStr, scene.MaterialsArray[i].ShineExponent);
+         SetShaderVector3(RenderShader, colorMemberStr, scene.MaterialsList.at(i).Color);
+         SetShaderVector3(RenderShader, specMemberStr, scene.MaterialsList.at(i).Specular);
+         SetShaderVector3(RenderShader, emisMemberStr, scene.MaterialsList.at(i).Emissive);
+         SetShaderFloat(RenderShader, expMemberStr, scene.MaterialsList.at(i).ShineExponent);
 
          free(colorMemberStr);
          free(specMemberStr);
@@ -141,20 +141,20 @@ namespace graphics
          free(expMemberStr);
       }
 
-      for (int i = 0; i < scene.RenderObjectCount; ++i)
+      for (int i = 0; i < scene.RenderObjectsList.size(); ++i)
       {
-         RenderObject r = scene.RenderObjectList[i];
+         RenderObject r = scene.RenderObjectsList.at(i);
 
          SetShaderMatrix4(RenderShader, "model", r.Transform);
-         SetShaderMatrix4(RenderShader, "view", GetCameraViewMatrix(scene.Camera));
-         SetShaderMatrix4(RenderShader, "projection", GetCameraProjection(scene.Camera));
+         SetShaderMatrix4(RenderShader, "view", GetCameraViewMatrix(&scene.GetCamera()));
+         SetShaderMatrix4(RenderShader, "projection", GetCameraProjection(&scene.GetCamera()));
 
          SetShaderInt(RenderShader, "MaterialId", r.MaterialRef);
 
-         SetShaderVector3(RenderShader, "CameraPosition", scene.Camera->Position);
+         SetShaderVector3(RenderShader, "CameraPosition", scene.GetCamera().Position);
 
 
-         auto diffuseTexture = scene.MaterialsArray[r.MaterialRef].DiffuseTexture;
+         auto diffuseTexture = scene.MaterialsList.at(r.MaterialRef).DiffuseTexture;
 
          if (diffuseTexture.Id != 0)
          {

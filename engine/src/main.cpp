@@ -98,11 +98,6 @@ int main()
 
    glEnable(GL_DEBUG_OUTPUT);
    glDebugMessageCallback(MessageCallbackOGL, 0);
-   
-   g_MainCamera = CreateCamera(vec3(0.0f, 0.0f, 10.0f), PI / 4, 1.7f, 5.0f);
-
-   Scene* scene = CreateScene(g_MainCamera);
-
 
    assets::AssetManager assetManager;
 
@@ -113,30 +108,37 @@ int main()
   
    assetManager.Load();
 
+   g_MainCamera = CreateCamera(vec3(0.0f, 0.0f, 10.0f), PI / 4, 1.7f, 5.0f);
+   
+
    graphics::Material floorM;
-   floorM.Color          = vec3(0.0f, 0.2f, 0.2f);
-   floorM.Specular       = vec3(0.5f, 0.5f, 0.5f);
-   floorM.ShineExponent  = 10.0f;
-   floorM.Emissive       = svec3(0.0f);
+   floorM.Color = vec3(0.0f, 0.2f, 0.2f);
+   floorM.Specular = vec3(0.5f, 0.5f, 0.5f);
+   floorM.ShineExponent = 10.0f;
+   floorM.Emissive = svec3(0.0f);
 
    graphics::Material pistolM;
-   pistolM.Color          = vec3(0.7f, 0.2f, 0.2f);
+   pistolM.Color = vec3(0.7f, 0.2f, 0.2f);
    pistolM.DiffuseTexture = pistolTextureRef;
-   pistolM.Specular       = svec3(1.0f);
-   pistolM.ShineExponent  = 10.0f;
-   pistolM.Emissive       = svec3(0.0f);
+   pistolM.Specular = svec3(1.0f);
+   pistolM.ShineExponent = 10.0f;
+   pistolM.Emissive = svec3(0.0f);
 
-   uint8_t floorMaterial = AddObjectMaterial(scene, floorM);
-   uint8_t pistolMaterial = AddObjectMaterial(scene, pistolM);
+   core::Scene scene(*g_MainCamera);
 
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(pistolAssetRef), CreateTranslateMatrix(vec3(0.0f, 0.0f, 0.0f)), pistolMaterial));
+   size_t floorMaterial  = scene.AddMaterial(floorM);
+   size_t pistolMaterial = scene.AddMaterial(pistolM);
+
+   scene.AddRenderObject(CreateRenderObject(CreateMesh(pistolAssetRef), CreateTranslateMatrix(vec3(0.0f, 0.0f, 0.0f)), pistolMaterial));
 
    Matrix4 cubeTransform = CreateTranslateMatrix(vec3(0.0f, -2.0f, 0.0f ));
    cubeTransform = multiply_matrix(cubeTransform, CreateScaleMatrix(vec3(5.0f, 1.0f, 5.0f)));
-   AddRenderObject(scene, CreateRenderObject(CreateMesh(cubeAssetRef), cubeTransform, floorMaterial));
+   scene.AddRenderObject(CreateRenderObject(CreateMesh(cubeAssetRef), cubeTransform, floorMaterial));
    
-   AddPointLight(scene, CreatePointLight(vec3(1.2f, 1.0f, 2.0f), vec3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
-   AddSpotlight(scene, CreateSpotlight(vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -1.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));
+   scene.AddLight(CreatePointLight(vec3(1.2f, 1.0f, 2.0f), vec3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
+
+   for(int i = 0; i < 1; ++i)
+      scene.AddLight(CreateSpotlight(vec3(0.0f, 10.0f, 0.0f), vec3(0.0f, -1.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));
 
    graphics::ForwardRender::Initialize();
 
@@ -154,7 +156,7 @@ int main()
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       
-      graphics::ForwardRender::Update(*scene, g_DeltaTime);
+      graphics::ForwardRender::Update(scene, g_DeltaTime);
 
       glfwSwapBuffers(window);
 

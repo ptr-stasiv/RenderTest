@@ -2,7 +2,7 @@
 #include "../math/vectors/vector3.h"
 #include "../math/matrices/matrix4x4.h"
 
-typedef struct CameraStructure
+struct Camera
 {
    Vector3 Position;
 
@@ -16,7 +16,7 @@ typedef struct CameraStructure
 
    float Yaw;
    float Pitch;
-} Camera;
+};
 
 typedef enum CameraMoveTypeEnum
 {

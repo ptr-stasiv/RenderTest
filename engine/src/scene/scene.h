@@ -1,41 +1,105 @@
 #pragma once
-#include <map>
+#include <deque>
+#include <memory>
+#include <functional>
 
 #include "render-object.h"
 #include "graphics/camera.h"
 #include "graphics/light.h"
 #include "graphics/material.h"
 
-#define MAX_SCENE_OBJECTS   32
-#define MAX_SCENE_LIGHTS    32
-#define MAX_SCENE_MATERIALS 32
-
-typedef struct SceneStructure
+namespace core
 {
-   RenderObject* RenderObjectList;
-   int RenderObjectCount;
+   //class Scene
+   //{
+   //public:
+   //   std::deque<RenderObject> RenderObjectsList;
 
-   Light* LightsArray;
-   int LightsCount;
+   //   std::deque<Light>      LightsList;
+   //   std::deque<PointLight> PointLightsList;
+   //   std::deque<Spotlight>  SpotlightsList;
 
-   PointLight* PointLightsArray;
-   int PointLightsCount;
+   //   std::deque<graphics::Material> MaterialsList;
 
-   Spotlight* SpotlightsArray;
-   int SpotlightsCount;
+   //   std::shared_ptr<Camera> MainCamera;
 
-   graphics::Material* MaterialsArray;
-   int MaterialsCount;
+   //   inline Scene(const std::shared_ptr<Camera>& camera)
+   //      : MainCamera(camera) {}
 
-   Camera* Camera;
-} Scene;
+   //   Scene() = default;
+   //   ~Scene() = default;
 
-Scene* CreateScene(Camera* camera);
+   //   inline void AddRenderObject(const RenderObject& ro)
+   //   {
+   //      RenderObjectsList.emplace_back(ro);
+   //   }
 
-void AddRenderObject(Scene* scene, const RenderObject renderObject);
+   //   inline void AddLight(const Light& light)
+   //   {
+   //      LightsList.emplace_back(light);
+   //   }
 
-void AddPhongLight(Scene* scene, const Light light);
-void AddPointLight(Scene* scene, const PointLight light);
-void AddSpotlight(Scene* scene, const Spotlight light);
+   //   inline void AddLight(const PointLight& light)
+   //   {
+   //      PointLightsList.emplace_back(light);
+   //   }
 
-uint8_t AddObjectMaterial(Scene* scene, const graphics::Material material);
+   //   inline void AddLight(const Spotlight& light)
+   //   {
+   //      SpotlightsList.emplace_back(light);
+   //   }
+
+   //   inline size_t AddMaterial(const graphics::Material& material)
+   //   {
+   //      MaterialsList.emplace_back(material);
+   //      return MaterialsList.size() - 1;
+   //   }
+   //};
+   
+
+   class Scene
+   {
+   public:
+      std::deque<RenderObject> RenderObjectsList;
+
+      std::deque<Light> LightsList;
+      std::deque<PointLight> PointLightsList;
+      std::deque<Spotlight> SpotlightsList;
+
+      std::deque<graphics::Material> MaterialsList;
+
+      std::reference_wrapper<Camera> CameraRef;
+
+      inline Scene(Camera& camera)
+         : CameraRef(camera) {}
+
+      inline void AddRenderObject(const RenderObject& ro)
+      {
+         RenderObjectsList.emplace_back(ro);
+      }
+
+      inline void AddLight(const Light& light)
+      {
+         LightsList.emplace_back(light);
+      }
+
+      inline void AddLight(const PointLight& light)
+      {
+         PointLightsList.emplace_back(light);
+      }
+
+      inline void AddLight(const Spotlight& light)
+      {
+         SpotlightsList.emplace_back(light);
+      }
+
+      inline size_t AddMaterial(const graphics::Material& material)
+      {
+         MaterialsList.emplace_back(material);
+         return MaterialsList.size() - 1;
+      }
+
+      inline void SetCamera(Camera& camera) { CameraRef = camera; }
+      inline Camera GetCamera() const { return CameraRef.get(); }
+   };
+}

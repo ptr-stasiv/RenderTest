@@ -16,6 +16,6 @@ namespace graphics
    public:
       static void Initialize();
 
-      static void Update(const Scene& scene, const float deltaTime);
+      static void Update(const core::Scene& scene, const float deltaTime);
    };
 }
