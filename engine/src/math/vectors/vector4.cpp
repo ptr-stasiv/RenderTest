@@ -7,7 +7,7 @@ Vector4 vec4(const float x, const float y, const float z, const float w)
 
 Vector4 svec4(const float s)
 {
-   return { s };
+   return { s, s, s, s };
 }
 
 Vector4 add_vector4(const Vector4 a, const Vector4 b)
