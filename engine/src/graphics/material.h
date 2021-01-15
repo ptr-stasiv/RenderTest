@@ -7,9 +7,9 @@ namespace graphics
    class Material
    {
    public:
-      Vector3 Color;
-      Vector3 Specular;
-      Vector3 Emissive;
+      math::Vector3 Color;
+      math::Vector3 Specular;
+      math::Vector3 Emissive;
       float   ShineExponent;
 
       assets::AssetRef DiffuseTexture;

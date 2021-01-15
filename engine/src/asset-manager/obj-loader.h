@@ -11,13 +11,13 @@ namespace assets
    class MeshAssetData : public AssetData
    {
    public:
-      Vector3* Positions;
-      Vector3* Normals;
-      Vector2* UVs;
+      math::Vector3* Positions;
+      math::Vector3* Normals;
+      math::Vector2* UVs;
 
       uint32_t FacesCount;
 
-      inline MeshAssetData(Vector3* positions, Vector3* normals, Vector2* uvs, const uint32_t faces)
+      inline MeshAssetData(math::Vector3* positions, math::Vector3* normals, math::Vector2* uvs, const uint32_t faces)
          : Positions(positions), Normals(normals), UVs(uvs), FacesCount(faces) {}
 
       ASSET_TYPE(AssetType::Mesh)

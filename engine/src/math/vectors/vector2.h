@@ -1,21 +1,79 @@
 #pragma once
+#include <cmath>
 
-typedef struct Vector2
+namespace math
 {
-   float x, y;
-}Vector2;
+   struct Vector2
+   {
+      float x, y;
 
-Vector2 vec2(const float x, const float y);
-Vector2 svec2(const float s);
+      inline Vector2(const float _x, const float _y)
+         : x(_x), y(_y) {}
+      inline Vector2(const float s)
+         : x(s), y(s) {}
 
-Vector2 add_Vector2(const Vector2 a, const Vector2 b);
+      Vector2() = default;
+      ~Vector2() = default;
 
-Vector2 subtract_Vector2(const Vector2 a, const Vector2 b);
+      inline Vector2 operator + (const Vector2& b)
+      {
+         Vector2 res;
 
-Vector2 muliply_sVector2(const Vector2 v, const float s);
+         res.x = x + b.x;
+         res.y = y + b.y;
 
-Vector2 normalize_Vector2(const Vector2 v);
+         return res;
+      }
 
-float length_Vector2(const Vector2 v);
+      inline Vector2 operator - (const Vector2& b)
+      {
+         Vector2 res;
 
-float dot_Vector2(const Vector2 a, const Vector2 b);
+         res.x = x - b.x;
+         res.y = y - b.y;
+
+         return res;
+      }
+
+      inline Vector2 operator * (const float s)
+      {
+         Vector2 res;
+
+         res.x = x * s;
+         res.y = y * s;
+
+         return res;
+      }
+
+      inline void operator += (const Vector2& b)
+      {
+         *this = *this + b;
+      }
+
+      inline void operator -= (const Vector2& b)
+      {
+         *this = *this - b;
+      }
+
+      inline void operator *= (const float s)
+      {
+         *this = *this * s;
+      }
+   };
+
+   inline float Dot(const Vector2& a, const Vector2& b)
+   {
+      return a.x * b.x + a.y * b.y;
+   }
+
+   inline float Length(const Vector2& v)
+   {
+      return sqrt(Dot(v, v));
+   }
+
+   inline Vector2 Normalize(const Vector2& v)
+   {
+      float d = Length(v);
+      return { v.x / d, v.y / d };
+   }
+}

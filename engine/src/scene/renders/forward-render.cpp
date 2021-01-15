@@ -146,8 +146,8 @@ namespace graphics
          RenderObject r = scene.RenderObjectsList.at(i);
 
          SetShaderMatrix4(RenderShader, "model", r.Transform);
-         SetShaderMatrix4(RenderShader, "view", GetCameraViewMatrix(&scene.GetCamera()));
-         SetShaderMatrix4(RenderShader, "projection", GetCameraProjection(&scene.GetCamera()));
+         SetShaderMatrix4(RenderShader, "view", scene.GetCamera().GetCameraViewMatrix());
+         SetShaderMatrix4(RenderShader, "projection", scene.GetCamera().GetCameraProjection());
 
          SetShaderInt(RenderShader, "MaterialId", r.MaterialRef);
 
@@ -172,8 +172,8 @@ namespace graphics
          else
             SetShaderInt(RenderShader, "UseDiffuseTexture", 0);
 
-         glBindVertexArray(r.MeshData->VaoId);
-         glDrawArrays(GL_TRIANGLES, 0, r.MeshData->VerticesCount);
+         glBindVertexArray(r.MeshData.VaoId);
+         glDrawArrays(GL_TRIANGLES, 0, r.MeshData.VerticesCount);
          glBindVertexArray(0);
       }
    }

@@ -1,32 +1,40 @@
 #pragma once
 #include "../math/vectors/vector3.h"
 
-typedef struct LightStruct
+namespace graphics
 {
-   Vector3 Position;
-   Vector3 Color;
-} Light;
+   struct Light
+   {
+      math::Vector3 Position;
+      math::Vector3 Color;
 
-typedef struct PointLightStruct
-{
-   Vector3 Position;
-   Vector3 Color;
+      inline Light(const math::Vector3& position, const math::Vector3& color)
+         : Position(position), Color(color) {}
+   };
 
-   float Linear;
-   float Constant;
-   float Quadratic;
-} PointLight;
+   struct PointLight
+   {
+      math::Vector3 Position;
+      math::Vector3 Color;
 
-typedef struct SpotlightStruct
-{
-   Vector3 Position;
-   Vector3 Direction;
-   Vector3 Color;
+      float Linear;
+      float Constant;
+      float Quadratic;
 
-   float OuterAngle;
-   float InnerAngle;
-} Spotlight;
+      inline PointLight(const math::Vector3& position, const math::Vector3& color, const float linear, const float constant, const float quadratic)
+         : Position(position), Color(color), Linear(linear), Constant(constant), Quadratic(quadratic) {}
+   };
 
-Light CreateLight(const Vector3 position, const Vector3 color);
-PointLight CreatePointLight(const Vector3 position, const Vector3 color, const float linear, const float constant, const float quadractic);
-Spotlight CreateSpotlight(const Vector3 position, const Vector3 direction, const Vector3 color, const float outerAngle, const float innerAngle);
+   struct Spotlight
+   {
+      math::Vector3 Position;
+      math::Vector3 Direction;
+      math::Vector3 Color;
+
+      float OuterAngle;
+      float InnerAngle;
+
+      inline Spotlight(const math::Vector3& position, const math::Vector3& direction, const math::Vector3& color, const float outerAngle, const float innerAngle)
+         : Position(position), Direction(direction), Color(color), OuterAngle(outerAngle), InnerAngle(innerAngle) {}
+   };
+}

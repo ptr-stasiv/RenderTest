@@ -41,13 +41,13 @@ namespace assets
       rewind(file);
 
 
-      Vector3* positionArray = (Vector3*)malloc(sizeof(Vector3) * positionCount);
+      math::Vector3* positionArray = (math::Vector3*)malloc(sizeof(math::Vector3) * positionCount);
       uint32_t positionCounter = 0;
 
-      Vector3* normalArray = (Vector3*)malloc(sizeof(Vector3) * normalCount);
+      math::Vector3* normalArray = (math::Vector3*)malloc(sizeof(math::Vector3) * normalCount);
       uint32_t normalCounter = 0;
 
-      Vector2* uvArray = (Vector2*)malloc(sizeof(Vector2) * uvCount);
+      math::Vector2* uvArray = (math::Vector2*)malloc(sizeof(math::Vector2) * uvCount);
       uint32_t uvCounter = 0;
 
 
@@ -68,7 +68,7 @@ namespace assets
 
          if (!strcmp(header, "v"))
          {
-            Vector3 v;
+            math::Vector3 v;
             fscanf(file, "%f %f %f", &v.x, &v.y, &v.z);
 
             positionArray[positionCounter] = v;
@@ -76,7 +76,7 @@ namespace assets
          }
          else if (!strcmp(header, "vn"))
          {
-            Vector3 v;
+            math::Vector3 v;
             fscanf(file, "%f %f %f", &v.x, &v.y, &v.z);
 
             normalArray[normalCounter] = v;
@@ -84,7 +84,7 @@ namespace assets
          }
          else if (!strcmp(header, "vt"))
          {
-            Vector2 v;
+            math::Vector2 v;
             fscanf(file, "%f %f", &v.x, &v.y);
 
             uvArray[uvCounter] = v;
@@ -116,9 +116,9 @@ namespace assets
          }
       }
 
-      Vector3* resultPositionArray = (Vector3*)malloc(sizeof(Vector3) * facesCount * 3);
-      Vector3* resultNormalArray = (Vector3*)malloc(sizeof(Vector3) * facesCount * 3);
-      Vector2* resultUvArray = (Vector2*)malloc(sizeof(Vector2) * facesCount * 3);
+      math::Vector3* resultPositionArray = (math::Vector3*)malloc(sizeof(math::Vector3) * facesCount * 3);
+      math::Vector3* resultNormalArray = (math::Vector3*)malloc(sizeof(math::Vector3) * facesCount * 3);
+      math::Vector2* resultUvArray = (math::Vector2*)malloc(sizeof(math::Vector2) * facesCount * 3);
 
       for (int i = 0; i < facesCount * 3; ++i)
       {

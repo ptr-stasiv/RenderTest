@@ -1,11 +1,15 @@
 #pragma once
 #include "mesh.h"
 
-typedef struct RenderSceneObjectStructure
+namespace graphics
 {
-   Mesh* MeshData;
-   Matrix4 Transform;
-   uint8_t MaterialRef;
-} RenderObject;
+   struct RenderObject
+   {
+      Mesh           MeshData;
+      math::Matrix4  Transform;
+      size_t         MaterialRef;
 
-RenderObject CreateRenderObject(Mesh* mesh, Matrix4 transform, const uint8_t materialRef);
+      inline RenderObject(const Mesh& meshData, const math::Matrix4& transform, size_t materialRef)
+         : MeshData(meshData), Transform(transform), MaterialRef(materialRef) {}
+   };
+}

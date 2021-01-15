@@ -4,10 +4,13 @@
 #include "asset-manager/asset-manager.h"
 #include "math/matrices/matrix4x4.h"
 
-struct Mesh
+namespace graphics
 {
-   GLuint VaoId;
-   int VerticesCount;
-};
+   struct Mesh
+   {
+      GLuint   VaoId;
+      uint64_t VerticesCount;
 
-Mesh* CreateMesh(const assets::AssetRef assetRef);
+      Mesh(const assets::AssetRef& assetRef);
+   };
+}

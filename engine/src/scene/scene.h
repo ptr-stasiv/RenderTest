@@ -10,85 +10,38 @@
 
 namespace core
 {
-   //class Scene
-   //{
-   //public:
-   //   std::deque<RenderObject> RenderObjectsList;
-
-   //   std::deque<Light>      LightsList;
-   //   std::deque<PointLight> PointLightsList;
-   //   std::deque<Spotlight>  SpotlightsList;
-
-   //   std::deque<graphics::Material> MaterialsList;
-
-   //   std::shared_ptr<Camera> MainCamera;
-
-   //   inline Scene(const std::shared_ptr<Camera>& camera)
-   //      : MainCamera(camera) {}
-
-   //   Scene() = default;
-   //   ~Scene() = default;
-
-   //   inline void AddRenderObject(const RenderObject& ro)
-   //   {
-   //      RenderObjectsList.emplace_back(ro);
-   //   }
-
-   //   inline void AddLight(const Light& light)
-   //   {
-   //      LightsList.emplace_back(light);
-   //   }
-
-   //   inline void AddLight(const PointLight& light)
-   //   {
-   //      PointLightsList.emplace_back(light);
-   //   }
-
-   //   inline void AddLight(const Spotlight& light)
-   //   {
-   //      SpotlightsList.emplace_back(light);
-   //   }
-
-   //   inline size_t AddMaterial(const graphics::Material& material)
-   //   {
-   //      MaterialsList.emplace_back(material);
-   //      return MaterialsList.size() - 1;
-   //   }
-   //};
-   
-
    class Scene
    {
    public:
-      std::deque<RenderObject> RenderObjectsList;
+      std::deque<graphics::RenderObject> RenderObjectsList;
 
-      std::deque<Light> LightsList;
-      std::deque<PointLight> PointLightsList;
-      std::deque<Spotlight> SpotlightsList;
+      std::deque<graphics::Light> LightsList;
+      std::deque<graphics::PointLight> PointLightsList;
+      std::deque<graphics::Spotlight> SpotlightsList;
 
       std::deque<graphics::Material> MaterialsList;
 
-      std::reference_wrapper<Camera> CameraRef;
+      std::reference_wrapper<graphics::Camera> CameraRef;
 
-      inline Scene(Camera& camera)
+      inline Scene(graphics::Camera& camera)
          : CameraRef(camera) {}
 
-      inline void AddRenderObject(const RenderObject& ro)
+      inline void AddRenderObject(const graphics::RenderObject& ro)
       {
          RenderObjectsList.emplace_back(ro);
       }
 
-      inline void AddLight(const Light& light)
+      inline void AddLight(const graphics::Light& light)
       {
          LightsList.emplace_back(light);
       }
 
-      inline void AddLight(const PointLight& light)
+      inline void AddLight(const graphics::PointLight& light)
       {
          PointLightsList.emplace_back(light);
       }
 
-      inline void AddLight(const Spotlight& light)
+      inline void AddLight(const graphics::Spotlight& light)
       {
          SpotlightsList.emplace_back(light);
       }
@@ -99,7 +52,7 @@ namespace core
          return MaterialsList.size() - 1;
       }
 
-      inline void SetCamera(Camera& camera) { CameraRef = camera; }
-      inline Camera GetCamera() const { return CameraRef.get(); }
+      inline void SetCamera(graphics::Camera& camera) { CameraRef = camera; }
+      inline graphics::Camera GetCamera() const { return CameraRef.get(); }
    };
 }

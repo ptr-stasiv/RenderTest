@@ -1,23 +1,87 @@
 #pragma once
+#include <cmath>
 
-typedef struct Vector3Structure
+namespace math
 {
-   float x, y, z;
-}Vector3;
+   struct Vector3
+   {
+      float x, y, z;
 
-Vector3 vec3(const float x, const float y, const float z);
-Vector3 svec3(const float s);
+      inline Vector3(const float _x, const float _y, const float _z)
+         : x(_x), y(_y), z(_z) {}
+      inline Vector3(const float s)
+         : x(s), y(s), z(s) {}
 
-Vector3 add_vector3(const Vector3 a, const Vector3 b);
+      Vector3()  = default;
+      ~Vector3() = default;
 
-Vector3 subtract_vector3(const Vector3 a, const Vector3 b);
+      inline Vector3 operator + (const Vector3& b)
+      {
+         Vector3 res;
 
-Vector3 muliply_svector3(const Vector3 v, const float s);
+         res.x = x + b.x;
+         res.y = y + b.y;
+         res.z = z + b.z;
 
-Vector3 normalize_vector3(const Vector3 v);
+         return res;
+      }
 
-Vector3 cross_vector3(const Vector3 a, const Vector3 b);
+      inline Vector3 operator - (const Vector3& b)
+      {
+         Vector3 res;
 
-float length_vector3(const Vector3 v);
+         res.x = x - b.x;
+         res.y = y - b.y;
+         res.z = z - b.z;
 
-float dot_vector3(const Vector3 a, const Vector3 b);
+         return res;
+      }
+
+      inline Vector3 operator * (const float s)
+      {
+         Vector3 res;
+
+         res.x = x * s;
+         res.y = y * s;
+         res.z = z * s;
+
+         return res;
+      }
+
+      inline void operator += (const Vector3& b)
+      {
+         *this = *this + b;
+      }
+
+      inline void operator -= (const Vector3& b)
+      {
+         *this = *this - b;
+      }
+
+      inline void operator *= (const float s)
+      {
+         *this = *this * s;
+      }
+   };
+
+   inline Vector3 Cross(const Vector3& a, const Vector3& b)
+   {
+      return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
+   }
+
+   inline float Dot(const Vector3& a, const Vector3& b)
+   {
+      return a.x * b.x + a.y * b.y + a.z * b.z;
+   }
+
+   inline float Length(const Vector3& v)
+   {
+      return sqrt(Dot(v, v));
+   }
+
+   inline Vector3 Normalize(const Vector3& v)
+   {
+      float d = Length(v);
+      return { v.x / d, v.y / d, v.z / d };
+   }
+}

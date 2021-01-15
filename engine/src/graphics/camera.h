@@ -2,36 +2,49 @@
 #include "../math/vectors/vector3.h"
 #include "../math/matrices/matrix4x4.h"
 
-struct Camera
+namespace graphics
 {
-   Vector3 Position;
+   enum class CameraMoveType
+   {
+      MoveForward,
+      MoveBackward,
+      MoveRight,
+      MoveLeft,
+      MoveUp,
+      MoveDown
+   };
 
-   Vector3 ForwardAxis;
-   Vector3 RightAxis;
-   Vector3 UpAxis;
+   struct Camera
+   {
+      math::Vector3 Position;
 
-   float Fov;
-   float Aspect;
-   float Speed;
+      math::Vector3 ForwardAxis;
+      math::Vector3 RightAxis;
+      math::Vector3 UpAxis;
 
-   float Yaw;
-   float Pitch;
-};
+      float Fov;
+      float Aspect;
+      float Speed;
 
-typedef enum CameraMoveTypeEnum
-{
-   CameraMoveForward,
-   CameraMoveBackward,
-   CameraMoveRight,
-   CameraMoveLeft,
-   CameraMoveUp,
-   CameraMoveDown
-} CameraMoveType;
+      float Yaw;
+      float Pitch;
 
-Camera* CreateCamera(const Vector3 position, const float fov, const float aspect, const float speed);
+      Camera(const math::Vector3 position, const float fov, const float aspect, const float speed);
 
-void MoveCamera(Camera* camera, const CameraMoveType moveType, const float deltaTime);
-void RotateCamera(Camera* camera, const float posX, const float posY, const float deltaTime);
+      Camera()  = default;
+      ~Camera() = default;
 
-Matrix4 GetCameraViewMatrix(const Camera* camera);
-Matrix4 GetCameraProjection(const Camera* camera);
+      void Move(const CameraMoveType moveType, const float deltaTime);
+      void Rotate(const float posX, const float posY, const float deltaTime);
+
+      inline math::Matrix4 GetCameraViewMatrix() const
+      {
+         return math::CreateLookAtMatrix(RightAxis, UpAxis, ForwardAxis, Position);
+      }
+
+      inline math::Matrix4 GetCameraProjection() const
+      {
+         return math::CreatePerspectiveMatrix(Aspect, Fov, 0.01f, 1000.0f);
+      }
+   };
+}
