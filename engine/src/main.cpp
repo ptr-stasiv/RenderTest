@@ -15,8 +15,9 @@
 #include "asset-manager/asset-manager.h"
 
 #include "math/math_utils.h"
+#include "utils/timer.h"
 
-#include <string.h>
+#include <cstring>
 #include <Windows.h>
 
 #include "gui.h"
@@ -145,11 +146,11 @@ int main()
    LARGE_INTEGER freq;
    QueryPerformanceFrequency(&freq);
 
+   utils::Timer deltaTimer;
+
    while (!glfwWindowShouldClose(window))
    {
-      LARGE_INTEGER startFrameTicks;
-      QueryPerformanceCounter(&startFrameTicks);
-
+      deltaTimer.Reset();
 
       glfwPollEvents();
       InputHandle();
@@ -160,12 +161,7 @@ int main()
 
       glfwSwapBuffers(window);
 
-      LARGE_INTEGER endFrameTicks;
-      QueryPerformanceCounter(&endFrameTicks);
-
-      g_DeltaTime = endFrameTicks.QuadPart - startFrameTicks.QuadPart;
-      g_DeltaTime /= freq.QuadPart / 1000.0f;
-      g_DeltaTime = 1.0f / g_DeltaTime;
+      g_DeltaTime = 1.0f / deltaTimer.GetElaspedTime();
    }
 
    glfwTerminate();
