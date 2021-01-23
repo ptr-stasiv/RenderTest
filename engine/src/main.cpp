@@ -26,6 +26,8 @@
 #include "debug/log/log.h"
 #include "bgl/debug/callback.h"
 
+#include "jobs/job-system.h"
+
 char g_KeyStates[1024];
 graphics::Camera g_MainCamera;
 
@@ -111,6 +113,23 @@ int main()
 
    g_MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), PI / 4, 1.7f, 5.0f);
    
+
+   core::JobSystem::Setup();
+
+   core::JobSystem::Execute([]
+      {
+         LOG_ERROR("Test 1");
+      });
+   core::JobSystem::Execute([]
+      {
+         LOG_ERROR("Test 2");
+      });
+   core::JobSystem::Execute([]
+      {
+         LOG_ERROR("Test 3");
+      });
+
+   core::JobSystem::Wait();
 
    graphics::Material floorM;
    floorM.Color = math::Vector3(0.0f, 0.2f, 0.2f);
