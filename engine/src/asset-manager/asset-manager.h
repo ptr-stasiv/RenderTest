@@ -4,6 +4,7 @@
 #include <typeindex>
 #include <memory>
 #include <optional>
+#include <mutex>
 
 #include "debug/gassert.h"
 
@@ -59,6 +60,8 @@ namespace assets
       std::unordered_map<uint16_t, std::shared_ptr<AssetData>> AssetDataLookup;
 
       uint16_t AssetInfoCounter = 1;
+
+      std::mutex LoadMutex;
    public:
       void Load();
 

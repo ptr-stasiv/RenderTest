@@ -102,6 +102,8 @@ int main()
    glEnable(GL_DEBUG_OUTPUT);
    glDebugMessageCallback(MessageCallbackOGL, 0);
 
+   core::JobSystem::Setup();
+
    assets::AssetManager assetManager;
 
    assets::AssetRef pistolAssetRef = assetManager.RequireAsssetRef("res/meshes/pistol/pistol.obj");
@@ -109,27 +111,17 @@ int main()
 
    assets::AssetRef pistolTextureRef = assetManager.RequireAsssetRef("res/meshes/pistol/textures/handgun_C.jpg");
   
-   assetManager.Load();
+   //for(size_t i = 0; i < 15; ++i)
+   //   assetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
+
+   {
+      utils::Timer assetTimer;
+      assetTimer.Reset();
+      assetManager.Load();
+      LOG_WARNING("Asset loading time: %f ms", assetTimer.GetElaspedTime());
+   }
 
    g_MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), PI / 4, 1.7f, 5.0f);
-   
-
-   core::JobSystem::Setup();
-
-   core::JobSystem::Execute([]
-      {
-         LOG_ERROR("Test 1");
-      });
-   core::JobSystem::Execute([]
-      {
-         LOG_ERROR("Test 2");
-      });
-   core::JobSystem::Execute([]
-      {
-         LOG_ERROR("Test 3");
-      });
-
-   core::JobSystem::Wait();
 
    graphics::Material floorM;
    floorM.Color = math::Vector3(0.0f, 0.2f, 0.2f);

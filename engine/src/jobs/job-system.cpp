@@ -24,7 +24,9 @@ namespace core
                   JobInfo job = JobList.GetNext();
 
                   for (uint16_t i = 0; i < job.InstanceCount; ++i)
-                     job.EntryPoint();
+                  {
+                     job.EntryPoint(job.Params);
+                  }
 
                   FinishedJobCounter.fetch_add(1);
                }

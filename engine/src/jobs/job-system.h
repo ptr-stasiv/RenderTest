@@ -4,15 +4,17 @@
 #include <mutex>
 #include <condition_variable>
 #include <functional>
+#include <any>
 
 namespace core
 {
-   using JobFunc = void(*)();
+   using JobFunc = void(*)(uintptr_t params);
 
    struct JobInfo
    {
-      JobFunc  EntryPoint;
-      uint16_t InstanceCount;
+      JobFunc    EntryPoint;
+      uintptr_t  Params;
+      uint16_t   InstanceCount;
    };
 
    class AsyncJobList
@@ -58,11 +60,11 @@ namespace core
    public:
       static void Setup();
 
-      inline static void Execute(JobFunc func)
+      inline static void Execute(JobFunc func, uintptr_t params = 0)
       {
          std::lock_guard l(Mutex);
 
-         JobList.AddJob({ func, 1 });
+         JobList.AddJob({ func, params, 1 });
 
          ++JobCounter;
 
