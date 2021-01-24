@@ -8,15 +8,18 @@ uniform mat4 projection = mat4(1.0f);
 uniform mat4 view       = mat4(1.0f);
 uniform mat4 model      = mat4(1.0f);
 
-out vec3 Normal;
-out vec3 FragPos;
-out vec2 UV;
+out VS_OUT
+{
+    vec3 Normal;
+    vec3 FragPos;
+    vec2 UV;
+} vs_out;
 
 void main()
 {
-    Normal = normalize(normal);
-    FragPos = vec3((model * vec4(position, 1.0f)));
-    UV = uv;
+    vs_out.Normal = normalize(normal);
+    vs_out.FragPos = vec3((model * vec4(position, 1.0f)));
+    vs_out.UV = uv;
 
     gl_Position = projection * view * model * vec4(position, 1.0f);
 }

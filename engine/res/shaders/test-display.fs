@@ -5,9 +5,12 @@
 
 out vec4 OutColor;
 
-in vec3 Normal;
-in vec3 FragPos;
-in vec2 UV;
+in VS_OUT
+{
+    vec3 Normal;
+    vec3 FragPos;
+    vec2 UV;
+} vs_in;
 
 uniform vec3 CameraPosition;
 
@@ -68,7 +71,7 @@ void main()
 
     vec3 objectColor;
     if(UseDiffuseTexture) 
-        objectColor = texture(DiffuseTexture, UV).xyz;
+        objectColor = texture(DiffuseTexture, vs_in.UV).xyz;
     else
         objectColor = MaterialsArray[MaterialId].Color;
 
@@ -81,17 +84,17 @@ void main()
         vec3 lightPos   = LightsArray[i].Position;
         vec3 lightColor = LightsArray[i].Color;
 
-        vec3 lightDir = normalize(lightPos - FragPos);
+        vec3 lightDir = normalize(lightPos - vs_in.FragPos);
 
-        vec3 viewDir = normalize(CameraPosition - FragPos);
+        vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 
         vec3 ambientComponent = lightColor * ambientIntensity;
 
-        float diffC = max(dot(Normal, lightDir), 0);
+        float diffC = max(dot(vs_in.Normal, lightDir), 0);
         vec3 diffuseComponent = lightColor * diffC;
 
         vec3 halfwayVector = normalize(viewDir + lightDir);
-        float specC = pow(max(dot(halfwayVector, Normal), 0), specularExponent);
+        float specC = pow(max(dot(halfwayVector, vs_in.Normal), 0), specularExponent);
         vec3 specularComponent = lightColor * specC * specularIntensity;
 
         resColor += objectColor * (ambientComponent + diffuseComponent + specularComponent + emissive); 
@@ -102,24 +105,24 @@ void main()
         vec3 lightPos   = PointLightsArray[i].Position;
         vec3 lightColor = PointLightsArray[i].Color;
 
-        vec3 lightDir = normalize(lightPos - FragPos);
+        vec3 lightDir = normalize(lightPos - vs_in.FragPos);
 
-        vec3 viewDir = normalize(CameraPosition - FragPos);
+        vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 
         vec3 ambientComponent = lightColor * ambientIntensity;
 
-        float diffC = max(dot(Normal, lightDir), 0);
+        float diffC = max(dot(vs_in.Normal, lightDir), 0);
         vec3 diffuseComponent = lightColor * diffC;
 
         vec3 halfwayVector = normalize(viewDir + lightDir);
-        float specC = pow(max(dot(halfwayVector, Normal), 0), specularExponent);
+        float specC = pow(max(dot(halfwayVector, vs_in.Normal), 0), specularExponent);
         vec3 specularComponent = lightColor * specC * specularIntensity;
 
         float linear = PointLightsArray[i].Linear;
         float quadratic = PointLightsArray[i].Quadratic;
         float constant = PointLightsArray[i].Constant;
 
-        float lightDist = abs(length(lightPos - FragPos));
+        float lightDist = abs(length(lightPos - vs_in.FragPos));
         float attenuation = 1 / (constant + linear * lightDist + quadratic * lightDist * lightDist);
 
         resColor += objectColor * (ambientComponent + diffuseComponent + specularComponent + emissive) * attenuation; 
@@ -130,17 +133,17 @@ void main()
         vec3 lightPos   = SpotlightsArray[i].Position;
         vec3 lightColor = SpotlightsArray[i].Color;
 
-        vec3 lightDir = normalize(lightPos - FragPos);
+        vec3 lightDir = normalize(lightPos - vs_in.FragPos);
 
-        vec3 viewDir = normalize(CameraPosition - FragPos);
+        vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 
         vec3 ambientComponent = lightColor * ambientIntensity;
 
-        float diffC = max(dot(Normal, lightDir), 0);
+        float diffC = max(dot(vs_in.Normal, lightDir), 0);
         vec3 diffuseComponent = lightColor * diffC;
 
         vec3 halfwayVector = normalize(viewDir + lightDir);
-        float specC = pow(max(dot(halfwayVector, Normal), 0), specularExponent);
+        float specC = pow(max(dot(halfwayVector, vs_in.Normal), 0), specularExponent);
         vec3 specularComponent = lightColor * specC * specularIntensity;
 
         vec3 spotLightDir = SpotlightsArray[i].Direction;
