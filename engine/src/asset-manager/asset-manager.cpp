@@ -36,43 +36,36 @@ namespace assets
                std::unique_ptr<JobLoadParams> params = std::unique_ptr<JobLoadParams>(reinterpret_cast<JobLoadParams*>(args));
                AssetManager* am = params->AM;
 
-               am->LoadMutex.lock();
-
                std::filesystem::path path(params->Path);
 
                auto find = g_AssetTypeLookup.find(path.extension().string());
                AssetType type = find != g_AssetTypeLookup.end() ? find->second : AssetType::None;
 
-               am->LoadMutex.unlock();
-
                std::shared_ptr<AssetData> assetData;
                switch (type)
                {
                case assets::AssetType::None:
-               {
-                  TextAssetData text = LoadText(path.string());
-                  assetData = std::make_shared<TextAssetData>(text);
-               }break;
+                  {
+                     TextAssetData text = LoadText(path.string());
+                     assetData = std::make_shared<TextAssetData>(text);
+                  }break;
                case assets::AssetType::Mesh:
-               {
-                  MeshAssetData mesh = LoadMesh(path.string());
-                  assetData = std::make_shared<MeshAssetData>(mesh);
-               }break;
+                  {
+                     MeshAssetData mesh = LoadMesh(path.string());
+                     assetData = std::make_shared<MeshAssetData>(mesh);
+                  }break;
                case assets::AssetType::Image:
-               {
-                  ImageAssetData image = LoadImage(path.string());
-                  assetData = std::make_shared<ImageAssetData>(image);
-               }break;
+                  {
+                     ImageAssetData image = LoadImage(path.string());
+                     assetData = std::make_shared<ImageAssetData>(image);
+                  }break;
                }
 
                if (!assetData->Info.IsValid)
                   LOG_ERROR("Error loading asset in path: %s", path.string().c_str());
 
-               am->LoadMutex.lock();
-
+               std::lock_guard<std::mutex> l(am->LoadMutex);
                am->AssetDataLookup[params->Hash] = assetData;
-
-               am->LoadMutex.unlock();
 
             }, reinterpret_cast<uintptr_t>(params));
       }
