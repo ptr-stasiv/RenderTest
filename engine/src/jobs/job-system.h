@@ -6,6 +6,8 @@
 #include <functional>
 #include <any>
 
+#include "utils/sync/spin-lock.h"
+
 namespace core
 {
    using JobFunc = void(*)(uintptr_t params);
@@ -21,18 +23,18 @@ namespace core
    {
    private:
       mutable std::list<JobInfo> List;
-      mutable std::mutex Mutex;
+      mutable utils::sync::SpinLock SpinLock;
 
    public:
       inline void AddJob(const JobInfo& info)
       {
-         std::lock_guard lock(Mutex);
+         std::lock_guard<utils::sync::SpinLock> l(SpinLock);
          List.emplace_back(info);
       }
 
       inline JobInfo GetNext() const
       {
-         std::lock_guard l(Mutex);
+         std::lock_guard<utils::sync::SpinLock> l(SpinLock);
 
          JobInfo job = List.front();
          List.pop_front();
@@ -42,7 +44,7 @@ namespace core
 
       inline bool Empty() const
       {
-         std::lock_guard l(Mutex);
+         std::lock_guard<utils::sync::SpinLock> l(SpinLock);
          return List.empty();
       }
    };
@@ -52,11 +54,11 @@ namespace core
    private:
       static inline AsyncJobList JobList;
 
-      static inline std::condition_variable JobNotifyCV;
-      static inline std::mutex Mutex;
-
       static inline std::atomic_size_t FinishedJobCounter;
       static volatile inline size_t JobCounter;
+
+      static inline std::condition_variable JobNotifyCV;
+      static inline std::mutex Mutex;
    public:
       static void Setup();
 

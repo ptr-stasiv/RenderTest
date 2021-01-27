@@ -16,6 +16,7 @@
 
 #include "math/math_utils.h"
 #include "utils/timer.h"
+#include "utils/sync/spin-lock.h"
 
 #include <cstring>
 #include <Windows.h>
@@ -112,7 +113,7 @@ int main()
    assets::AssetRef pistolTextureRef = assetManager.RequireAsssetRef("res/meshes/pistol/textures/handgun_C.jpg");
   
    //for(size_t i = 0; i < 15; ++i)
-   //   assetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
+   //  assetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
 
    {
       utils::Timer assetTimer;

@@ -64,7 +64,7 @@ namespace assets
                if (!assetData->Info.IsValid)
                   LOG_ERROR("Error loading asset in path: %s", path.string().c_str());
 
-               std::lock_guard<std::mutex> l(am->LoadMutex);
+               std::lock_guard<utils::sync::SpinLock> l(am->LoadSL);
                am->AssetDataLookup[params->Hash] = assetData;
 
             }, reinterpret_cast<uintptr_t>(params));

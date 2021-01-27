@@ -12,7 +12,7 @@ namespace sharpmake
 
             SourceRootPath = @"[project.SharpmakeCsPath]/gui/src";
 
-            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release));
+            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release | Optimization.Retail));
         }
 
         [Configure]
@@ -37,6 +37,11 @@ namespace sharpmake
                 config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/release";
                 config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/release";
             }
+            else if (target.Optimization == Optimization.Retail)
+            {
+                config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/retail";
+                config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/retail";
+            }
             else if (target.Optimization == Optimization.Debug)
             {
                 config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/debug";
@@ -55,7 +60,7 @@ namespace sharpmake
 
             SourceRootPath = @"[project.SharpmakeCsPath]/engine/src";
 
-            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release));
+            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release | Optimization.Retail));
         }
 
         [Configure]
@@ -92,6 +97,12 @@ namespace sharpmake
                 config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/release";
                 config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/release";
             }
+            else if (target.Optimization == Optimization.Retail)
+            {
+                config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/retail";
+                config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/retail";
+                config.Options.Add(Options.Vc.Compiler.RuntimeLibrary.MultiThreaded);
+            }
             else if (target.Optimization == Optimization.Debug)
             {
                 config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/debug";
@@ -108,7 +119,7 @@ namespace sharpmake
         {
             Name = "Engine-Workspace";
 
-            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release));
+            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release | Optimization.Retail));
         }
 
         [Configure]

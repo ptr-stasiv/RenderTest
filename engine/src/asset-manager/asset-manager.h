@@ -7,6 +7,7 @@
 #include <mutex>
 
 #include "debug/gassert.h"
+#include "utils/sync/spin-lock.h"
 
 namespace assets
 {
@@ -61,12 +62,13 @@ namespace assets
 
       uint16_t AssetInfoCounter = 1;
 
-      std::mutex LoadMutex;
+      utils::sync::SpinLock LoadSL;
    public:
       void Load();
 
       inline uint16_t RequireAsssetId(const char* filepath)
       {
+         AssetInfoLookup.size();
          AssetInfoLookup[AssetInfoCounter] = filepath;
          return AssetInfoCounter++;
       }
