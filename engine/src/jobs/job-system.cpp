@@ -1,5 +1,8 @@
 #include "job-system.h"
 
+#include <Windows.h>
+#include <string>
+
 namespace core
 {
    void JobSystem::Setup()
@@ -31,6 +34,8 @@ namespace core
                   FinishedJobCounter.fetch_add(1);
                }
             });
+
+         SetThreadDescription(jobThread.native_handle(), (std::wstring(L"Job_thread_") + std::to_wstring(i)).c_str()); //Set thread name for debug purpose
 
          jobThread.detach();
       }
