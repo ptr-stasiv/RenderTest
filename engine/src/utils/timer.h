@@ -10,10 +10,13 @@ namespace utils
       LARGE_INTEGER Frequency;
       LARGE_INTEGER StartTicks;
    public:
-      inline Timer()
+      inline Timer(const bool reset = false)
          : StartTicks({ 0 })
       {
          QueryPerformanceFrequency(&Frequency);
+
+         if (reset)
+            Reset();
       }
 
       inline void Reset()

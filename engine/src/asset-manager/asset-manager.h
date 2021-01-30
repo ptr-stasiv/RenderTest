@@ -26,6 +26,7 @@ namespace assets
    public:
       struct LoadingInfo
       {
+         std::string Name;
          float LoadTime;
          bool IsValid;
       } Info;

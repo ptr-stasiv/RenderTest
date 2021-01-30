@@ -35,6 +35,7 @@ namespace assets
       if (resData.TextStr.empty())
          return resData;
 
+      resData.Info.Name     = filepath;
       resData.Info.LoadTime = 0.0f;
       resData.Info.IsValid  = true;
 

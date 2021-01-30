@@ -116,10 +116,9 @@ int main()
    //  assetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
 
    {
-      utils::Timer assetTimer;
-      assetTimer.Reset();
+      utils::Timer assetTimer(true);
       assetManager.Load();
-      LOG_WARNING("Asset loading time: %f ms", assetTimer.GetElaspedTime());
+      LOG_WARNING("Assets loading time: %f ms", assetTimer.GetElaspedTime());
    }
 
    g_MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), PI / 4, 1.7f, 5.0f);

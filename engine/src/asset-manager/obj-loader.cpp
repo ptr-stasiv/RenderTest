@@ -1,64 +1,33 @@
 #include "obj-loader.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <vector>
+
+#include "utils/timer.h"
 
 namespace assets
 {
    MeshAssetData LoadMesh(const std::string_view filepath)
    {
-      MeshAssetData resData(nullptr, nullptr, nullptr, 0);
+      MeshAssetData resData;
       resData.Info.LoadTime = 0.0f;
       resData.Info.IsValid  = false;
+
+      utils::Timer loadTimer(true);
 
       FILE* file = fopen(&filepath[0], "rb");
       if (!file)
          return resData;
 
-      uint32_t positionCount = 0;
-      uint32_t normalCount = 0;
-      uint32_t uvCount = 0;
+      std::vector<math::Vector3> positionArray;
+      std::vector<math::Vector3> normalArray;
+      std::vector<math::Vector2> uvArray;
 
-      uint32_t facesCount = 0;
-
-      while (1)
-      {
-         char header[128] = { 0 };
-         if (fscanf(file, "%s", header) == EOF)
-            break;
-
-         if (!strcmp(header, "v"))
-            ++positionCount;
-         else if (!strcmp(header, "vn"))
-            ++normalCount;
-         else if (!strcmp(header, "vt"))
-            ++uvCount;
-         else if (!strcmp(header, "f"))
-            ++facesCount;
-      }
-
-      rewind(file);
-
-
-      math::Vector3* positionArray = (math::Vector3*)malloc(sizeof(math::Vector3) * positionCount);
-      uint32_t positionCounter = 0;
-
-      math::Vector3* normalArray = (math::Vector3*)malloc(sizeof(math::Vector3) * normalCount);
-      uint32_t normalCounter = 0;
-
-      math::Vector2* uvArray = (math::Vector2*)malloc(sizeof(math::Vector2) * uvCount);
-      uint32_t uvCounter = 0;
-
-
-      uint32_t* positionIndicesArray = (uint32_t*)malloc(sizeof(uint32_t) * 3 * facesCount);
-      uint32_t positionIndicesCounter = 0;
-
-      uint32_t* normalIndicesArray = (uint32_t*)malloc(sizeof(uint32_t) * 3 * facesCount);
-      uint32_t normalIndicesCounter = 0;
-
-      uint32_t* uvIndicesArray = (uint32_t*)malloc(sizeof(uint32_t) * 3 * facesCount);
-      uint32_t uvIndicesCounter = 0;
+      std::vector<uint32_t> positionIndicesArray;
+      std::vector<uint32_t> normalIndicesArray;
+      std::vector<uint32_t> uvIndicesArray;
 
       while (1)
       {
@@ -71,24 +40,21 @@ namespace assets
             math::Vector3 v;
             fscanf(file, "%f %f %f", &v.x, &v.y, &v.z);
 
-            positionArray[positionCounter] = v;
-            ++positionCounter;
+            positionArray.emplace_back(v);
          }
          else if (!strcmp(header, "vn"))
          {
             math::Vector3 v;
             fscanf(file, "%f %f %f", &v.x, &v.y, &v.z);
 
-            normalArray[normalCounter] = v;
-            ++normalCounter;
+            normalArray.emplace_back(v);
          }
          else if (!strcmp(header, "vt"))
          {
             math::Vector2 v;
             fscanf(file, "%f %f", &v.x, &v.y);
 
-            uvArray[uvCounter] = v;
-            ++uvCounter;
+            uvArray.emplace_back(v);
          }
          else if (!strcmp(header, "f"))
          {
@@ -98,49 +64,38 @@ namespace assets
 
             fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d", &p1, &t1, &n1, &p2, &t2, &n2, &p3, &t3, &n3);
 
-            positionIndicesArray[positionIndicesCounter] = p1;
-            positionIndicesArray[positionIndicesCounter + 1] = p2;
-            positionIndicesArray[positionIndicesCounter + 2] = p3;
+            positionIndicesArray.emplace_back(p1);
+            positionIndicesArray.emplace_back(p2);
+            positionIndicesArray.emplace_back(p3);
 
-            normalIndicesArray[normalIndicesCounter] = n1;
-            normalIndicesArray[normalIndicesCounter + 1] = n2;
-            normalIndicesArray[normalIndicesCounter + 2] = n3;
+            normalIndicesArray.emplace_back(n1);
+            normalIndicesArray.emplace_back(n2);
+            normalIndicesArray.emplace_back(n3);
 
-            uvIndicesArray[uvIndicesCounter] = t1;
-            uvIndicesArray[uvIndicesCounter + 1] = t2;
-            uvIndicesArray[uvIndicesCounter + 2] = t3;
-
-            positionIndicesCounter += 3;
-            normalIndicesCounter += 3;
-            uvIndicesCounter += 3;
+            uvIndicesArray.emplace_back(t1);
+            uvIndicesArray.emplace_back(t2);
+            uvIndicesArray.emplace_back(t3);
          }
       }
 
-      math::Vector3* resultPositionArray = (math::Vector3*)malloc(sizeof(math::Vector3) * facesCount * 3);
-      math::Vector3* resultNormalArray = (math::Vector3*)malloc(sizeof(math::Vector3) * facesCount * 3);
-      math::Vector2* resultUvArray = (math::Vector2*)malloc(sizeof(math::Vector2) * facesCount * 3);
+      std::vector<math::Vector3> resultPositionArray;
+      std::vector<math::Vector3> resultNormalArray;
+      std::vector<math::Vector2> resultUvArray;
 
-      for (int i = 0; i < facesCount * 3; ++i)
+      for (int i = 0; i < positionIndicesArray.size(); ++i)
       {
-         resultPositionArray[i] = positionArray[positionIndicesArray[i] - 1];
-         resultNormalArray[i] = normalArray[normalIndicesArray[i] - 1];
-         resultUvArray[i] = uvArray[uvIndicesArray[i] - 1];
+         resultPositionArray.emplace_back(positionArray[positionIndicesArray[i] - 1]);
+         resultNormalArray.emplace_back(normalArray[normalIndicesArray[i] - 1]);
+         resultUvArray.emplace_back(uvArray[uvIndicesArray[i] - 1]);
       }
 
-      free(positionArray);
-      free(normalArray);
-      free(uvArray);
-      free(positionIndicesArray);
-      free(normalIndicesArray);
-      free(uvIndicesArray);
-
-
-      resData.FacesCount = facesCount * 3;
+      resData.FacesCount = positionIndicesArray.size();
       resData.Positions = resultPositionArray;
       resData.Normals = resultNormalArray;
       resData.UVs = resultUvArray;
 
-      resData.Info.LoadTime = 0.0f;
+      resData.Info.Name     = filepath;
+      resData.Info.LoadTime = loadTimer.GetElaspedTime();
       resData.Info.IsValid  = true;
 
       return  resData;

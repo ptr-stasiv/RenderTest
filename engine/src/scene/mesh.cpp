@@ -30,7 +30,7 @@ namespace graphics
 
       glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-      glBufferData(GL_ARRAY_BUFFER, sizeof(math::Vector3) * facesCount, meshData->Positions, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(math::Vector3) * facesCount, meshData->Positions.data(), GL_STATIC_DRAW);
 
       glEnableVertexAttribArray(0);
       glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -38,7 +38,7 @@ namespace graphics
 
       glBindBuffer(GL_ARRAY_BUFFER, nvbo);
 
-      glBufferData(GL_ARRAY_BUFFER, sizeof(math::Vector3) * facesCount, meshData->Normals, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(math::Vector3) * facesCount, meshData->Normals.data(), GL_STATIC_DRAW);
 
       glEnableVertexAttribArray(1);
       glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -46,7 +46,7 @@ namespace graphics
 
       glBindBuffer(GL_ARRAY_BUFFER, uvbo);
 
-      glBufferData(GL_ARRAY_BUFFER, sizeof(math::Vector2) * facesCount, meshData->UVs, GL_STATIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(math::Vector2) * facesCount, meshData->UVs.data(), GL_STATIC_DRAW);
 
       glEnableVertexAttribArray(2);
       glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);

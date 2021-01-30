@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Sharpmake;
+﻿using Sharpmake;
 
 namespace sharpmake
 {
