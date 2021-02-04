@@ -29,6 +29,8 @@
 
 #include "jobs/job-system.h"
 
+#include "bgl/window/window-wrapper.h"
+
 char g_KeyStates[1024];
 graphics::Camera g_MainCamera;
 
@@ -65,43 +67,11 @@ void InputHandle()
 
 int main()
 {
-   if (!glfwInit())
-      return -1;
+   bgl::WindowGL window;
+   window.Instantiate();
 
-   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-
-   GLFWwindow* window = glfwCreateWindow(1280, 720, "RenderTest", NULL, NULL);
-   if (!window)
-      return -1;
-
-   glfwMakeContextCurrent(window);
-
-   if (glewInit() != GLEW_OK)
-      return -1;
-
-   const GLubyte* vendorInfo   = glGetString(GL_VENDOR);
-   const GLubyte* rendererInfo = glGetString(GL_RENDERER);
-   const GLubyte* versionInfo  = glGetString(GL_VERSION);
-   const GLubyte* glslInfo     = glGetString(GL_SHADING_LANGUAGE_VERSION);
-
-   WD_LOG_MESSAGE("%s %s", vendorInfo, rendererInfo);
-   WD_LOG_MESSAGE("Opengl %s", versionInfo);
-   WD_LOG_MESSAGE("GLSL %s\n", glslInfo);
-
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glBlendEquation(GL_FUNC_ADD);
-
-   glEnable(GL_DEPTH_TEST);
-
-   glfwSetKeyCallback(window, KeyCallback);
-   glfwSetCursorPosCallback(window, CursorCallback);
-
-   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-   glEnable(GL_DEBUG_OUTPUT);
-   glDebugMessageCallback(MessageCallbackOGL, 0);
+   glfwSetKeyCallback(window.NativeHandle.get(), KeyCallback);
+   glfwSetCursorPosCallback(window.NativeHandle.get(), CursorCallback);
 
    core::JobSystem::Setup();
 
@@ -136,7 +106,8 @@ int main()
    pistolM.ShineExponent = 10.0f;
    pistolM.Emissive = math::Vector3(0.0f);
 
-   core::Scene scene(g_MainCamera);
+   core::Scene scene;
+   scene.SetCamera(&g_MainCamera);
 
    size_t floorMaterial  = scene.AddMaterial(floorM);
    size_t pistolMaterial = scene.AddMaterial(pistolM);
@@ -159,18 +130,17 @@ int main()
 
    utils::Timer deltaTimer;
 
-   while (!glfwWindowShouldClose(window))
+   while (!window.ShouldClose())
    {
       deltaTimer.Reset();
 
-      glfwPollEvents();
-      InputHandle();
+      window.BeginFrame();
 
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      InputHandle();
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
 
-      glfwSwapBuffers(window);
+      window.EndFrame();
 
       g_DeltaTime = 1.0f / deltaTimer.GetElaspedTime();
    }

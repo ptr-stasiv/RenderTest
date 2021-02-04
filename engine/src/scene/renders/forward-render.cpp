@@ -146,12 +146,12 @@ namespace graphics
          RenderObject r = scene.RenderObjectsList.at(i);
 
          SetShaderMatrix4(RenderShader, "model", r.Transform);
-         SetShaderMatrix4(RenderShader, "view", scene.GetCamera().GetCameraViewMatrix());
-         SetShaderMatrix4(RenderShader, "projection", scene.GetCamera().GetCameraProjection());
+         SetShaderMatrix4(RenderShader, "view", scene.GetCamera()->GetCameraViewMatrix());
+         SetShaderMatrix4(RenderShader, "projection", scene.GetCamera()->GetCameraProjection());
 
          SetShaderInt(RenderShader, "MaterialId", r.MaterialRef);
 
-         SetShaderVector3(RenderShader, "CameraPosition", scene.GetCamera().Position);
+         SetShaderVector3(RenderShader, "CameraPosition", scene.GetCamera()->Position);
 
 
          auto diffuseTexture = scene.MaterialsList.at(r.MaterialRef).DiffuseTexture;

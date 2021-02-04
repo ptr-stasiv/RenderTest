@@ -21,10 +21,7 @@ namespace core
 
       std::deque<graphics::Material> MaterialsList;
 
-      std::reference_wrapper<graphics::Camera> CameraRef;
-
-      inline Scene(graphics::Camera& camera)
-         : CameraRef(camera) {}
+      graphics::Camera* CameraPtr;
 
       inline void AddRenderObject(const graphics::RenderObject& ro)
       {
@@ -52,7 +49,7 @@ namespace core
          return MaterialsList.size() - 1;
       }
 
-      inline void SetCamera(graphics::Camera& camera) { CameraRef = camera; }
-      inline graphics::Camera GetCamera() const { return CameraRef.get(); }
+      inline void SetCamera(graphics::Camera* camera) { CameraPtr = camera; }
+      inline graphics::Camera* GetCamera() const { return CameraPtr; }
    };
 }
