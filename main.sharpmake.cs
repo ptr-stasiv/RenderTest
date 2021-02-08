@@ -31,22 +31,11 @@ namespace sharpmake
 
             config.Output = Configuration.OutputType.Lib;
 
-            if (target.Optimization == Optimization.Release)
-            {
-                config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/release";
-                config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/release";
-            }
-            else if (target.Optimization == Optimization.Retail)
-            {
-                config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/retail";
-                config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/retail";
-            }
-            else if (target.Optimization == Optimization.Debug)
-            {
-                config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/debug";
-                config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/debug";
+            config.TargetPath       = @"[project.SharpmakeCsPath]/gui/binaries/[target.Optimization]";
+            config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/[target.Optimization]";
+
+            if (target.Optimization == Optimization.Debug)
                 config.Options.Add(Options.Vc.Compiler.RuntimeLibrary.MultiThreaded);
-            }
         }
     }
 
@@ -90,24 +79,12 @@ namespace sharpmake
             config.AddPrivateDependency<EngineGuiProject>(target);
 
             config.Output = Configuration.OutputType.Exe;
+            
+            config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/[target.Optimization]";
+            config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/[target.Optimization]";
 
-            if (target.Optimization == Optimization.Release)
-            {
-                config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/release";
-                config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/release";
-            }
-            else if (target.Optimization == Optimization.Retail)
-            {
-                config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/retail";
-                config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/retail";
+            if (target.Optimization == Optimization.Debug)
                 config.Options.Add(Options.Vc.Compiler.RuntimeLibrary.MultiThreaded);
-            }
-            else if (target.Optimization == Optimization.Debug)
-            {
-                config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/debug";
-                config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/debug";
-                config.Options.Add(Options.Vc.Compiler.RuntimeLibrary.MultiThreaded);
-            }
         }
     }
 
