@@ -10,7 +10,6 @@ namespace graphics
    class ForwardRender
    {
    private:
-      static inline GLuint RenderShader;
       static inline std::unordered_map<uint16_t, GLuint> LoadedTextureLookup;
 
    public:

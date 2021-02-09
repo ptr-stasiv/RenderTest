@@ -22,7 +22,6 @@
 #include <Windows.h>
 
 #include "gui.h"
-#include "bgl/shader.h"
 
 #include "debug/log/log.h"
 #include "bgl/debug/callback.h"
