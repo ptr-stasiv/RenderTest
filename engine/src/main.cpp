@@ -8,6 +8,7 @@
 
 #include "math/matrices/matrix4x4.h"
 #include "scene/renders/forward-render.h"
+#include "graphics/shaders/shader-pipeline.h"
 
 #include "asset-manager/obj-loader.h"
 #include "asset-manager/image-loader.h"
@@ -129,6 +130,89 @@ int main()
 
    utils::Timer deltaTimer;
 
+   gui::GuiController gc;
+   gc.Setup(window.GetWidth(), window.GetHeight());
+
+   const char* vertexShaderSrc = R"(
+      #version 330 core
+
+      layout(location = 0) in vec2 pos;
+      layout(location = 1) in vec2 uv;
+
+      out vec2 Uv;
+      
+      void main()
+      {
+         Uv = uv;
+         gl_Position = vec4(pos, 0.0f, 1.0f);
+      })";
+
+   const char* fragmentShaderSrc = R"(
+      #version 330 core
+      
+      out vec4 Color;
+      
+      in vec2 Uv;
+
+      uniform sampler2D Texture;
+
+      void main()
+      {
+         Color = texture(Texture, Uv);
+      })";
+
+
+   graphics::ShaderPipeline guiShader;
+   guiShader.Create();
+
+   guiShader.Add(graphics::ShaderType::Vertex, vertexShaderSrc);
+   guiShader.Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
+
+   guiShader.Compile();
+
+   float vertices[] =
+   {
+      -1.0f, -1.0f, 0.0f, 1.0f,
+      -1.0f, 1.0f, 0.0f, 0.0f,
+      1.0f, 1.0f, 1.0f, 0.0f,
+      1.0f, 1.0f, 1.0f, 0.0f,
+      1.0f, -1.0f, 1.0f, 1.0f,
+      -1.0f, -1.0f, 0.0f, 1.0f,
+   };
+
+   GLuint vao;
+   GLuint vbo;
+
+   glGenVertexArrays(1, &vao);
+   glGenBuffers(1, &vbo);
+
+   glBindVertexArray(vao);
+
+   glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+   glEnableVertexAttribArray(0);
+   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
+
+   glEnableVertexAttribArray(1);
+   glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(2 * sizeof(float)));
+
+   glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+   glBindVertexArray(0);
+
+   GLuint surfaceTexture;
+   glCreateTextures(GL_TEXTURE_2D, 1, &surfaceTexture);
+   glActiveTexture(GL_TEXTURE0);
+   glBindTexture(GL_TEXTURE_2D, surfaceTexture);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window.Width, window.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
+
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
    while (!window.ShouldClose())
    {
       deltaTimer.Reset();
@@ -138,6 +222,23 @@ int main()
       InputHandle();
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
+
+      guiShader.Use();
+
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, surfaceTexture);
+
+      uint32_t w, h;
+      void* pixels;
+      gc.GetRenderingInfo(w, h, pixels);
+
+      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+
+      guiShader.SetInt("Texture", 0);
+
+      glBindVertexArray(vao);
+      glDrawArrays(GL_TRIANGLES, 0, 12);
+      glBindVertexArray(0);
 
       window.EndFrame();
 

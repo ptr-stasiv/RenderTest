@@ -1,18 +1,21 @@
 #pragma once
+#include <memory>
+#include <cstdint>
 
-#ifdef __cplusplus
-extern "C"
+namespace gui
 {
-#endif
+   struct UlInfoPimpl;
 
-   void InitializeGUI(const char* url, const int width, const int height);
+   class GuiController
+   {
+   private:
+      std::unique_ptr<UlInfoPimpl> UlInfo;
+   public:
+       GuiController();
+      ~GuiController();
 
-   void GetWebWindowInfo(int* width, int* height, void** winPixels);
+      void Setup(const uint32_t resX, const uint32_t resY);
 
-   void RunJS(const char* jsCode);
-
-   void SetTestCounterJS(const float s);
-
-#ifdef __cplusplus
+      void GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels);
+   };
 }
-#endif

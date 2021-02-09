@@ -36,3 +36,6 @@ Make sure that Config::resource_path is set properly and that it contains icudt6
     device scale: 1
     session id: 2
 
+> Error loading cacert.pem, the following file path does not exist: ./resources/\cacert.pem
+Make sure that Config::resource_path is set to the directory that contains cacert.pem.
+

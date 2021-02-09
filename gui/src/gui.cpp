@@ -6,73 +6,63 @@
 #include <stdio.h>
 #include <string>
 
-static ultralight::RefPtr<ultralight::Renderer> g_Renderer;
-static ultralight::RefPtr<ultralight::View> g_View;
-
-class WebLoadListener : public ultralight::LoadListener
+namespace gui
 {
-   void OnDOMReady(ultralight::View* view, uint64_t frameId, bool isMainFrame, const ultralight::String& url) override
+   struct UlInfoPimpl
    {
-      
+      ultralight::RefPtr<ultralight::Renderer> Renderer;
+      ultralight::RefPtr<ultralight::View> View;
+   };
+
+   GuiController::GuiController()
+      : UlInfo(new UlInfoPimpl) {}
+
+   GuiController::~GuiController() = default;
+
+   void GuiController::Setup(const uint32_t resX, const uint32_t resY)
+   {
+      ultralight::Config config;
+
+      config.resource_path = "./resources/";
+
+      config.use_gpu_renderer = false;
+
+      config.device_scale = 1.0f;
+
+      ultralight::Platform::instance().set_config(config);
+
+
+      ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());
+
+      ultralight::Platform::instance().set_file_system(ultralight::GetPlatformFileSystem("."));
+
+      ultralight::Platform::instance().set_logger(ultralight::GetDefaultLogger("ultralight.log"));
+
+
+      UlInfo->Renderer = ultralight::Renderer::Create();
+
+      UlInfo->View = UlInfo->Renderer->CreateView(resX, resY, true, nullptr);
+
+      UlInfo->View->LoadURL("http://localhost:3333/");
+
+      UlInfo->View->Focus();
    }
-};
 
-void InitializeGUI(const char* url, const int width, const int height)
-{
-   ultralight::Config config;
+   void GuiController::GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels)
+   {
+      UlInfo->Renderer->Update();
+      UlInfo->Renderer->Render();
 
-   config.resource_path = "./resources/";
+      ultralight::BitmapSurface* bmSurface = (ultralight::BitmapSurface*)UlInfo->View->surface();
 
-   config.use_gpu_renderer = false;
+      ultralight::RefPtr<ultralight::Bitmap> bm = bmSurface->bitmap();
 
-   config.device_scale = 1.0f;
+      void* newPixels = bm->LockPixels();
 
-   ultralight::Platform::instance().set_config(config);
+      resX = bm->width();
+      resY = bm->height();
+      pixels = newPixels;
 
-
-   ultralight::Platform::instance().set_font_loader(ultralight::GetPlatformFontLoader());
-
-   ultralight::Platform::instance().set_file_system(ultralight::GetPlatformFileSystem("."));
-
-   ultralight::Platform::instance().set_logger(ultralight::GetDefaultLogger("ultralight.log"));
-
-
-   g_Renderer = ultralight::Renderer::Create();
-
-   g_View = g_Renderer->CreateView(width, height, true, nullptr);
-
-   g_View->set_load_listener(new WebLoadListener());
-
-   g_View->LoadURL(url);
-
-   g_View->Focus();
-} 
-
-void GetWebWindowInfo(int* width, int* height, void** winPixels)
-{
-   g_Renderer->Update();
-   g_Renderer->Render();
-
-   ultralight::BitmapSurface* bmSurface = (ultralight::BitmapSurface*)g_View->surface();
-
-   ultralight::RefPtr<ultralight::Bitmap> bm = bmSurface->bitmap();
-
-   void* pixels = bm->LockPixels();
-
-   *width   = bm->width();
-   *height  = bm->height();
-   *winPixels = pixels;
-
-   bm->UnlockPixels();
-}
-
-void RunJS(const char* jsCode)
-{
-   g_View->EvaluateScript(jsCode);
-}
-
-void SetTestCounterJS(const float s)
-{
-   std::string code = std::string("SetTestText('") + std::to_string(s) + std::string(" ms');");
-   RunJS(code.c_str());
+      bm->UnlockPixels();
+   }
 }
