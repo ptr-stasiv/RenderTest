@@ -38,7 +38,7 @@ namespace bgl
       glEnable(GL_DEBUG_OUTPUT);
       glDebugMessageCallback(MessageCallbackOGL, 0);
 
-      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
       Width  = width;
       Height = height;
