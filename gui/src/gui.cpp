@@ -19,6 +19,27 @@ namespace gui
 
    GuiController::~GuiController() = default;
 
+   void GuiController::OnMouseEvent(const float x, const float y)
+   {
+      ultralight::MouseEvent e;
+      e.type = ultralight::MouseEvent::Type::kType_MouseMoved;
+      e.x    = round(x);
+      e.y    = round(y);
+      e.button = ultralight::MouseEvent::Button::kButton_None;
+
+      UlInfo->View->FireMouseEvent(e);
+   }
+
+   void GuiController::OnScrollEvent(const float value)
+   {
+      ultralight::ScrollEvent e;
+      e.type = ultralight::ScrollEvent::Type::kType_ScrollByPixel;
+      e.delta_x = 0;
+      e.delta_y = round(value) * 30.0f;
+
+      UlInfo->View->FireScrollEvent(e);
+   }
+
    void GuiController::Setup(const uint32_t resX, const uint32_t resY)
    {
       ultralight::Config config;

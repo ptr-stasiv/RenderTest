@@ -1,4 +1,7 @@
 #include "window-wrapper.h"
+
+#include <Windows.h>
+
 #include "debug/gassert.h"
 #include "bgl/debug/callback.h"
 

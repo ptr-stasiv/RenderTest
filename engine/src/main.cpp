@@ -31,10 +31,14 @@
 
 #include "bgl/window/window-wrapper.h"
 
+#include "input/input-manager.h"
+
 char g_KeyStates[1024];
 graphics::Camera g_MainCamera;
 
 float g_DeltaTime = 1.0f / 60.0f;
+
+gui::GuiController g_GC;
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -47,6 +51,13 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 void CursorCallback(GLFWwindow* window, double posX, double posY)
 {
    g_MainCamera.Rotate(posX, posY, g_DeltaTime);
+
+   g_GC.OnMouseEvent(posX, posY);
+}
+
+void ScrollCallback(GLFWwindow* window, double x, double y)
+{
+   g_GC.OnScrollEvent(y);
 }
 
 void InputHandle()
@@ -72,6 +83,7 @@ int main()
 
    glfwSetKeyCallback(window.NativeHandle.get(), KeyCallback);
    glfwSetCursorPosCallback(window.NativeHandle.get(), CursorCallback);
+   glfwSetScrollCallback(window.NativeHandle.get(), ScrollCallback);
 
    core::JobSystem::Setup();
 
@@ -130,8 +142,7 @@ int main()
 
    utils::Timer deltaTimer;
 
-   gui::GuiController gc;
-   gc.Setup(window.GetWidth(), window.GetHeight());
+   g_GC.Setup(window.GetWidth(), window.GetHeight());
 
    const char* vertexShaderSrc = R"(
       #version 330 core
@@ -213,6 +224,13 @@ int main()
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+   input::SetWindowFocus(window);
+
+   input::InputManager::BindAction(input::Key::A, []()
+      {
+         LOG_ERROR("Key pressed!");
+      });
+
    while (!window.ShouldClose())
    {
       deltaTimer.Reset();
@@ -220,6 +238,8 @@ int main()
       window.BeginFrame();
 
       InputHandle();
+
+      input::InputManager::Poll();
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
 
@@ -230,7 +250,7 @@ int main()
 
       uint32_t w, h;
       void* pixels;
-      gc.GetRenderingInfo(w, h, pixels);
+      g_GC.GetRenderingInfo(w, h, pixels);
 
       glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
 
