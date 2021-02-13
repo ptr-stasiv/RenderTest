@@ -60,22 +60,6 @@ void ScrollCallback(GLFWwindow* window, double x, double y)
    g_GC.OnScrollEvent(y);
 }
 
-void InputHandle()
-{
-   if (g_KeyStates[GLFW_KEY_W])
-      g_MainCamera.Move(graphics::CameraMoveType::MoveForward, g_DeltaTime);
-   if(g_KeyStates[GLFW_KEY_S])
-      g_MainCamera.Move(graphics::CameraMoveType::MoveBackward, g_DeltaTime);
-   if(g_KeyStates[GLFW_KEY_D])
-      g_MainCamera.Move(graphics::CameraMoveType::MoveRight, g_DeltaTime);
-   if (g_KeyStates[GLFW_KEY_A])
-      g_MainCamera.Move(graphics::CameraMoveType::MoveLeft, g_DeltaTime);
-   if (g_KeyStates[GLFW_KEY_E])
-      g_MainCamera.Move(graphics::CameraMoveType::MoveUp, g_DeltaTime);
-   if (g_KeyStates[GLFW_KEY_Q])
-      g_MainCamera.Move(graphics::CameraMoveType::MoveDown, g_DeltaTime);
-}
-
 int main()
 {
    bgl::WindowGL window;
@@ -141,6 +125,11 @@ int main()
    QueryPerformanceFrequency(&freq);
 
    utils::Timer deltaTimer;
+
+
+   //
+   // GUI start
+   //
 
    g_GC.Setup(window.GetWidth(), window.GetHeight());
 
@@ -224,7 +213,24 @@ int main()
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+   //
+   //GUI end
+   //
+
    input::SetWindowFocus(window);
+
+   input::InputManager::BindAxis(input::Key::W, [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
+   input::InputManager::BindAxis(input::Key::S, [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveBackward, value, g_DeltaTime); });
+   input::InputManager::BindAxis(input::Key::D, [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
+   input::InputManager::BindAxis(input::Key::A, [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveLeft, value, g_DeltaTime); });
+   input::InputManager::BindAxis(input::Key::E, [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
+   input::InputManager::BindAxis(input::Key::Q, [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveDown, value, g_DeltaTime); });
 
    while (!window.ShouldClose())
    {
@@ -232,11 +238,12 @@ int main()
 
       window.BeginFrame();
 
-      InputHandle();
-
       input::InputManager::Poll();
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
+
+
+      //GUI render
 
       guiShader.Use();
 

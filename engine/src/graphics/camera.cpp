@@ -34,9 +34,9 @@ namespace graphics
       CameraComputeBasis(*this);
    }
 
-   void Camera::Move(const CameraMoveType moveType, const float deltaTime)
+   void Camera::Move(const CameraMoveType moveType, const float value, const float deltaTime)
    {
-      float speed = Speed * deltaTime;
+      float speed = Speed * value * deltaTime;
 
       switch (moveType)
       {

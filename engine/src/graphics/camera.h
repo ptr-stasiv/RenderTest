@@ -34,7 +34,7 @@ namespace graphics
       Camera()  = default;
       ~Camera() = default;
 
-      void Move(const CameraMoveType moveType, const float deltaTime);
+      void Move(const CameraMoveType moveType, const float value, const float deltaTime);
       void Rotate(const float posX, const float posY, const float deltaTime);
 
       inline math::Matrix4 GetCameraViewMatrix() const
