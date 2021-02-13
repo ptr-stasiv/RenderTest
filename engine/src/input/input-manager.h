@@ -9,17 +9,30 @@ namespace input
    using ActionFunc = void(*)();
    using AxisFunc   = void(*)(const float);
 
+   //Shouldn't be changed 
+   //The values and elements are hardly connected to code in implementation file 
+   enum class KeyState : uint8_t
+   {
+      Pressed = 1,
+      Released = 0,
+   };
+
+
    struct ActionCallbackInfo
    {
-      ActionFunc Callback;
       uint16_t KeyId;
+      uint8_t  DesiredStateId;
+      ActionFunc Callback;
 
-      inline ActionCallbackInfo(const Key key, const ActionFunc callback)
-         : KeyId(static_cast<uint16_t>(key)), Callback(callback) {}
+      inline ActionCallbackInfo(const Key key, const KeyState desiredState, const ActionFunc callback)
+         : KeyId(static_cast<uint16_t>(key)), DesiredStateId(static_cast<uint8_t>(desiredState)), Callback(callback) {}
 
       inline bool operator < (const ActionCallbackInfo& a) const
       {
-         return KeyId < a.KeyId;
+         if (DesiredStateId < a.DesiredStateId)
+            return true;
+         else 
+            return KeyId < a.KeyId;
       }
    };
 
@@ -48,7 +61,7 @@ namespace input
    public:
       static void Poll();
 
-      static inline void BindAction(const Key key, const ActionFunc callback)
+      static inline void BindAction(const Key key, const KeyState desiredState, const ActionFunc callback)
       {
          if (static_cast<uint16_t>(key) > native::MaxKeyStates)
          {
@@ -56,7 +69,7 @@ namespace input
             return;
          }
 
-         ActionsKeyList.emplace_back(key, callback);
+         ActionsKeyList.emplace_back(key, desiredState, callback);
       }
 
       static inline void BindAxis(const Key key, const AxisFunc callback, const float minValue = 0.0f, const float maxValue = 1.0f)

@@ -226,11 +226,6 @@ int main()
 
    input::SetWindowFocus(window);
 
-   input::InputManager::BindAction(input::Key::A, []()
-      {
-         LOG_ERROR("Key pressed!");
-      });
-
    while (!window.ShouldClose())
    {
       deltaTimer.Reset();

@@ -1,9 +1,15 @@
 #include "input-manager.h"
 
 #include <algorithm>
+#include <unordered_map>
 
 namespace input
 {
+   using KeyCheckFunc = const bool(*)(const Key);
+
+   //This is shouldn't be changed without coordination with enum class
+   static KeyCheckFunc g_KeyCheckFuncLookup[] = { native::IsKeyReleaseOccur, native::IsKeyPressOccur };
+
    void InputManager::Poll()
    {
       native::Update();
@@ -13,7 +19,7 @@ namespace input
 
       for (auto e : ActionsKeyList)
       {
-         if (native::IsKeyPressOccur(static_cast<Key>(e.KeyId)))
+         if (g_KeyCheckFuncLookup[e.DesiredStateId](static_cast<Key>(e.KeyId)))
             e.Callback();
       }
 
