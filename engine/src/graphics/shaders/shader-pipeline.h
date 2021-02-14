@@ -35,9 +35,6 @@ namespace graphics
 
       bool Created = false; //Temporal solution, this will be changed with more complex logging system
    public:
-      ShaderPipeline() = default;
-      ~ShaderPipeline() = default;
-
       inline void Create()
       {
          ProgramId = glCreateProgram();
@@ -95,10 +92,5 @@ namespace graphics
       {
          bgl::SetShaderInt(ProgramId, &name[0], s);
       }
-
-      ShaderPipeline(const ShaderPipeline&) = default;
-      ShaderPipeline(ShaderPipeline&&)      = default;
-      ShaderPipeline& operator = (const ShaderPipeline&) = default;
-      ShaderPipeline& operator = (ShaderPipeline&&)      = default;
    };
 }
