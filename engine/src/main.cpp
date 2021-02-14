@@ -33,20 +33,11 @@
 
 #include "input/input-manager.h"
 
-char g_KeyStates[1024];
 graphics::Camera g_MainCamera;
 
 float g_DeltaTime = 1.0f / 60.0f;
 
 gui::GuiController g_GC;
-
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
-{
-   if (action == GLFW_PRESS)
-      g_KeyStates[key] = 1;
-   if (action == GLFW_RELEASE)
-      g_KeyStates[key] = 0;
-}
 
 void CursorCallback(GLFWwindow* window, double posX, double posY)
 {
@@ -65,7 +56,23 @@ int main()
    bgl::WindowGL window;
    window.Instantiate();
 
-   glfwSetKeyCallback(window.NativeHandle.get(), KeyCallback);
+   input::SetWindowFocus(window);
+
+   input::InputManager::AddAxisMapping("MoveForward", std::make_pair(input::Key::W, 1.0f),
+                                                      std::make_pair(input::Key::S, -1.0f));
+   input::InputManager::AddAxisMapping("MoveRight", std::make_pair(input::Key::D, 1.0f),
+                                                    std::make_pair(input::Key::A, -1.0f));
+   input::InputManager::AddAxisMapping("MoveUp", std::make_pair(input::Key::E, 1.0f),
+                                                 std::make_pair(input::Key::Q, -1.0f));
+
+   input::InputManager::BindAxis("MoveForward", [](const float value)
+                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
+   input::InputManager::BindAxis("MoveRight", [](const float value)
+                                              { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
+   input::InputManager::BindAxis("MoveUp", [](const float value)
+                                           { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
+
+
    glfwSetCursorPosCallback(window.NativeHandle.get(), CursorCallback);
    glfwSetScrollCallback(window.NativeHandle.get(), ScrollCallback);
 
@@ -216,21 +223,6 @@ int main()
    //
    //GUI end
    //
-
-   input::SetWindowFocus(window);
-
-   input::InputManager::BindAxis(input::Key::W, [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
-   input::InputManager::BindAxis(input::Key::S, [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveBackward, value, g_DeltaTime); });
-   input::InputManager::BindAxis(input::Key::D, [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
-   input::InputManager::BindAxis(input::Key::A, [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveLeft, value, g_DeltaTime); });
-   input::InputManager::BindAxis(input::Key::E, [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
-   input::InputManager::BindAxis(input::Key::Q, [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveDown, value, g_DeltaTime); });
 
    while (!window.ShouldClose())
    {

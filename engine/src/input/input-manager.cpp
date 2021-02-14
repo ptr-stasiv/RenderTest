@@ -14,6 +14,7 @@ namespace input
    {
       native::Update();
 
+      //Sort all keys by similarities
       std::sort(ActionsKeyList.begin(), ActionsKeyList.end());
       std::sort(AxisesKeyList.begin(), AxisesKeyList.end());
 

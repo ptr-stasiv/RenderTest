@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+#include <deque>
+#include <utility>
 
 #include "native-input-handling.h"
 
@@ -58,29 +60,83 @@ namespace input
    private:
       static inline std::vector<ActionCallbackInfo> ActionsKeyList;
       static inline std::vector<AxisCallbackInfo> AxisesKeyList;
+
+      static inline std::unordered_map<std::string_view, std::deque<Key>> ActionKeyMap;
+      static inline std::unordered_map<std::string_view, std::deque<std::pair<Key, float>>> AxisKeyMap;
    public:
       static void Poll();
 
-      static inline void BindAction(const Key key, const KeyState desiredState, const ActionFunc callback)
+      template<typename ...Args>
+      static inline void AddActionMapping(const std::string_view& actionName, const Key key, const Args... keys)
       {
-         if (static_cast<uint16_t>(key) > native::MaxKeyStates)
+         AddActionMappingImpl(actionName, key);
+         AddActionMappingImpl(actionName, keys...);
+      }
+
+      template<typename K, typename ...Args>
+      static inline void AddAxisMapping(const std::string_view& axisName, const K& keyInfo, const Args&... keys)
+      {
+         AddAxisMappingImpl(axisName, keyInfo);
+         AddAxisMappingImpl(axisName, keys...);
+      }
+
+      static inline void BindAction(const std::string_view& actionName, const KeyState desiredState, const ActionFunc callback)
+      {
+         auto keyHandle = ActionKeyMap.find(actionName);
+         if (keyHandle == ActionKeyMap.end())
          {
-            LOG_ERROR("Invalid bind action!");
+            LOG_ERROR("Invalid action name specified!");
             return;
          }
 
+         for (auto key : keyHandle->second)
+            ActionsKeyList.emplace_back(key, desiredState, callback);
+      }
+
+      static inline void BindAction(const Key& key, const KeyState desiredState, const ActionFunc callback)
+      {
+         if (static_cast<uint16_t>(key) > native::MaxKeyStates)
+         {
+            LOG_ERROR("Invalid key specified!");
+            return;
+         }
+            
          ActionsKeyList.emplace_back(key, desiredState, callback);
       }
 
-      static inline void BindAxis(const Key key, const AxisFunc callback, const float minValue = 0.0f, const float maxValue = 1.0f)
+      static inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const float defaultValue = 0.0f)
       {
-         if (static_cast<uint16_t>(key) > native::MaxKeyStates)
+         auto keyHandle = AxisKeyMap.find(axisNamey);
+         if (keyHandle == AxisKeyMap.end())
          {
-            LOG_ERROR("Invalid bind action!");
+            LOG_ERROR("Invalid axis name specified!");
             return;
          }
 
-         AxisesKeyList.emplace_back(key, callback, minValue, maxValue);
+         for (auto keyInfo : keyHandle->second)
+            AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
+      }
+   private:
+      static inline void AddActionMappingImpl(const std::string_view& actionName, const Key key)
+      {
+         if (static_cast<uint16_t>(key) > native::MaxKeyStates)
+         {
+            LOG_ERROR("Invalid key specified!");
+            return;
+         }
+
+         ActionKeyMap[actionName].push_back(key);
+      }
+
+      static inline void AddAxisMappingImpl(const std::string_view& actionName, const std::pair<Key, float>& keyInfo)
+      {
+         if (static_cast<uint16_t>(keyInfo.first) > native::MaxKeyStates)
+         {
+            LOG_ERROR("Invalid key specified!");
+            return;
+         }
+
+         AxisKeyMap[actionName].emplace_back(keyInfo);
       }
    };
 }
