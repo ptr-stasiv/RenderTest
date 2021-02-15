@@ -13,7 +13,7 @@ namespace input
 
    //Shouldn't be changed 
    //The values and elements are hardly connected to code in implementation file 
-   enum class KeyState : uint8_t
+   enum class InputKeyState : uint8_t
    {
       Pressed = 1,
       Released = 0,
@@ -22,12 +22,12 @@ namespace input
 
    struct ActionCallbackInfo
    {
-      uint16_t KeyId;
-      uint8_t  DesiredStateId;
+      uint8_t KeyId;
+      uint8_t DesiredStateId;
       ActionFunc Callback;
 
-      inline ActionCallbackInfo(const Key key, const KeyState desiredState, const ActionFunc callback)
-         : KeyId(static_cast<uint16_t>(key)), DesiredStateId(static_cast<uint8_t>(desiredState)), Callback(callback) {}
+      inline ActionCallbackInfo(const InputKey key, const InputKeyState desiredState, const ActionFunc callback)
+         : KeyId(static_cast<uint8_t>(key)), DesiredStateId(static_cast<uint8_t>(desiredState)), Callback(callback) {}
 
       inline bool operator < (const ActionCallbackInfo& a) const
       {
@@ -41,13 +41,13 @@ namespace input
    struct AxisCallbackInfo
    {
       AxisFunc Callback;
-      uint16_t KeyId;
+      uint8_t KeyId;
 
       float MinValue;
       float MaxValue;
 
-      inline AxisCallbackInfo(const Key key, const AxisFunc& callback, const float minValue, const float maxValue)
-         : KeyId(static_cast<uint16_t>(key)), Callback(callback), MinValue(minValue), MaxValue(maxValue) {}
+      inline AxisCallbackInfo(const InputKey key, const AxisFunc& callback, const float minValue, const float maxValue)
+         : KeyId(static_cast<uint8_t>(key)), Callback(callback), MinValue(minValue), MaxValue(maxValue) {}
 
       inline bool operator < (const AxisCallbackInfo& a) const
       {
@@ -61,13 +61,13 @@ namespace input
       static inline std::vector<ActionCallbackInfo> ActionsKeyList;
       static inline std::vector<AxisCallbackInfo> AxisesKeyList;
 
-      static inline std::unordered_map<std::string_view, std::deque<Key>> ActionKeyMap;
-      static inline std::unordered_map<std::string_view, std::deque<std::pair<Key, float>>> AxisKeyMap;
+      static inline std::unordered_map<std::string_view, std::deque<InputKey>> ActionKeyMap;
+      static inline std::unordered_map<std::string_view, std::deque<std::pair<InputKey, float>>> AxisKeyMap;
    public:
       static void Poll();
 
       template<typename ...Args>
-      static inline void AddActionMapping(const std::string_view& actionName, const Key key, const Args... keys)
+      static inline void AddActionMapping(const std::string_view& actionName, const InputKey key, const Args... keys)
       {
          AddActionMappingImpl(actionName, key);
          AddActionMappingImpl(actionName, keys...);
@@ -80,7 +80,7 @@ namespace input
          AddAxisMappingImpl(axisName, keys...);
       }
 
-      static inline void BindAction(const std::string_view& actionName, const KeyState desiredState, const ActionFunc callback)
+      static inline void BindAction(const std::string_view& actionName, const InputKeyState desiredState, const ActionFunc callback)
       {
          auto keyHandle = ActionKeyMap.find(actionName);
          if (keyHandle == ActionKeyMap.end())
@@ -93,9 +93,9 @@ namespace input
             ActionsKeyList.emplace_back(key, desiredState, callback);
       }
 
-      static inline void BindAction(const Key& key, const KeyState desiredState, const ActionFunc callback)
+      static inline void BindAction(const InputKey& key, const InputKeyState desiredState, const ActionFunc callback)
       {
-         if (static_cast<uint16_t>(key) > native::MaxKeyStates)
+         if (static_cast<uint8_t>(key) > native::MaxKeyStates)
          {
             LOG_ERROR("Invalid key specified!");
             return;
@@ -117,9 +117,9 @@ namespace input
             AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
       }
    private:
-      static inline void AddActionMappingImpl(const std::string_view& actionName, const Key key)
+      static inline void AddActionMappingImpl(const std::string_view& actionName, const InputKey key)
       {
-         if (static_cast<uint16_t>(key) > native::MaxKeyStates)
+         if (static_cast<uint8_t>(key) > native::MaxKeyStates)
          {
             LOG_ERROR("Invalid key specified!");
             return;
@@ -128,9 +128,9 @@ namespace input
          ActionKeyMap[actionName].push_back(key);
       }
 
-      static inline void AddAxisMappingImpl(const std::string_view& actionName, const std::pair<Key, float>& keyInfo)
+      static inline void AddAxisMappingImpl(const std::string_view& actionName, const std::pair<InputKey, float>& keyInfo)
       {
-         if (static_cast<uint16_t>(keyInfo.first) > native::MaxKeyStates)
+         if (static_cast<uint8_t>(keyInfo.first) > native::MaxKeyStates)
          {
             LOG_ERROR("Invalid key specified!");
             return;

@@ -12,7 +12,12 @@ namespace input
    {
       static bgl::WindowGL* g_FocusedWindow;
 
-      static constexpr uint16_t MaxKeyStates = static_cast<uint16_t>(input::Key::LAST_ENUM_ELEMENT);
+      //
+      //'Key' impersonate all keys, buttons of the input devices, in other words all things that can be pressed and released
+      //
+
+      static constexpr uint8_t MaxKeyStates = (uint8_t)(input::InputKey::LAST_ENUM_ELEMENT);
+
       extern std::bitset<MaxKeyStates> g_CurrentFrameKeyStates;
       extern std::bitset<MaxKeyStates> g_LastFrameKeyStates;
       extern std::bitset<MaxKeyStates> g_ReleasedKeys;
@@ -21,9 +26,14 @@ namespace input
 
       inline void GlfwKeyCallback(GLFWwindow* window, int key, int sc, int action, int mods)
       {
-         g_CurrentFrameKeyStates[static_cast<uint16_t>(mapping::g_GlfwKeyMap[key])] = (action != GLFW_RELEASE) ? true : false;
+         g_CurrentFrameKeyStates[static_cast<uint8_t>(mapping::g_GlfwInputKeyMap[key])] = (action != GLFW_RELEASE) ? true : false;
       }
 
+      inline void GlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+      {
+         g_CurrentFrameKeyStates[static_cast<uint8_t>(mapping::g_GlfwInputKeyMap[1 + button + (uint8_t)(input::InputKey::LastKeyboardKey)])] = (action != GLFW_RELEASE) ? true : false;
+      }
+         
       inline void Update()
       {
          g_ChangedKeys  = g_CurrentFrameKeyStates ^ g_LastFrameKeyStates;
@@ -34,19 +44,26 @@ namespace input
          g_LastFrameKeyStates = g_CurrentFrameKeyStates;
       }
 
-      inline const bool IsKeyPressOccur(const Key key) //Key here for purpose isn't checked for validity this will be done in the wrapper
+
+      //
+      //All function below don't have any checks for argument validity for purpose
+      //They shouldn't be used without wrapper
+      //
+
+
+      inline const bool IsKeyPressOccured(const uint8_t keyId) 
       {
-         return g_PressedKeys.test(static_cast<uint16_t>(key));
+         return g_PressedKeys.test(keyId);
       }
 
-      inline const bool IsKeyReleaseOccur(const Key key)
+      inline const bool IsKeyReleaseOccured(const uint8_t keyId)
       {
-         return g_ReleasedKeys.test(static_cast<size_t>(key));
+         return g_ReleasedKeys.test(keyId);
       }
 
-      inline const bool IsKeyPressed(const Key key)
+      inline const bool IsKeyPressed(const uint8_t keyId)
       {
-         return g_CurrentFrameKeyStates.test(static_cast<uint16_t>(key));
+         return g_CurrentFrameKeyStates.test(keyId);
       }
    }
 
@@ -55,5 +72,6 @@ namespace input
       native::g_FocusedWindow = &window;
 
       glfwSetKeyCallback(native::g_FocusedWindow->NativeHandle.get(), native::GlfwKeyCallback);
+      glfwSetMouseButtonCallback(native::g_FocusedWindow->NativeHandle.get(), native::GlfwMouseButtonCallback);
    }
 }

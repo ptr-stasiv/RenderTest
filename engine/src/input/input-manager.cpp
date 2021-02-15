@@ -5,10 +5,10 @@
 
 namespace input
 {
-   using KeyCheckFunc = const bool(*)(const Key);
+   using KeyCheckFunc = const bool(*)(const uint8_t);
 
    //This is shouldn't be changed without coordination with enum class
-   static KeyCheckFunc g_KeyCheckFuncLookup[] = { native::IsKeyReleaseOccur, native::IsKeyPressOccur };
+   static KeyCheckFunc g_KeyCheckFuncLookup[] = { native::IsKeyReleaseOccured, native::IsKeyPressOccured };
 
    void InputManager::Poll()
    {
@@ -20,14 +20,14 @@ namespace input
 
       for (auto e : ActionsKeyList)
       {
-         if (g_KeyCheckFuncLookup[e.DesiredStateId](static_cast<Key>(e.KeyId)))
+         if (g_KeyCheckFuncLookup[e.DesiredStateId](e.KeyId))
             e.Callback();
       }
 
       for (auto e : AxisesKeyList)
       {
          float value = e.MinValue;
-         if (native::IsKeyPressed(static_cast<Key>(e.KeyId)))
+         if (native::IsKeyPressed(e.KeyId))
             value = e.MaxValue;
 
          e.Callback(value);

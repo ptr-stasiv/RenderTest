@@ -58,12 +58,12 @@ int main()
 
    input::SetWindowFocus(window);
 
-   input::InputManager::AddAxisMapping("MoveForward", std::make_pair(input::Key::W, 1.0f),
-                                                      std::make_pair(input::Key::S, -1.0f));
-   input::InputManager::AddAxisMapping("MoveRight", std::make_pair(input::Key::D, 1.0f),
-                                                    std::make_pair(input::Key::A, -1.0f));
-   input::InputManager::AddAxisMapping("MoveUp", std::make_pair(input::Key::E, 1.0f),
-                                                 std::make_pair(input::Key::Q, -1.0f));
+   input::InputManager::AddAxisMapping("MoveForward", std::make_pair(input::InputKey::W, 1.0f),
+                                                      std::make_pair(input::InputKey::S, -1.0f));
+   input::InputManager::AddAxisMapping("MoveRight", std::make_pair(input::InputKey::D, 1.0f),
+                                                    std::make_pair(input::InputKey::A, -1.0f));
+   input::InputManager::AddAxisMapping("MoveUp", std::make_pair(input::InputKey::E, 1.0f),
+                                                 std::make_pair(input::InputKey::Q, -1.0f));
 
    input::InputManager::BindAxis("MoveForward", [](const float value)
                                                 { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
@@ -233,7 +233,6 @@ int main()
       input::InputManager::Poll();
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
-
 
       //GUI render
 
