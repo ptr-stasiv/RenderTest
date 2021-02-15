@@ -66,18 +66,18 @@ namespace input
    public:
       static void Poll();
 
-      template<typename ...Args>
-      static inline void AddActionMapping(const std::string_view& actionName, const InputKey key, const Args... keys)
+      template<typename T, typename ...Args>
+      static inline void AddActionMapping(const std::string_view& actionName, const T key, const Args... keys)
       {
-         AddActionMappingImpl(actionName, key);
-         AddActionMappingImpl(actionName, keys...);
+         AddActionMappin(actionName, key);
+         AddActionMapping(actionName, keys...);
       }
 
       template<typename K, typename ...Args>
       static inline void AddAxisMapping(const std::string_view& axisName, const K& keyInfo, const Args&... keys)
       {
-         AddAxisMappingImpl(axisName, keyInfo);
-         AddAxisMappingImpl(axisName, keys...);
+         AddAxisMapping(axisName, keyInfo);
+         AddAxisMapping(axisName, keys...);
       }
 
       static inline void BindAction(const std::string_view& actionName, const InputKeyState desiredState, const ActionFunc callback)
@@ -117,7 +117,7 @@ namespace input
             AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
       }
    private:
-      static inline void AddActionMappingImpl(const std::string_view& actionName, const InputKey key)
+      static inline void AddActionMapping(const std::string_view& actionName, const InputKey key)
       {
          if (static_cast<uint8_t>(key) > native::MaxKeyStates)
          {
@@ -128,7 +128,7 @@ namespace input
          ActionKeyMap[actionName].push_back(key);
       }
 
-      static inline void AddAxisMappingImpl(const std::string_view& actionName, const std::pair<InputKey, float>& keyInfo)
+      static inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputKey, float>& keyInfo)
       {
          if (static_cast<uint8_t>(keyInfo.first) > native::MaxKeyStates)
          {

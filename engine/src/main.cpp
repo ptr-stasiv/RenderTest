@@ -51,8 +51,21 @@ void ScrollCallback(GLFWwindow* window, double x, double y)
    g_GC.OnScrollEvent(y);
 }
 
+void Print(const char* msg)
+{
+   printf(msg);
+}
+
+template<typename T, typename ...Args>
+void Print(T msg, Args... args)
+{
+   Print(args...);
+}
+
 int main()
 {
+   Print("dddddd", "dddddddd", "Te");
+
    bgl::WindowGL window;
    window.Instantiate();
 
@@ -223,6 +236,9 @@ int main()
    //
    //GUI end
    //
+
+
+   //input::InputManager::AddActionMapping("DD", input::InputKey::A, input::InputKey::D, input::InputKey::W);
 
    while (!window.ShouldClose())
    {
