@@ -5,6 +5,9 @@
 #include "debug/gassert.h"
 #include "bgl/debug/callback.h"
 
+#include "input/glfw/glfw-input-wrapper.h"
+#include "input/native-input-handling.h"
+
 namespace bgl
 {
    bool WindowGL::Instantiate(const uint16_t width, const uint16_t height,
@@ -22,6 +25,14 @@ namespace bgl
 
       if (glewInit() != GLEW_OK)
          return false;
+
+      input::native::SetWindowFocus(window);
+      input::native::Callbacks::KeyCallbackFunc = input::native::OnKeyStateChanged;
+      input::native::Callbacks::MouseButtonCallbackFunc = input::native::OnMouseButtonStateChanged;
+      
+      //
+      //This should be move out here
+      //
 
       const GLubyte* vendorInfo = glGetString(GL_VENDOR);
       const GLubyte* rendererInfo = glGetString(GL_RENDERER);

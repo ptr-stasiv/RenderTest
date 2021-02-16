@@ -140,8 +140,10 @@ namespace input
 
 
       //Move events
-      MouseMove_X,
-      MouseMovv_Y,
+      MouseMovePos_X,
+      MouseMovePos_Y,
+      MouseMoveNeg_X,
+      MouseMoveNeg_Y,
       MouseScroll_Up,
       MouseScroll_Down,
 

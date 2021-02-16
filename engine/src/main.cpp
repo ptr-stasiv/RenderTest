@@ -44,8 +44,6 @@ int main()
    bgl::WindowGL window;
    window.Instantiate();
 
-   input::SetWindowFocus(window);
-
    input::InputManager::AddAxisMapping("MoveForward", std::make_pair(input::InputEvent::W, 1.0f),
                                                       std::make_pair(input::InputEvent::S, -1.0f));
    input::InputManager::AddAxisMapping("MoveRight", std::make_pair(input::InputEvent::D, 1.0f),
