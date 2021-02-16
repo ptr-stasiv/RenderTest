@@ -4,10 +4,29 @@ namespace input
 {
    namespace native
    {
-      std::bitset<MaxKeyStates> g_CurrentFrameKeyStates;
-      std::bitset<MaxKeyStates> g_LastFrameKeyStates;
-      std::bitset<MaxKeyStates> g_ReleasedKeys;
-      std::bitset<MaxKeyStates> g_PressedKeys;
-      std::bitset<MaxKeyStates> g_ChangedKeys;
+      std::bitset<MaxEvents> g_CurrentFrameEventStates;
+      std::bitset<MaxEvents> g_LastFrameEventStates;
+      std::bitset<MaxEvents> g_ReleasedEvents;
+      std::bitset<MaxEvents> g_PressedEvents;
+      std::bitset<MaxEvents> g_ChangedEvents;
+
+
+      struct
+      {
+         float cursorX;
+         float cursorY;
+
+         float mouseScroll;
+      } g_InputValuesStorage;
+
+      void Update()
+      {
+         g_ChangedEvents = g_CurrentFrameEventStates ^ g_LastFrameEventStates;
+
+         g_PressedEvents = g_ChangedEvents & g_CurrentFrameEventStates;
+         g_ReleasedEvents = g_ChangedEvents & ~g_CurrentFrameEventStates;
+
+         g_LastFrameEventStates = g_CurrentFrameEventStates;
+      }
    }
 }

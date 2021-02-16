@@ -3,46 +3,70 @@
 #include <bitset>
 
 #include "bgl/window/window-wrapper.h"
-#include "glfw-key-remapping.h"
+#include "glfw/glfw-key-remapping.h"
 #include "debug/log/log.h"
+#include "math/vectors/vector2.h"
 
 namespace input
 {
    namespace native
    {
-      static bgl::WindowGL* g_FocusedWindow;
+      static bgl::WindowGL* g_GlfwFocusedWindow;
 
       //
-      //'Key' impersonate all keys, buttons of the input devices, in other words all things that can be pressed and released
+      //'Event' mean all events that can be done with input devices like keyboard key press or mouse move
       //
 
-      static constexpr uint8_t MaxKeyStates = (uint8_t)(input::InputKey::LAST_ENUM_ELEMENT);
+      static constexpr uint8_t MaxEvents = (uint8_t)(input::InputEvent::LAST_ENUM_ELEMENT);
 
-      extern std::bitset<MaxKeyStates> g_CurrentFrameKeyStates;
-      extern std::bitset<MaxKeyStates> g_LastFrameKeyStates;
-      extern std::bitset<MaxKeyStates> g_ReleasedKeys;
-      extern std::bitset<MaxKeyStates> g_PressedKeys;
-      extern std::bitset<MaxKeyStates> g_ChangedKeys;
+      extern std::bitset<MaxEvents> g_CurrentFrameEventStates;
+      extern std::bitset<MaxEvents> g_LastFrameEventStates;
+      extern std::bitset<MaxEvents> g_ReleasedEvents;
+      extern std::bitset<MaxEvents> g_PressedEvents;
+      extern std::bitset<MaxEvents> g_ChangedEvents;
+
+      
+      //
+      //GLFW callbacks
+      //
 
       inline void GlfwKeyCallback(GLFWwindow* window, int key, int sc, int action, int mods)
       {
-         g_CurrentFrameKeyStates[static_cast<uint8_t>(mapping::g_GlfwInputKeyMap[key])] = (action != GLFW_RELEASE) ? true : false;
+         g_CurrentFrameEventStates[static_cast<uint8_t>(mapping::g_GlfwInputEventMap[key])] = (action != GLFW_RELEASE) ? true : false;
       }
 
       inline void GlfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
       {
-         g_CurrentFrameKeyStates[static_cast<uint8_t>(mapping::g_GlfwInputKeyMap[1 + button + (uint8_t)(input::InputKey::LastKeyboardKey)])] = (action != GLFW_RELEASE) ? true : false;
+         g_CurrentFrameEventStates[static_cast<uint8_t>(mapping::g_GlfwInputEventMap[1 + button + (uint8_t)(input::InputEvent::LastKeyboardKey)])] = (action != GLFW_RELEASE) ? true : false;
       }
-         
-      inline void Update()
+
+
+      static float g_ScrollValue;
+
+      inline void GlfwMouseScrollCallback(GLFWwindow* window, double x, double y)
       {
-         g_ChangedKeys  = g_CurrentFrameKeyStates ^ g_LastFrameKeyStates;
-
-         g_PressedKeys  = g_ChangedKeys & g_CurrentFrameKeyStates;
-         g_ReleasedKeys = g_ChangedKeys & ~g_CurrentFrameKeyStates;
-
-         g_LastFrameKeyStates = g_CurrentFrameKeyStates;
+         g_ScrollValue = y;
       }
+       
+      //
+      //
+      //
+
+      inline math::Vector2 GetCursorPosition()
+      {
+         double x, y;
+         glfwGetCursorPos(g_GlfwFocusedWindow->NativeHandle.get(), &x, &y);
+
+         return { float(x), float(y) };
+      }
+
+      inline float GetScrollValue()
+      {
+         return g_ScrollValue;
+      }
+
+
+      void Update();
 
 
       //
@@ -51,27 +75,28 @@ namespace input
       //
 
 
-      inline const bool IsKeyPressOccured(const uint8_t keyId) 
+      inline const bool IsPressOccured(const uint8_t keyId) 
       {
-         return g_PressedKeys.test(keyId);
+         return g_PressedEvents.test(keyId);
       }
 
-      inline const bool IsKeyReleaseOccured(const uint8_t keyId)
+      inline const bool IsReleaseOccured(const uint8_t keyId)
       {
-         return g_ReleasedKeys.test(keyId);
+         return g_ReleasedEvents.test(keyId);
       }
 
-      inline const bool IsKeyPressed(const uint8_t keyId)
+      inline const bool IsPressed(const uint8_t keyId)
       {
-         return g_CurrentFrameKeyStates.test(keyId);
+         return g_CurrentFrameEventStates.test(keyId);
       }
    }
 
    inline void SetWindowFocus(bgl::WindowGL& window)
    {
-      native::g_FocusedWindow = &window;
+      native::g_GlfwFocusedWindow = &window;
 
-      glfwSetKeyCallback(native::g_FocusedWindow->NativeHandle.get(), native::GlfwKeyCallback);
-      glfwSetMouseButtonCallback(native::g_FocusedWindow->NativeHandle.get(), native::GlfwMouseButtonCallback);
+      glfwSetKeyCallback(native::g_GlfwFocusedWindow->NativeHandle.get(), native::GlfwKeyCallback);
+      glfwSetMouseButtonCallback(native::g_GlfwFocusedWindow->NativeHandle.get(), native::GlfwMouseButtonCallback);
+      glfwSetScrollCallback(native::g_GlfwFocusedWindow->NativeHandle.get(), native::GlfwMouseScrollCallback);
    }
 }

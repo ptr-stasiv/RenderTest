@@ -27,6 +27,8 @@ namespace sharpmake
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/gui/extern/ul/include");
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/gui/extern/ul/lib");
 
+            config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/src");
+
             config.LibraryFiles.AddRange(new Strings("AppCore", "Ultralight", "UltralightCore", "WebCore"));
 
             config.Output = Configuration.OutputType.Lib;

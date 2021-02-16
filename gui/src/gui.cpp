@@ -19,7 +19,7 @@ namespace gui
 
    GuiController::~GuiController() = default;
 
-   void GuiController::OnMouseEvent(const float x, const float y)
+   void GuiController::OnMouseMove(const float x, const float y)
    {
       ultralight::MouseEvent e;
       e.type = ultralight::MouseEvent::Type::kType_MouseMoved;
@@ -30,7 +30,7 @@ namespace gui
       UlInfo->View->FireMouseEvent(e);
    }
 
-   void GuiController::OnScrollEvent(const float value)
+   void GuiController::OnMouseMove(const float value)
    {
       ultralight::ScrollEvent e;
       e.type = ultralight::ScrollEvent::Type::kType_ScrollByPixel;
@@ -67,6 +67,17 @@ namespace gui
       UlInfo->View->LoadURL("http://localhost:3333/");
 
       UlInfo->View->Focus();
+   }
+
+   void GuiController::UpdateInput(void(*cursorPosFunc)(float&, float&), void(*mouseScrollFunc)(float&))
+   {
+      float curX, curY;
+      cursorPosFunc(curX, curY);
+      OnMouseMove(curX, curY);
+
+      float scrollVal;
+      mouseScrollFunc(scrollVal);
+      OnMouseMove(scrollVal);
    }
 
    void GuiController::GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels)

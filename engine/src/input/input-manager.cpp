@@ -8,7 +8,7 @@ namespace input
    using KeyCheckFunc = const bool(*)(const uint8_t);
 
    //This is shouldn't be changed without coordination with enum class
-   static KeyCheckFunc g_KeyCheckFuncLookup[] = { native::IsKeyReleaseOccured, native::IsKeyPressOccured };
+   static KeyCheckFunc g_KeyCheckFuncLookup[] = { native::IsPressOccured, native::IsReleaseOccured };
 
    void InputManager::Poll()
    {
@@ -27,7 +27,7 @@ namespace input
       for (auto e : AxisesKeyList)
       {
          float value = e.MinValue;
-         if (native::IsKeyPressed(e.KeyId))
+         if (native::IsPressed(e.KeyId))
             value = e.MaxValue;
 
          e.Callback(value);

@@ -39,44 +39,19 @@ float g_DeltaTime = 1.0f / 60.0f;
 
 gui::GuiController g_GC;
 
-void CursorCallback(GLFWwindow* window, double posX, double posY)
-{
-   g_MainCamera.Rotate(posX, posY, g_DeltaTime);
-
-   g_GC.OnMouseEvent(posX, posY);
-}
-
-void ScrollCallback(GLFWwindow* window, double x, double y)
-{
-   g_GC.OnScrollEvent(y);
-}
-
-void Print(const char* msg)
-{
-   printf(msg);
-}
-
-template<typename T, typename ...Args>
-void Print(T msg, Args... args)
-{
-   Print(args...);
-}
-
 int main()
 {
-   Print("dddddd", "dddddddd", "Te");
-
    bgl::WindowGL window;
    window.Instantiate();
 
    input::SetWindowFocus(window);
 
-   input::InputManager::AddAxisMapping("MoveForward", std::make_pair(input::InputKey::W, 1.0f),
-                                                      std::make_pair(input::InputKey::S, -1.0f));
-   input::InputManager::AddAxisMapping("MoveRight", std::make_pair(input::InputKey::D, 1.0f),
-                                                    std::make_pair(input::InputKey::A, -1.0f));
-   input::InputManager::AddAxisMapping("MoveUp", std::make_pair(input::InputKey::E, 1.0f),
-                                                 std::make_pair(input::InputKey::Q, -1.0f));
+   input::InputManager::AddAxisMapping("MoveForward", std::make_pair(input::InputEvent::W, 1.0f),
+                                                      std::make_pair(input::InputEvent::S, -1.0f));
+   input::InputManager::AddAxisMapping("MoveRight", std::make_pair(input::InputEvent::D, 1.0f),
+                                                    std::make_pair(input::InputEvent::A, -1.0f));
+   input::InputManager::AddAxisMapping("MoveUp", std::make_pair(input::InputEvent::E, 1.0f),
+                                                 std::make_pair(input::InputEvent::Q, -1.0f));
 
    input::InputManager::BindAxis("MoveForward", [](const float value)
                                                 { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
@@ -84,10 +59,6 @@ int main()
                                               { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
    input::InputManager::BindAxis("MoveUp", [](const float value)
                                            { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
-
-
-   glfwSetCursorPosCallback(window.NativeHandle.get(), CursorCallback);
-   glfwSetScrollCallback(window.NativeHandle.get(), ScrollCallback);
 
    core::JobSystem::Setup();
 
@@ -237,9 +208,6 @@ int main()
    //GUI end
    //
 
-
-   //input::InputManager::AddActionMapping("DD", input::InputKey::A, input::InputKey::D, input::InputKey::W);
-
    while (!window.ShouldClose())
    {
       deltaTimer.Reset();
@@ -247,6 +215,18 @@ int main()
       window.BeginFrame();
 
       input::InputManager::Poll();
+
+      g_GC.UpdateInput(
+         [](float& x, float& y)
+         {
+            auto v = input::native::GetCursorPosition();
+            x = v.x;
+            y = v.y;
+         },
+         [](float& val)
+         {
+            val = input::native::GetScrollValue();
+         });
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
 
@@ -270,7 +250,7 @@ int main()
       glBindVertexArray(0);
 
       window.EndFrame();
-
+      
       g_DeltaTime = 1.0f / deltaTimer.GetElaspedTime();
    }
 

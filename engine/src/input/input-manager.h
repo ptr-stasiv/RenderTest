@@ -13,7 +13,7 @@ namespace input
 
    //Shouldn't be changed 
    //The values and elements are hardly connected to code in implementation file 
-   enum class InputKeyState : uint8_t
+   enum class InputEventState : uint8_t
    {
       Pressed = 1,
       Released = 0,
@@ -26,7 +26,7 @@ namespace input
       uint8_t DesiredStateId;
       ActionFunc Callback;
 
-      inline ActionCallbackInfo(const InputKey key, const InputKeyState desiredState, const ActionFunc callback)
+      inline ActionCallbackInfo(const InputEvent key, const InputEventState desiredState, const ActionFunc callback)
          : KeyId(static_cast<uint8_t>(key)), DesiredStateId(static_cast<uint8_t>(desiredState)), Callback(callback) {}
 
       inline bool operator < (const ActionCallbackInfo& a) const
@@ -46,7 +46,7 @@ namespace input
       float MinValue;
       float MaxValue;
 
-      inline AxisCallbackInfo(const InputKey key, const AxisFunc& callback, const float minValue, const float maxValue)
+      inline AxisCallbackInfo(const InputEvent key, const AxisFunc& callback, const float minValue, const float maxValue)
          : KeyId(static_cast<uint8_t>(key)), Callback(callback), MinValue(minValue), MaxValue(maxValue) {}
 
       inline bool operator < (const AxisCallbackInfo& a) const
@@ -61,8 +61,8 @@ namespace input
       static inline std::vector<ActionCallbackInfo> ActionsKeyList;
       static inline std::vector<AxisCallbackInfo> AxisesKeyList;
 
-      static inline std::unordered_map<std::string_view, std::deque<InputKey>> ActionKeyMap;
-      static inline std::unordered_map<std::string_view, std::deque<std::pair<InputKey, float>>> AxisKeyMap;
+      static inline std::unordered_map<std::string_view, std::deque<InputEvent>> ActionKeyMap;
+      static inline std::unordered_map<std::string_view, std::deque<std::pair<InputEvent, float>>> AxisKeyMap;
    public:
       static void Poll();
 
@@ -80,7 +80,7 @@ namespace input
          AddAxisMapping(axisName, keys...);
       }
 
-      static inline void BindAction(const std::string_view& actionName, const InputKeyState desiredState, const ActionFunc callback)
+      static inline void BindAction(const std::string_view& actionName, const InputEventState desiredState, const ActionFunc callback)
       {
          auto keyHandle = ActionKeyMap.find(actionName);
          if (keyHandle == ActionKeyMap.end())
@@ -93,9 +93,9 @@ namespace input
             ActionsKeyList.emplace_back(key, desiredState, callback);
       }
 
-      static inline void BindAction(const InputKey& key, const InputKeyState desiredState, const ActionFunc callback)
+      static inline void BindAction(const InputEvent& key, const InputEventState desiredState, const ActionFunc callback)
       {
-         if (static_cast<uint8_t>(key) > native::MaxKeyStates)
+         if (static_cast<uint8_t>(key) > native::MaxEvents)
          {
             LOG_ERROR("Invalid key specified!");
             return;
@@ -117,9 +117,9 @@ namespace input
             AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
       }
    private:
-      static inline void AddActionMapping(const std::string_view& actionName, const InputKey key)
+      static inline void AddActionMapping(const std::string_view& actionName, const InputEvent key)
       {
-         if (static_cast<uint8_t>(key) > native::MaxKeyStates)
+         if (static_cast<uint8_t>(key) > native::MaxEvents)
          {
             LOG_ERROR("Invalid key specified!");
             return;
@@ -128,9 +128,9 @@ namespace input
          ActionKeyMap[actionName].push_back(key);
       }
 
-      static inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputKey, float>& keyInfo)
+      static inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputEvent, float>& keyInfo)
       {
-         if (static_cast<uint8_t>(keyInfo.first) > native::MaxKeyStates)
+         if (static_cast<uint8_t>(keyInfo.first) > native::MaxEvents)
          {
             LOG_ERROR("Invalid key specified!");
             return;
