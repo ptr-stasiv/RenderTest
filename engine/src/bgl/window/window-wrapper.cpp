@@ -5,8 +5,30 @@
 #include "debug/gassert.h"
 #include "bgl/debug/callback.h"
 
-#include "input/glfw/glfw-input-wrapper.h"
 #include "input/native-input-handling.h"
+
+namespace input
+{
+   inline void KeyCallback(GLFWwindow* w, int key, int sc, int action, int mods)
+   {
+      native::callback::OnKeyStateChanged(key, sc, action, mods);
+   }
+
+   inline void MouseButtonCallback(GLFWwindow* w, int button, int action, int mods)
+   {
+      native::callback::OnMouseButtonStateChanged(button, action, mods);
+   }
+
+   inline void ScrollCallback(GLFWwindow* w, double x, double y)
+   {
+      ::input::MouseInfo::ScrollValue = y;
+   }
+
+   inline void CursorCallback(GLFWwindow* w, double x, double y)
+   {
+      ::input::MouseInfo::CursorPosition = { float(x), float(y) };
+   }
+}
 
 namespace bgl
 {
@@ -26,10 +48,16 @@ namespace bgl
       if (glewInit() != GLEW_OK)
          return false;
 
-      input::native::SetWindowFocus(window);
-      input::native::Callbacks::KeyCallbackFunc = input::native::OnKeyStateChanged;
-      input::native::Callbacks::MouseButtonCallbackFunc = input::native::OnMouseButtonStateChanged;
-      
+
+      glfwSetKeyCallback(window, input::KeyCallback);
+
+      glfwSetMouseButtonCallback(window, input::MouseButtonCallback);
+
+      glfwSetScrollCallback(window, input::ScrollCallback);
+
+      glfwSetCursorPosCallback(window, input::CursorCallback);
+
+
       //
       //This should be move out here
       //

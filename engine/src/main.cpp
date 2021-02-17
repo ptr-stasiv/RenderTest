@@ -217,13 +217,13 @@ int main()
       g_GC.UpdateInput(
          [](float& x, float& y)
          {
-            auto v = input::native::GetCursorPosition();
+            auto v = input::MouseInfo::CursorPosition;
             x = v.x;
             y = v.y;
          },
          [](float& val)
          {
-            val = input::native::GetScrollValue();
+            val = input::MouseInfo::ScrollValue;
          });
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);

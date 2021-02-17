@@ -1,9 +1,11 @@
 #pragma once
+#include <string_view>
+#include <memory>
+
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
-#include <string_view>
-#include <memory>
+#include "math/vectors/vector2.h"
 
 namespace bgl
 {
@@ -54,5 +56,14 @@ namespace bgl
       WindowGL(WindowGL&&)      = delete;
       WindowGL& operator = (const WindowGL&) = delete;
       WindowGL& operator = (WindowGL&&)      = delete;
+   };
+}
+
+namespace input
+{
+   struct MouseInfo
+   {
+      static inline float ScrollValue;
+      static inline math::Vector2 CursorPosition;
    };
 }

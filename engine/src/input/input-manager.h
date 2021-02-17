@@ -5,7 +5,6 @@
 #include <utility>
 
 #include "native-input-handling.h"
-#include "glfw/glfw-input-wrapper.h"
 
 namespace input
 {
