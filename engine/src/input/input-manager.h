@@ -66,18 +66,38 @@ namespace input
    public:
       static void Poll();
 
-      template<typename T, typename ...Args>
-      static inline void AddActionMapping(const std::string_view& actionName, const T key, const Args... keys)
+      static inline void AddActionMapping(const std::string_view& actionName, const InputEvent key)
       {
-         AddActionMappin(actionName, key);
-         AddActionMapping(actionName, keys...);
+         if (static_cast<uint8_t>(key) > native::MaxEvents)
+         {
+            LOG_ERROR("Invalid key specified!");
+            return;
+         }
+
+         ActionKeyMap[actionName].push_back(key);
       }
 
-      template<typename K, typename ...Args>
-      static inline void AddAxisMapping(const std::string_view& axisName, const K& keyInfo, const Args&... keys)
+      static inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputEvent, float>& keyInfo)
       {
-         AddAxisMapping(axisName, keyInfo);
-         AddAxisMapping(axisName, keys...);
+         if (static_cast<uint8_t>(keyInfo.first) > native::MaxEvents)
+         {
+            LOG_ERROR("Invalid key specified!");
+            return;
+         }
+
+         AxisKeyMap[actionName].emplace_back(keyInfo);
+      }
+
+      static inline void AddActionMapping(const std::string_view& actionName, const std::initializer_list<InputEvent>& inputEvents)
+      {
+         for (auto e : inputEvents)
+            AddActionMapping(actionName, e);
+      }
+      
+      static inline void AddAxisMapping(const std::string_view& axisName, const std::initializer_list< std::pair<InputEvent, float>>& inputEvents)
+      {
+         for (auto e : inputEvents)
+            AddAxisMapping(axisName, e);
       }
 
       static inline void BindAction(const std::string_view& actionName, const InputEventState desiredState, const ActionFunc callback)
@@ -115,28 +135,6 @@ namespace input
 
          for (auto keyInfo : keyHandle->second)
             AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
-      }
-   private:
-      static inline void AddActionMapping(const std::string_view& actionName, const InputEvent key)
-      {
-         if (static_cast<uint8_t>(key) > native::MaxEvents)
-         {
-            LOG_ERROR("Invalid key specified!");
-            return;
-         }
-
-         ActionKeyMap[actionName].push_back(key);
-      }
-
-      static inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputEvent, float>& keyInfo)
-      {
-         if (static_cast<uint8_t>(keyInfo.first) > native::MaxEvents)
-         {
-            LOG_ERROR("Invalid key specified!");
-            return;
-         }
-
-         AxisKeyMap[actionName].emplace_back(keyInfo);
       }
    };
 }
