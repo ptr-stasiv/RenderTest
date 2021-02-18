@@ -44,12 +44,17 @@ int main()
    bgl::WindowGL window;
    window.Instantiate();
 
-   input::InputManager::AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f }, 
+   input::InputManager::AddAxisMapping("Rotate", { { input::InputEvent::MouseMove_X, 1.0f }, { input::InputEvent::MouseMove_Y, 1.0f } });
+
+   input::InputManager::AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
                                                         { input::InputEvent::S, -1.0f } });
    input::InputManager::AddAxisMapping("MoveRight", { { input::InputEvent::D, 1.0f },
                                                       { input::InputEvent::A, -1.0f} });
    input::InputManager::AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                                    { input::InputEvent::Q, -1.0f } });
+
+   input::InputManager::BindAxis("Rotate", [](const float value)
+                                         { if(value) g_MainCamera.Rotate(input::MouseInfo::CursorPosition.x, input::MouseInfo::CursorPosition.y, g_DeltaTime);});
 
    input::InputManager::BindAxis("MoveForward", [](const float value)
                                                 { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });

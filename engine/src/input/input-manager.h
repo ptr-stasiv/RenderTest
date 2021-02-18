@@ -8,6 +8,8 @@
 
 namespace input
 {
+   constexpr size_t MaxGestures = (size_t)(InputEvent::LastMouseGesture)-(size_t)(InputEvent::LastMouseButton);
+
    using ActionFunc = void(*)();
    using AxisFunc   = void(*)(const float);
 

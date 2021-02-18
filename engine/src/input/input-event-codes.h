@@ -139,15 +139,12 @@ namespace input
       LastMouseButton = M_8,
 
 
-      //Move events
-      MouseMovePos_X,
-      MouseMovePos_Y,
-      MouseMoveNeg_X,
-      MouseMoveNeg_Y,
-      MouseScroll_Up,
-      MouseScroll_Down,
+      //Move gestures
+      MouseMove_X,
+      MouseMove_Y,
+      MouseScroll,
 
-      LastMoveEvent = MouseScroll_Down,
+      LastMouseGesture = MouseScroll,
 
 
       LAST_ENUM_ELEMENT
