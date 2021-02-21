@@ -29,9 +29,11 @@
 
 #include "jobs/job-system.h"
 
-#include "bgl/window/window-wrapper.h"
+#include "platforms/declarations/window/window-wrapper.h"
 
 #include "input/input-manager.h"
+
+#include "events/subject.h"
 
 graphics::Camera g_MainCamera;
 
@@ -41,7 +43,7 @@ gui::GuiController g_GC;
 
 int main()
 {
-   bgl::WindowGL window;
+   platform::Window window;
    window.Instantiate();
 
    input::InputManager::AddAxisMapping("Rotate", { { input::InputEvent::MouseMove_X, 1.0f }, { input::InputEvent::MouseMove_Y, 1.0f } });
@@ -53,8 +55,8 @@ int main()
    input::InputManager::AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                                    { input::InputEvent::Q, -1.0f } });
 
-   input::InputManager::BindAxis("Rotate", [](const float value)
-                                         { if(value) g_MainCamera.Rotate(input::MouseInfo::CursorPosition.x, input::MouseInfo::CursorPosition.y, g_DeltaTime);});
+   /*input::InputManager::BindAxis("Rotate", [](const float value)
+                                         { if(value) g_MainCamera.Rotate(input::MouseInfo::CursorPosition.x, input::MouseInfo::CursorPosition.y, g_DeltaTime);});*/
 
    input::InputManager::BindAxis("MoveForward", [](const float value)
                                                 { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
@@ -200,7 +202,7 @@ int main()
    glCreateTextures(GL_TEXTURE_2D, 1, &surfaceTexture);
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_2D, surfaceTexture);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window.Width, window.Height, 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window.GetWidth(), window.GetHeight(), 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
 
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -219,17 +221,17 @@ int main()
 
       input::InputManager::Poll();
 
-      g_GC.UpdateInput(
-         [](float& x, float& y)
-         {
-            auto v = input::MouseInfo::CursorPosition;
-            x = v.x;
-            y = v.y;
-         },
-         [](float& val)
-         {
-            val = input::MouseInfo::ScrollValue;
-         });
+      //g_GC.UpdateInput(
+      //   [](float& x, float& y)
+      //   {
+      //      auto v = input::MouseInfo::CursorPosition;
+      //      x = v.x;
+      //      y = v.y;
+      //   },
+      //   [](float& val)
+      //   {
+      //      val = input::MouseInfo::ScrollValue;
+      //   });
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
 

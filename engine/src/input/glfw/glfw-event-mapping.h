@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include "GLFW/glfw3.h" 
-#include "input-event-codes.h"
+#include "../input-event-codes.h"
 
 namespace input
 {

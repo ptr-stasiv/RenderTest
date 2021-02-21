@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "platforms/declarations/window/window-wrapper.h"
+
 namespace input
 {
    using KeyCheckFunc = const bool(*)(const uint8_t);
@@ -42,16 +44,16 @@ namespace input
 
    static void ProcessGestures()
    {
-      GesturesInfo::CursorPositionDiff = MouseInfo::CursorPosition - GesturesInfo::LastFrameCursorPosition;
+      //GesturesInfo::CursorPositionDiff = MouseInfo::CursorPosition - GesturesInfo::LastFrameCursorPosition;
 
-      native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_X)] = GesturesInfo::CursorPositionDiff.x != 0.0f;
-      native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_Y)] = GesturesInfo::CursorPositionDiff.y != 0.0f;
+      //native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_X)] = GesturesInfo::CursorPositionDiff.x != 0.0f;
+      //native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_Y)] = GesturesInfo::CursorPositionDiff.y != 0.0f;
 
-      GesturesInfo::ScrollValueDiff = MouseInfo::ScrollValue - GesturesInfo::LastFrameScrollValue;
-      native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseScroll)] = GesturesInfo::ScrollValueDiff != 0.0f;
+      //GesturesInfo::ScrollValueDiff = MouseInfo::ScrollValue - GesturesInfo::LastFrameScrollValue;
+      //native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseScroll)] = GesturesInfo::ScrollValueDiff != 0.0f;
 
-      GesturesInfo::LastFrameCursorPosition = MouseInfo::CursorPosition;
-      GesturesInfo::LastFrameScrollValue = MouseInfo::ScrollValue;
+      //GesturesInfo::LastFrameCursorPosition = MouseInfo::CursorPosition;
+      //GesturesInfo::LastFrameScrollValue = MouseInfo::ScrollValue;
    }
 
    void InputManager::Poll()

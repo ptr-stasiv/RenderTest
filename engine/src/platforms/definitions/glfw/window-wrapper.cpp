@@ -1,38 +1,40 @@
-#include "window-wrapper.h"
+#include "platforms/declarations/window/window-wrapper.h"
 
 #include <Windows.h>
+
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
 
 #include "debug/gassert.h"
 #include "bgl/debug/callback.h"
 
 #include "input/native-input-handling.h"
 
-namespace input
+namespace platform
 {
-   inline void KeyCallback(GLFWwindow* w, int key, int sc, int action, int mods)
+   struct Window::NativeInfo
    {
-      native::callback::OnKeyStateChanged(key, sc, action, mods);
+      inline static GLFWwindow* GlfwWindow;
+
+      inline ~NativeInfo()
+      {
+         glfwDestroyWindow(GlfwWindow);
+      }
+   };
+
+   template<typename T>
+   T* Window::GetNative() const
+   {
+      return NativeInfo::GlfwWindow;
    }
 
-   inline void MouseButtonCallback(GLFWwindow* w, int button, int action, int mods)
-   {
-      native::callback::OnMouseButtonStateChanged(button, action, mods);
-   }
+   template typename GLFWwindow* Window::GetNative<GLFWwindow>() const;
 
-   inline void ScrollCallback(GLFWwindow* w, double x, double y)
-   {
-      ::input::MouseInfo::ScrollValue = y;
-   }
 
-   inline void CursorCallback(GLFWwindow* w, double x, double y)
-   {
-      ::input::MouseInfo::CursorPosition = { float(x), float(y) };
-   }
-}
+   Window::Window() = default;
+   Window::~Window() = default;
 
-namespace bgl
-{
-   bool WindowGL::Instantiate(const uint16_t width, const uint16_t height,
+   bool Window::Instantiate(const uint16_t width, const uint16_t height,
                               const std::string_view title)
    {
       if (!glfwInit())
@@ -49,17 +51,8 @@ namespace bgl
          return false;
 
 
-      glfwSetKeyCallback(window, input::KeyCallback);
-
-      glfwSetMouseButtonCallback(window, input::MouseButtonCallback);
-
-      glfwSetScrollCallback(window, input::ScrollCallback);
-
-      glfwSetCursorPosCallback(window, input::CursorCallback);
-
-
       //
-      //This should be move out here
+      //This should be move out from here
       //
 
       const GLubyte* vendorInfo = glGetString(GL_VENDOR);
@@ -85,9 +78,25 @@ namespace bgl
       Width  = width;
       Height = height;
       Title  = title;
-      NativeHandle = std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)>(window, 
-                                                                       [](GLFWwindow* w) 
-                                                                       { glfwDestroyWindow(w); });
+
+      NativeInfo::GlfwWindow = window;
+
       return true;
+   }
+
+   void Window::BeginFrame() const
+   {
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glfwPollEvents();
+   }
+
+   void Window::EndFrame() const
+   {
+      glfwSwapBuffers(GetNative<GLFWwindow>());
+   }
+
+   bool Window::ShouldClose() const
+   {
+      return glfwWindowShouldClose(GetNative<GLFWwindow>());
    }
 }

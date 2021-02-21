@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <cstdint>
+#include <string>
 
 namespace gui
 {
@@ -16,7 +17,8 @@ namespace gui
 
       void Setup(const uint32_t resX, const uint32_t resY);
 
-      void UpdateInput(void(*cursorPosFunc)(float&, float&), void(*mouseScrollFunc)(float&));
+      void UpdateInput(void(*cursorPosFunc)(float&, float&) = nullptr, 
+                       void(*mouseScrollFunc)(float&) = nullptr);
 
       void GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels);
    private:

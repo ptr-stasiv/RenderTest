@@ -1,10 +1,13 @@
 #include "gui.h"
 
+#include <cstdio>
+#include <string>
+#include <bitset>
+
 #include "Ultralight/Ultralight.h"
 #include "AppCore/Platform.h"
 
-#include <stdio.h>
-#include <string>
+#include "ultralight-event-mapping.h"
 
 namespace gui
 {
@@ -69,14 +72,15 @@ namespace gui
       UlInfo->View->Focus();
    }
 
-   void GuiController::UpdateInput(void(*cursorPosFunc)(float&, float&), void(*mouseScrollFunc)(float&))
+   void GuiController::UpdateInput(void(*cursorPosFunc)(float&, float&), 
+                                   void(*mouseScrollFunc)(float&))
    {
       float curX, curY;
-      cursorPosFunc(curX, curY);
+      if(cursorPosFunc) cursorPosFunc(curX, curY);
       OnMouseMove(curX, curY);
 
       float scrollVal;
-      mouseScrollFunc(scrollVal);
+      if(mouseScrollFunc) mouseScrollFunc(scrollVal);
       OnMouseMove(scrollVal);
    }
 
