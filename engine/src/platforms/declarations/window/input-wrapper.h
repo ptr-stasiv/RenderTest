@@ -7,12 +7,9 @@
 
 namespace platform
 {
-   class InputWrapper
+   struct InputWrapper
    {
-   private:
-      std::reference_wrapper<Window> WindowRef;
-   public:
-      InputWrapper(Window& window);
+      InputWrapper(Window* window);
 
       event::Subject KeyEventSubj;
       event::Subject MouseButtonEventSubj;

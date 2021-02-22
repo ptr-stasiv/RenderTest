@@ -60,15 +60,21 @@ namespace input
    class InputManager
    {
    private:
-      static inline std::vector<ActionCallbackInfo> ActionsKeyList;
-      static inline std::vector<AxisCallbackInfo> AxisesKeyList;
+      std::vector<ActionCallbackInfo> ActionsKeyList;
+      std::vector<AxisCallbackInfo> AxisesKeyList;
 
-      static inline std::unordered_map<std::string_view, std::deque<InputEvent>> ActionKeyMap;
-      static inline std::unordered_map<std::string_view, std::deque<std::pair<InputEvent, float>>> AxisKeyMap;
+      std::unordered_map<std::string_view, std::deque<InputEvent>> ActionKeyMap;
+      std::unordered_map<std::string_view, std::deque<std::pair<InputEvent, float>>> AxisKeyMap;
+
+      std::shared_ptr<input::native::NativeInput> NativeInputManager;
    public:
-      static void Poll();
 
-      static inline void AddActionMapping(const std::string_view& actionName, const InputEvent key)
+      inline InputManager(input::native::NativeInput* nativeInput)
+         : NativeInputManager(nativeInput) {}
+
+      void Poll();
+
+      inline void AddActionMapping(const std::string_view& actionName, const InputEvent key)
       {
          if (static_cast<uint8_t>(key) > native::MaxEvents)
          {
@@ -79,7 +85,7 @@ namespace input
          ActionKeyMap[actionName].push_back(key);
       }
 
-      static inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputEvent, float>& keyInfo)
+      inline void AddAxisMapping(const std::string_view& actionName, const std::pair<InputEvent, float>& keyInfo)
       {
          if (static_cast<uint8_t>(keyInfo.first) > native::MaxEvents)
          {
@@ -90,19 +96,19 @@ namespace input
          AxisKeyMap[actionName].emplace_back(keyInfo);
       }
 
-      static inline void AddActionMapping(const std::string_view& actionName, const std::initializer_list<InputEvent>& inputEvents)
+      inline void AddActionMapping(const std::string_view& actionName, const std::initializer_list<InputEvent>& inputEvents)
       {
          for (auto e : inputEvents)
             AddActionMapping(actionName, e);
       }
       
-      static inline void AddAxisMapping(const std::string_view& axisName, const std::initializer_list< std::pair<InputEvent, float>>& inputEvents)
+      inline void AddAxisMapping(const std::string_view& axisName, const std::initializer_list< std::pair<InputEvent, float>>& inputEvents)
       {
          for (auto e : inputEvents)
             AddAxisMapping(axisName, e);
       }
 
-      static inline void BindAction(const std::string_view& actionName, const InputEventState desiredState, const ActionFunc callback)
+      inline void BindAction(const std::string_view& actionName, const InputEventState desiredState, const ActionFunc callback)
       {
          auto keyHandle = ActionKeyMap.find(actionName);
          if (keyHandle == ActionKeyMap.end())
@@ -115,7 +121,7 @@ namespace input
             ActionsKeyList.emplace_back(key, desiredState, callback);
       }
 
-      static inline void BindAction(const InputEvent& key, const InputEventState desiredState, const ActionFunc callback)
+      inline void BindAction(const InputEvent& key, const InputEventState desiredState, const ActionFunc callback)
       {
          if (static_cast<uint8_t>(key) > native::MaxEvents)
          {
@@ -126,7 +132,7 @@ namespace input
          ActionsKeyList.emplace_back(key, desiredState, callback);
       }
 
-      static inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const float defaultValue = 0.0f)
+      inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const float defaultValue = 0.0f)
       {
          auto keyHandle = AxisKeyMap.find(axisNamey);
          if (keyHandle == AxisKeyMap.end())
@@ -138,5 +144,17 @@ namespace input
          for (auto keyInfo : keyHandle->second)
             AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
       }
+
+      inline const std::shared_ptr<native::NativeInput> GetNativeInput() const
+      {
+         return NativeInputManager;
+      }
+
+      inline const std::shared_ptr<platform::InputWrapper> GetInputWrapper() const
+      {
+         return NativeInputManager->GetInputWrapper();
+      }
+   private:
+      void ProcessGestures();
    };
 }

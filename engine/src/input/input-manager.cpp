@@ -7,11 +7,6 @@
 
 namespace input
 {
-   using KeyCheckFunc = const bool(*)(const uint8_t);
-
-   //This is shouldn't be changed without coordination with enum class
-   static KeyCheckFunc g_KeyCheckFuncLookup[] = { native::IsPressOccured, native::IsReleaseOccured };
-
    struct GesturesInfo
    {
       static inline  math::Vector2 LastFrameCursorPosition;
@@ -42,25 +37,28 @@ namespace input
       }
    }
 
-   static void ProcessGestures()
+   void InputManager::ProcessGestures()
    {
-      //GesturesInfo::CursorPositionDiff = MouseInfo::CursorPosition - GesturesInfo::LastFrameCursorPosition;
+      GesturesInfo::CursorPositionDiff = NativeInputManager->MouseInfo.CursorPosition- GesturesInfo::LastFrameCursorPosition;
 
-      //native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_X)] = GesturesInfo::CursorPositionDiff.x != 0.0f;
-      //native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_Y)] = GesturesInfo::CursorPositionDiff.y != 0.0f;
+      NativeInputManager->CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_X)] = GesturesInfo::CursorPositionDiff.x != 0.0f;
+      NativeInputManager->CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseMove_Y)] = GesturesInfo::CursorPositionDiff.y != 0.0f;
 
-      //GesturesInfo::ScrollValueDiff = MouseInfo::ScrollValue - GesturesInfo::LastFrameScrollValue;
-      //native::g_CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseScroll)] = GesturesInfo::ScrollValueDiff != 0.0f;
+      GesturesInfo::ScrollValueDiff = NativeInputManager->MouseInfo.ScrollValue - GesturesInfo::LastFrameScrollValue;
+      NativeInputManager->CurrentFrameEventStates[static_cast<size_t>(InputEvent::MouseScroll)] = GesturesInfo::ScrollValueDiff != 0.0f;
 
-      //GesturesInfo::LastFrameCursorPosition = MouseInfo::CursorPosition;
-      //GesturesInfo::LastFrameScrollValue = MouseInfo::ScrollValue;
+      GesturesInfo::LastFrameCursorPosition = NativeInputManager->MouseInfo.CursorPosition;
+      GesturesInfo::LastFrameScrollValue = NativeInputManager->MouseInfo.ScrollValue;
    }
+
+
+   using KeyCheckFunc = const bool(*)(const uint8_t);
 
    void InputManager::Poll()
    {
-      native::Update();
-      
       ProcessGestures();
+
+      NativeInputManager->Update();
 
       //Sort all keys by similarities
       std::sort(ActionsKeyList.begin(), ActionsKeyList.end());
@@ -68,14 +66,17 @@ namespace input
 
       for (auto e : ActionsKeyList)
       {
-         if (g_KeyCheckFuncLookup[e.DesiredStateId](e.KeyId))
+         if (NativeInputManager->IsPressOccured(e.KeyId)
+             || NativeInputManager->IsReleaseOccured(e.KeyId))
+         {
             e.Callback();
+         } 
       }
 
       for (auto e : AxisesKeyList)
       {
          float value = e.MinValue;
-         if (native::IsPressed(e.KeyId))
+         if (NativeInputManager->IsPressed(e.KeyId))
             value = e.MaxValue * GetGestureWeight(e.KeyId);
 
          e.Callback(value);

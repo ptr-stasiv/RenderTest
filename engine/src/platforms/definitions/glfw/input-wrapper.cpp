@@ -37,18 +37,17 @@ namespace platform
       }
    }
 
-   InputWrapper::InputWrapper(Window& window)
-      : WindowRef(window)
+   InputWrapper::InputWrapper(Window* window)
    {
-      glfwSetWindowUserPointer(WindowRef.get().GetNative<GLFWwindow>(), reinterpret_cast<void*>(this));
+      glfwSetWindowUserPointer(window->GetNative<GLFWwindow>(), reinterpret_cast<void*>(this));
 
 
-      glfwSetKeyCallback(WindowRef.get().GetNative<GLFWwindow>(), callback::KeyCallback);
+      glfwSetKeyCallback(window->GetNative<GLFWwindow>(), callback::KeyCallback);
 
-      glfwSetMouseButtonCallback(WindowRef.get().GetNative<GLFWwindow>(), callback::MouseButtonCallback);
+      glfwSetMouseButtonCallback(window->GetNative<GLFWwindow>(), callback::MouseButtonCallback);
 
-      glfwSetCursorPosCallback(WindowRef.get().GetNative<GLFWwindow>(), callback::CursorCallback);
+      glfwSetCursorPosCallback(window->GetNative<GLFWwindow>(), callback::CursorCallback);
 
-      glfwSetScrollCallback(WindowRef.get().GetNative<GLFWwindow>(), callback::ScrollCallback);
+      glfwSetScrollCallback(window->GetNative<GLFWwindow>(), callback::ScrollCallback);
    }
 }

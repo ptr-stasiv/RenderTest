@@ -45,25 +45,27 @@ int main()
 {
    platform::Window window;
    window.Instantiate();
+   
+   input::InputManager inputManager(new input::native::NativeInput(new platform::InputWrapper(&window)));
 
-   input::InputManager::AddAxisMapping("Rotate", { { input::InputEvent::MouseMove_X, 1.0f }, { input::InputEvent::MouseMove_Y, 1.0f } });
+   inputManager.AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
+                                                { input::InputEvent::S, -1.0f } });
+   inputManager.AddAxisMapping("MoveRight", { { input::InputEvent::D, 1.0f },
+                                              { input::InputEvent::A, -1.0f} });
+   inputManager.AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
+                                           { input::InputEvent::Q, -1.0f } });
+   inputManager.BindAxis("MoveForward", [](const float value)
+                                          { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
+   inputManager.BindAxis("MoveRight", [](const float value)
+                                        { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
+   inputManager.BindAxis("MoveUp", [](const float value)
+                                     { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
 
-   input::InputManager::AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
-                                                        { input::InputEvent::S, -1.0f } });
-   input::InputManager::AddAxisMapping("MoveRight", { { input::InputEvent::D, 1.0f },
-                                                      { input::InputEvent::A, -1.0f} });
-   input::InputManager::AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
-                                                   { input::InputEvent::Q, -1.0f } });
-
-   /*input::InputManager::BindAxis("Rotate", [](const float value)
-                                         { if(value) g_MainCamera.Rotate(input::MouseInfo::CursorPosition.x, input::MouseInfo::CursorPosition.y, g_DeltaTime);});*/
-
-   input::InputManager::BindAxis("MoveForward", [](const float value)
-                                                { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
-   input::InputManager::BindAxis("MoveRight", [](const float value)
-                                              { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
-   input::InputManager::BindAxis("MoveUp", [](const float value)
-                                           { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
+   inputManager.GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      {
+         event::MouseCursorPosEvent mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
+         g_MainCamera.Rotate(mouseE.PosX, mouseE.PosY, g_DeltaTime);
+      });
 
    core::JobSystem::Setup();
 
@@ -219,7 +221,7 @@ int main()
 
       window.BeginFrame();
 
-      input::InputManager::Poll();
+      inputManager.Poll();
 
       //g_GC.UpdateInput(
       //   [](float& x, float& y)

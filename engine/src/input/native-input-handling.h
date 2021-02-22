@@ -15,7 +15,17 @@ namespace input
 
       class NativeInput
       {
+      private:
+         std::shared_ptr<platform::InputWrapper> InputWrapperManager;
+
       public:
+
+         struct
+         {
+            math::Vector2 CursorPosition;
+            float ScrollValue;
+         } MouseInfo;
+
          //
          //'Event' mean all events that can be done with input devices like keyboard key press or mouse move
          //
@@ -25,8 +35,43 @@ namespace input
          std::bitset<MaxEvents> PressedEvents;
          std::bitset<MaxEvents> ChangedEvents;
 
-         inline NativeInput(platform::InputWrapper& inputWrapper)
+         inline NativeInput(platform::InputWrapper* inputWrapper)
+            : InputWrapperManager(inputWrapper)
          {
+            uintptr_t args = reinterpret_cast<uintptr_t>(this);
+
+            InputWrapperManager->KeyEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
+               {
+                  NativeInput* native = reinterpret_cast<NativeInput*>(args);
+                  event::KeyEvent keyE = event::CastEvent<event::KeyEvent>(e);
+
+                  native->CurrentFrameEventStates[static_cast<size_t>(mapping::g_GlfwInputEventMap[keyE.Key])] = (keyE.State != GLFW_RELEASE) ? true : false;
+               }, args);
+
+            InputWrapperManager->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
+               {
+                  NativeInput* native = reinterpret_cast<NativeInput*>(args);
+                  event::MouseButtonEvent mouseButtonE = event::CastEvent<event::MouseButtonEvent>(e);
+
+                  size_t pos = static_cast<size_t>(mapping::g_GlfwInputEventMap[1 + mouseButtonE.Button + (size_t)(input::InputEvent::LastKeyboardKey)]);
+                  native->CurrentFrameEventStates[pos] = (mouseButtonE.State != GLFW_RELEASE) ? true : false;
+               }, args);
+
+            InputWrapperManager->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
+               {
+                  NativeInput* native = reinterpret_cast<NativeInput*>(args);
+                  event::MouseCursorPosEvent mouseCursorE = event::CastEvent<event::MouseCursorPosEvent>(e);
+
+                  native->MouseInfo.CursorPosition = { mouseCursorE.PosX, mouseCursorE.PosY };
+               }, args);
+
+            InputWrapperManager->MouseScrollEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
+               {
+                  NativeInput* native = reinterpret_cast<NativeInput*>(args);
+                  event::MouseScrollEvent mouseScrollE = event::CastEvent<event::MouseScrollEvent>(e);
+
+                  native->MouseInfo.ScrollValue = mouseScrollE.Value;
+               }, args);
          }
 
          inline void Update()
@@ -39,6 +84,10 @@ namespace input
             LastFrameEventStates = CurrentFrameEventStates;
          }
 
+         inline const std::shared_ptr<platform::InputWrapper> GetInputWrapper() const
+         {
+            return InputWrapperManager;
+         }
 
          //
          //All function below don't have any checks for argument validity for purpose
@@ -59,48 +108,6 @@ namespace input
          {
             return CurrentFrameEventStates.test(keyId);
          }
-      private:
-         inline void OnKeyEvent(event::BaseEvent& e)
-         {
-
-         }
-
-         inline void OnMouseButtonEvent(event::BaseEvent& e)
-         {
-
-         }
-
-         inline void OnMouseCursorEvent(event::BaseEvent& e)
-         {
-
-         }
-
-         inline void OnMouseScrollEvent(event::BaseEvent& e)
-         {
-
-         }
       };
-
-
-
-
-      //This functions should be called somewhere to make input manager work
-      namespace callback
-      {
-         static inline void OnKeyStateChanged(uint32_t key, uint32_t sc, uint32_t action, uint32_t mods)
-         {
-            CurrentFrameEventStates[static_cast<size_t>(mapping::GlfwInputEventMap[key])] = (action != GLFW_RELEASE) ? true : false;
-         }
-
-         static inline void OnMouseButtonStateChanged(uint32_t button, uint32_t action, uint32_t mods)
-         {
-            CurrentFrameEventStates[static_cast<size_t>(mapping::GlfwInputEventMap[1 + button + (size_t)(input::InputEvent::LastKeyboardKey)])] = (action != GLFW_RELEASE) ? true : false;
-         }
-      };
-
-
-
-
-
    }
 }

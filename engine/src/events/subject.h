@@ -6,22 +6,31 @@
 
 namespace event
 {
-   using EventCallback = void(*)(BaseEvent&);
+   using EventCallback = void(*)(BaseEvent&, const uintptr_t);
 
    class Subject
    {
    private:
-      std::vector<EventCallback> ObserversArray;
+      struct EventInfo
+      {
+         EventCallback Callback;
+         uintptr_t Args;
+
+         inline EventInfo(EventCallback callback, uintptr_t args)
+            : Callback(callback), Args(args) {}
+      };
+
+      std::vector<EventInfo> ObserversArray;
    public:
       inline void Invoke(BaseEvent& e)
       {
-         for (auto func : ObserversArray)
-            func(e);
+         for (auto info : ObserversArray)
+            info.Callback(e, info.Args);
       }
 
-      inline size_t AddObserver(const EventCallback& callback)
+      inline size_t AddObserver(const EventCallback& callback, const uintptr_t args = 0)
       {
-         ObserversArray.push_back(callback);
+         ObserversArray.emplace_back(callback, args);
          return ObserversArray.size() - 1;
       }
 
@@ -33,9 +42,9 @@ namespace event
    };
 
    template<typename T>
-   T& CastEvent(BaseEvent& e)
+   T CastEvent(BaseEvent& e)
    {
       GASSERT(e.GetType() == T::GetStaticType(), "Invalid event cast!");
-      return static_cast<T>(e);
+      return static_cast<T&>(e);
    }
 }
