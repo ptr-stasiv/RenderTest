@@ -7,13 +7,16 @@
 
 namespace platform
 {
-   struct InputWrapper
+   namespace input
    {
-      InputWrapper(Window* window);
+      struct InputWrapper
+      {
+         InputWrapper(app::Window* window);
 
-      event::Subject KeyEventSubj;
-      event::Subject MouseButtonEventSubj;
-      event::Subject MouseCursorPosEventSubj;
-      event::Subject MouseScrollEventSubj;
-   };
+         event::Subject KeyEventSubj;
+         event::Subject MouseButtonEventSubj;
+         event::Subject MouseCursorPosEventSubj;
+         event::Subject MouseScrollEventSubj;
+      };
+   }
 }

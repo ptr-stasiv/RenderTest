@@ -43,22 +43,22 @@ gui::GuiController g_GC;
 
 int main()
 {
-   platform::Window window;
+   platform::app::Window window;
    window.Instantiate();
    
-   input::InputManager inputManager(new input::native::NativeInput(new platform::InputWrapper(&window)));
-
+   input::InputManager inputManager(new input::native::NativeInput(new platform::input::InputWrapper(&window)));
+   
    inputManager.AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
                                                 { input::InputEvent::S, -1.0f } });
    inputManager.AddAxisMapping("MoveRight", { { input::InputEvent::D, 1.0f },
                                               { input::InputEvent::A, -1.0f} });
    inputManager.AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                            { input::InputEvent::Q, -1.0f } });
-   inputManager.BindAxis("MoveForward", [](const float value)
+   inputManager.BindAxis("MoveForward", [](const float value, const uintptr_t args)
                                           { g_MainCamera.Move(graphics::CameraMoveType::MoveForward, value, g_DeltaTime); });
-   inputManager.BindAxis("MoveRight", [](const float value)
+   inputManager.BindAxis("MoveRight", [](const float value, const uintptr_t args)
                                         { g_MainCamera.Move(graphics::CameraMoveType::MoveRight, value, g_DeltaTime); });
-   inputManager.BindAxis("MoveUp", [](const float value)
+   inputManager.BindAxis("MoveUp", [](const float value, const uintptr_t args)
                                      { g_MainCamera.Move(graphics::CameraMoveType::MoveUp, value, g_DeltaTime); });
 
    inputManager.GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
@@ -128,6 +128,18 @@ int main()
    //
    // GUI start
    //
+
+   inputManager.GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      {
+         auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
+         g_GC.OnMouseMove(mouseE.PosX, mouseE.PosY);
+      });
+
+   inputManager.GetInputWrapper()->MouseScrollEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      {
+         auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
+         g_GC.OnMouseScroll(mouseE.Value);
+      });
 
    g_GC.Setup(window.GetWidth(), window.GetHeight());
 
@@ -222,18 +234,6 @@ int main()
       window.BeginFrame();
 
       inputManager.Poll();
-
-      //g_GC.UpdateInput(
-      //   [](float& x, float& y)
-      //   {
-      //      auto v = input::MouseInfo::CursorPosition;
-      //      x = v.x;
-      //      y = v.y;
-      //   },
-      //   [](float& val)
-      //   {
-      //      val = input::MouseInfo::ScrollValue;
-      //   });
       
       graphics::ForwardRender::Update(scene, g_DeltaTime);
 

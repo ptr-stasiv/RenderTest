@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <bitset>
 
-#include "glfw/glfw-event-mapping.h"
+#include "platforms/declarations/window/platform-input-map.h"
 #include "debug/log/log.h"
 #include "math/vectors/vector2.h"
 #include "platforms/declarations/window/input-wrapper.h"
@@ -16,7 +16,7 @@ namespace input
       class NativeInput
       {
       private:
-         std::shared_ptr<platform::InputWrapper> InputWrapperManager;
+         std::shared_ptr<platform::input::InputWrapper> InputWrapperManager;
 
       public:
 
@@ -35,7 +35,7 @@ namespace input
          std::bitset<MaxEvents> PressedEvents;
          std::bitset<MaxEvents> ChangedEvents;
 
-         inline NativeInput(platform::InputWrapper* inputWrapper)
+         inline NativeInput(platform::input::InputWrapper* inputWrapper)
             : InputWrapperManager(inputWrapper)
          {
             uintptr_t args = reinterpret_cast<uintptr_t>(this);
@@ -45,7 +45,7 @@ namespace input
                   NativeInput* native = reinterpret_cast<NativeInput*>(args);
                   event::KeyEvent keyE = event::CastEvent<event::KeyEvent>(e);
 
-                  native->CurrentFrameEventStates[static_cast<size_t>(mapping::g_GlfwInputEventMap[keyE.Key])] = (keyE.State != GLFW_RELEASE) ? true : false;
+                  native->CurrentFrameEventStates[static_cast<size_t>(platform::input::PlatformInputMap[keyE.Key])] = (keyE.State) ? true : false;
                }, args);
 
             InputWrapperManager->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
@@ -53,8 +53,8 @@ namespace input
                   NativeInput* native = reinterpret_cast<NativeInput*>(args);
                   event::MouseButtonEvent mouseButtonE = event::CastEvent<event::MouseButtonEvent>(e);
 
-                  size_t pos = static_cast<size_t>(mapping::g_GlfwInputEventMap[1 + mouseButtonE.Button + (size_t)(input::InputEvent::LastKeyboardKey)]);
-                  native->CurrentFrameEventStates[pos] = (mouseButtonE.State != GLFW_RELEASE) ? true : false;
+                  size_t pos = static_cast<size_t>(platform::input::PlatformInputMap[1 + mouseButtonE.Button + (size_t)(input::InputEvent::LastKeyboardKey)]);
+                  native->CurrentFrameEventStates[pos] = (mouseButtonE.State) ? true : false;
                }, args);
 
             InputWrapperManager->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
@@ -84,7 +84,7 @@ namespace input
             LastFrameEventStates = CurrentFrameEventStates;
          }
 
-         inline const std::shared_ptr<platform::InputWrapper> GetInputWrapper() const
+         inline const std::shared_ptr<platform::input::InputWrapper> GetInputWrapper() const
          {
             return InputWrapperManager;
          }

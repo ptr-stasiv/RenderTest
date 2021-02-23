@@ -1,14 +1,13 @@
-#pragma once
-#include <unordered_map>
-
+#include "platforms/declarations/window/platform-input-map.h"
 #include "GLFW/glfw3.h" 
-#include "../input-event-codes.h"
 
-namespace input
+using namespace ::input;
+
+namespace platform
 {
-   namespace mapping
+   namespace input
    {
-      static std::unordered_map<uint8_t, InputEvent> g_GlfwInputEventMap =
+      std::unordered_map<uint8_t, InputEvent> PlatformInputMap =
       {
          { GLFW_KEY_SPACE, InputEvent::Space },
          { GLFW_KEY_APOSTROPHE, InputEvent::Apostrophe },

@@ -17,12 +17,9 @@ namespace gui
 
       void Setup(const uint32_t resX, const uint32_t resY);
 
-      void UpdateInput(void(*cursorPosFunc)(float&, float&) = nullptr, 
-                       void(*mouseScrollFunc)(float&) = nullptr);
-
       void GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels);
-   private:
+
       void OnMouseMove(const float x, const float y);
-      void OnMouseMove(const float value);
+      void OnMouseScroll(const float value);
    };
 }

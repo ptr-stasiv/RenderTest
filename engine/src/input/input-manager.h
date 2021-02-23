@@ -10,26 +10,33 @@ namespace input
 {
    constexpr size_t MaxGestures = (size_t)(InputEvent::LastMouseGesture)-(size_t)(InputEvent::LastMouseButton);
 
-   using ActionFunc = void(*)();
-   using AxisFunc   = void(*)(const float);
+   using ActionFunc = void(*)(const uintptr_t args);
+   using AxisFunc   = void(*)(const float, const uintptr_t args);
 
-   //Shouldn't be changed 
-   //The values and elements are hardly connected to code in implementation file 
    enum class InputEventState : uint8_t
    {
       Pressed = 1,
       Released = 0,
    };
 
-
-   struct ActionCallbackInfo
+   template<typename T>
+   class BasicCallbackInfo
    {
+   public:
       uint8_t KeyId;
-      uint8_t DesiredStateId;
-      ActionFunc Callback;
+      T Callback;
 
-      inline ActionCallbackInfo(const InputEvent key, const InputEventState desiredState, const ActionFunc callback)
-         : KeyId(static_cast<uint8_t>(key)), DesiredStateId(static_cast<uint8_t>(desiredState)), Callback(callback) {}
+      uintptr_t Args;
+
+      inline BasicCallbackInfo(const uint8_t keyId, const T& callback, const uintptr_t args)
+         : KeyId(keyId), Callback(callback), Args(args) {}
+   };
+   struct ActionCallbackInfo : public BasicCallbackInfo<ActionFunc>
+   {
+      uint8_t DesiredStateId;
+
+      inline ActionCallbackInfo(const InputEvent key, const InputEventState desiredState, const ActionFunc callback, const uintptr_t args)
+         : BasicCallbackInfo(static_cast<uint8_t>(key), callback, args), DesiredStateId(static_cast<uint8_t>(desiredState)) {}
 
       inline bool operator < (const ActionCallbackInfo& a) const
       {
@@ -40,16 +47,13 @@ namespace input
       }
    };
 
-   struct AxisCallbackInfo
+   struct AxisCallbackInfo : public BasicCallbackInfo<AxisFunc>
    {
-      AxisFunc Callback;
-      uint8_t KeyId;
-
       float MinValue;
       float MaxValue;
 
-      inline AxisCallbackInfo(const InputEvent key, const AxisFunc& callback, const float minValue, const float maxValue)
-         : KeyId(static_cast<uint8_t>(key)), Callback(callback), MinValue(minValue), MaxValue(maxValue) {}
+      inline AxisCallbackInfo(const InputEvent key, const AxisFunc& callback, const float minValue, const float maxValue, const uintptr_t args)
+         : BasicCallbackInfo(static_cast<uint8_t>(key), callback, args), MinValue(minValue), MaxValue(maxValue) {}
 
       inline bool operator < (const AxisCallbackInfo& a) const
       {
@@ -102,13 +106,13 @@ namespace input
             AddActionMapping(actionName, e);
       }
       
-      inline void AddAxisMapping(const std::string_view& axisName, const std::initializer_list< std::pair<InputEvent, float>>& inputEvents)
+      inline void AddAxisMapping(const std::string_view& axisName, const std::initializer_list<std::pair<InputEvent, float>>& inputEvents)
       {
          for (auto e : inputEvents)
             AddAxisMapping(axisName, e);
       }
 
-      inline void BindAction(const std::string_view& actionName, const InputEventState desiredState, const ActionFunc callback)
+      inline void BindAction(const std::string_view& actionName, const InputEventState desiredState, const ActionFunc callback, const uintptr_t args = 0)
       {
          auto keyHandle = ActionKeyMap.find(actionName);
          if (keyHandle == ActionKeyMap.end())
@@ -118,10 +122,10 @@ namespace input
          }
 
          for (auto key : keyHandle->second)
-            ActionsKeyList.emplace_back(key, desiredState, callback);
+            ActionsKeyList.emplace_back(key, desiredState, callback, args);
       }
 
-      inline void BindAction(const InputEvent& key, const InputEventState desiredState, const ActionFunc callback)
+      inline void BindAction(const InputEvent& key, const InputEventState desiredState, const ActionFunc callback, const uintptr_t args = 0)
       {
          if (static_cast<uint8_t>(key) > native::MaxEvents)
          {
@@ -129,10 +133,10 @@ namespace input
             return;
          }
             
-         ActionsKeyList.emplace_back(key, desiredState, callback);
+         ActionsKeyList.emplace_back(key, desiredState, callback, args);
       }
 
-      inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const float defaultValue = 0.0f)
+      inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const float defaultValue = 0.0f, const uintptr_t args = 0)
       {
          auto keyHandle = AxisKeyMap.find(axisNamey);
          if (keyHandle == AxisKeyMap.end())
@@ -142,7 +146,7 @@ namespace input
          }
 
          for (auto keyInfo : keyHandle->second)
-            AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second);
+            AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second, args);
       }
 
       inline const std::shared_ptr<native::NativeInput> GetNativeInput() const
@@ -150,7 +154,7 @@ namespace input
          return NativeInputManager;
       }
 
-      inline const std::shared_ptr<platform::InputWrapper> GetInputWrapper() const
+      inline const std::shared_ptr<platform::input::InputWrapper> GetInputWrapper() const
       {
          return NativeInputManager->GetInputWrapper();
       }

@@ -69,7 +69,7 @@ namespace input
          if (NativeInputManager->IsPressOccured(e.KeyId)
              || NativeInputManager->IsReleaseOccured(e.KeyId))
          {
-            e.Callback();
+            e.Callback(e.Args);
          } 
       }
 
@@ -79,7 +79,7 @@ namespace input
          if (NativeInputManager->IsPressed(e.KeyId))
             value = e.MaxValue * GetGestureWeight(e.KeyId);
 
-         e.Callback(value);
+         e.Callback(value, e.Args);
       }
    }
 }
