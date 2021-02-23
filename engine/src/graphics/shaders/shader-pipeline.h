@@ -32,22 +32,15 @@ namespace graphics
    private:
       GLuint ProgramId;
       std::string_view ShaderArr[g_ShadersTypeCount];
-
-      bool Created = false; //Temporal solution, this will be changed with more complex logging system
    public:
-      inline void Create()
+      inline ShaderPipeline()
       {
          ProgramId = glCreateProgram();
-
-         Created = true;
-
-         //TODO error handling
       }
 
-      inline void Destroy()
+      inline ~ShaderPipeline()
       {
-         if (Created)
-            glDeleteProgram(ProgramId);
+         glDeleteProgram(ProgramId);
       }
 
       inline void Add(const ShaderType shaderType, const std::string_view& shaderSrc)

@@ -16,11 +16,8 @@
 #include "asset-manager/asset-manager.h"
 
 #include "math/math_utils.h"
-#include "utils/timer.h"
+#include "platforms/declarations/utils/timer.h"
 #include "utils/sync/spin-lock.h"
-
-#include <cstring>
-#include <Windows.h>
 
 #include "gui.h"
 
@@ -80,7 +77,7 @@ int main()
    //  assetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
 
    {
-      utils::Timer assetTimer(true);
+      platform::utils::Timer assetTimer(true);
       assetManager.Load();
       LOG_WARNING("Assets loading time: %f ms", assetTimer.GetElaspedTime());
    }
@@ -119,10 +116,7 @@ int main()
 
    graphics::ForwardRender::Initialize();
 
-   LARGE_INTEGER freq;
-   QueryPerformanceFrequency(&freq);
-
-   utils::Timer deltaTimer;
+   platform::utils::Timer deltaTimer;
 
 
    //
@@ -173,7 +167,6 @@ int main()
 
 
    graphics::ShaderPipeline guiShader;
-   guiShader.Create();
 
    guiShader.Add(graphics::ShaderType::Vertex, vertexShaderSrc);
    guiShader.Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
