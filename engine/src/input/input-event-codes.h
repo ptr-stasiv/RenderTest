@@ -149,4 +149,10 @@ namespace input
 
       LAST_ENUM_ELEMENT
    };
+
+   enum class InputEventState : uint8_t
+   {
+      Pressed = 1,
+      Released = 0,
+   };
 }

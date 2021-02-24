@@ -45,7 +45,7 @@ namespace input
                   NativeInput* native = reinterpret_cast<NativeInput*>(args);
                   event::KeyEvent keyE = event::CastEvent<event::KeyEvent>(e);
 
-                  native->CurrentFrameEventStates[static_cast<size_t>(platform::input::PlatformInputMap[keyE.Key])] = (keyE.State) ? true : false;
+                  native->CurrentFrameEventStates[static_cast<size_t>(platform::input::PlatformInputMap[keyE.Key])] = platform::input::TranslatePlatformState(keyE.State) == InputEventState::Pressed;
                }, args);
 
             InputWrapperManager->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)
@@ -54,7 +54,7 @@ namespace input
                   event::MouseButtonEvent mouseButtonE = event::CastEvent<event::MouseButtonEvent>(e);
 
                   size_t pos = static_cast<size_t>(platform::input::PlatformInputMap[1 + mouseButtonE.Button + (size_t)(input::InputEvent::LastKeyboardKey)]);
-                  native->CurrentFrameEventStates[pos] = (mouseButtonE.State) ? true : false;
+                  native->CurrentFrameEventStates[pos] = platform::input::TranslatePlatformState(mouseButtonE.State) == InputEventState::Pressed;
                }, args);
 
             InputWrapperManager->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, const uintptr_t args)

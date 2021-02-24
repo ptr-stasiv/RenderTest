@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 
+#include "debug/log/log.h"
+
 namespace platform
 {
    struct ProcessHandle::NativeInfo
@@ -10,7 +12,7 @@ namespace platform
       PROCESS_INFORMATION ProcessInfo;
    };
 
-   ProcessHandle::ProcessHandle(const std::string_view& appName)
+   ProcessHandle::ProcessHandle(const std::string_view& appName, const std::string_view& directory)
    {
       Native = std::make_unique<NativeInfo>();
 
@@ -19,16 +21,19 @@ namespace platform
 
       Native->StartupInfo.cb = sizeof(Native->StartupInfo);
       
-      CreateProcessA(NULL,
-                     const_cast<char*>(appName.data()),
-                     NULL,
-                     NULL,
-                     FALSE,
-                     CREATE_NEW_CONSOLE,
-                     NULL,
-                     NULL,
-                     &Native->StartupInfo,
-                     &Native->ProcessInfo);
+      if (!CreateProcessA(NULL,
+           const_cast<char*>(appName.data()),
+           NULL,
+           NULL,
+           FALSE,
+           CREATE_NO_WINDOW,
+           NULL,
+           const_cast<char*>(directory.data()),
+           &Native->StartupInfo,
+           &Native->ProcessInfo))
+      {
+         LOG_ERROR("Error in process creation: %s, error code: %d", appName.data(), GetLastError());
+      }
    }
 
    ProcessHandle::~ProcessHandle()

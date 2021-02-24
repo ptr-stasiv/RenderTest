@@ -6,7 +6,7 @@
 
 namespace input
 {
-   static std::unordered_map<InputEvent, size_t> g_Ultralight =
+   static std::unordered_map<InputEvent, uint32_t> UltralightInputMap =
    {
       { InputEvent::M_Left,   ultralight::MouseEvent::kButton_Left},
       { InputEvent::M_Middle, ultralight::MouseEvent::kButton_Middle},

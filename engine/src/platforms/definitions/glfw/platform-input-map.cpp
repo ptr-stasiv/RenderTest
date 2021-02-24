@@ -7,7 +7,7 @@ namespace platform
 {
    namespace input
    {
-      std::unordered_map<uint8_t, InputEvent> PlatformInputMap =
+      std::unordered_map<uint32_t, InputEvent> PlatformInputMap =
       {
          { GLFW_KEY_SPACE, InputEvent::Space },
          { GLFW_KEY_APOSTROPHE, InputEvent::Apostrophe },
@@ -134,5 +134,13 @@ namespace platform
          { GLFW_MOUSE_BUTTON_7 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_7 },
          { GLFW_MOUSE_BUTTON_8 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_8 }
       };
+
+      InputEventState TranslatePlatformState(const uint32_t state)
+      {
+         if (state == GLFW_PRESS)
+            return InputEventState::Pressed;
+         else
+            return InputEventState::Released;
+      }
    }
 }

@@ -19,6 +19,7 @@ namespace gui
 
       void GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels);
 
+      void OnMouseButton(const uint32_t button, const uint32_t state);
       void OnMouseMove(const float x, const float y);
       void OnMouseScroll(const float value);
    };

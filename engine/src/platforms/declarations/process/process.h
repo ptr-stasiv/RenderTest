@@ -10,7 +10,7 @@ namespace platform
       struct NativeInfo;
       std::unique_ptr<NativeInfo> Native;
    public:
-      ProcessHandle(const std::string_view& appName);
+      ProcessHandle(const std::string_view& appName, const std::string_view& directory);
       ~ProcessHandle();
 
       ProcessHandle(const ProcessHandle*) = delete;

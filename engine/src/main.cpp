@@ -53,6 +53,11 @@ int main()
          event::MouseCursorPosEvent mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
          g_MainCamera.Rotate(mouseE.PosX, mouseE.PosY, g_DeltaTime);
       });
+   inputManager.GetInputWrapper()->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      {
+         event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
+         g_GC.OnMouseButton(mouseE.Button, mouseE.State);
+      });
 
    core::JobSystem::Setup();
 

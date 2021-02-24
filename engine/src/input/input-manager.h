@@ -13,12 +13,6 @@ namespace input
    using ActionFunc = void(*)(const uintptr_t args);
    using AxisFunc   = void(*)(const float, const uintptr_t args);
 
-   enum class InputEventState : uint8_t
-   {
-      Pressed = 1,
-      Released = 0,
-   };
-
    template<typename T>
    class BasicCallbackInfo
    {
