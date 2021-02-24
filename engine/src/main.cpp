@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "GL/glew.h"
-#include "GLFW/glfw3.h"
-
 #include "scene/scene.h"
 
 #include "math/matrices/matrix4x4.h"
@@ -17,12 +11,8 @@
 
 #include "math/math_utils.h"
 #include "platforms/declarations/utils/timer.h"
-#include "utils/sync/spin-lock.h"
 
 #include "gui.h"
-
-#include "debug/log/log.h"
-#include "bgl/debug/callback.h"
 
 #include "jobs/job-system.h"
 
@@ -254,6 +244,5 @@ int main()
       g_DeltaTime = 1.0f / deltaTimer.GetElaspedTime();
    }
 
-   glfwTerminate();
    return 0;
 }
