@@ -33,25 +33,17 @@ namespace platform
       template typename GLFWwindow* Window::GetNative<GLFWwindow>() const;
 
 
-      Window::Window() = default;
-      Window::~Window() = default;
-
-      bool Window::Instantiate(const uint16_t width, const uint16_t height,
-         const std::string_view title)
+      Window::Window(const uint16_t width, const uint16_t height, const std::string_view title)
       {
-         if (!glfwInit())
-            return false;
+         GASSERT(glfwInit(), "Error in window creation");
 
          GLFWwindow* window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
-         if (!window)
-            return false;
+         GASSERT(window, "Error in window creation");
 
          glfwMakeContextCurrent(window);
 
-         if (glewInit() != GLEW_OK)
-            return false;
-
+         GASSERT(glewInit() == GLEW_OK, "Error in window creation");
 
          //
          //This should be move out from here
@@ -82,9 +74,9 @@ namespace platform
          Title = title;
 
          NativeInfo::GlfwWindow = window;
-
-         return true;
       }
+
+      Window::~Window() = default;
 
       void Window::BeginFrame() const
       {

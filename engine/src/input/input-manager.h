@@ -46,7 +46,7 @@ namespace input
       float MinValue;
       float MaxValue;
 
-      inline AxisCallbackInfo(const InputEvent key, const AxisFunc& callback, const float minValue, const float maxValue, const uintptr_t args)
+      inline AxisCallbackInfo(const InputEvent key, const AxisFunc& callback, const uintptr_t args, const float minValue, const float maxValue)
          : BasicCallbackInfo(static_cast<uint8_t>(key), callback, args), MinValue(minValue), MaxValue(maxValue) {}
 
       inline bool operator < (const AxisCallbackInfo& a) const
@@ -130,7 +130,7 @@ namespace input
          ActionsKeyList.emplace_back(key, desiredState, callback, args);
       }
 
-      inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const float defaultValue = 0.0f, const uintptr_t args = 0)
+      inline void BindAxis(const std::string_view& axisNamey, const AxisFunc callback, const uintptr_t args = 0, const float defaultValue = 0.0f)
       {
          auto keyHandle = AxisKeyMap.find(axisNamey);
          if (keyHandle == AxisKeyMap.end())
@@ -140,7 +140,7 @@ namespace input
          }
 
          for (auto keyInfo : keyHandle->second)
-            AxisesKeyList.emplace_back(keyInfo.first, callback, defaultValue, keyInfo.second, args);
+            AxisesKeyList.emplace_back(keyInfo.first, callback, args, defaultValue, keyInfo.second);
       }
 
       inline const std::shared_ptr<native::NativeInput> GetNativeInput() const

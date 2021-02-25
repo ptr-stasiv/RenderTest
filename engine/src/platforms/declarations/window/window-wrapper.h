@@ -18,11 +18,12 @@ namespace platform
          struct NativeInfo;
          std::unique_ptr<NativeInfo> Native;
       public:
-         Window();
+         Window(const uint16_t width = 1280, const uint16_t height = 720,
+                const std::string_view title = "RenderTest");
          ~Window();
 
-         bool Instantiate(const uint16_t width = 1280, const uint16_t height = 720,
-            const std::string_view title = "RenderTest");
+         Window(Window&&) = default;
+         Window& operator = (Window&&) = default;
 
          void BeginFrame() const;
          void EndFrame() const;
@@ -43,9 +44,7 @@ namespace platform
          }
 
          Window(const Window*) = delete;
-         Window(Window&&) = delete;
          Window& operator = (const Window&) = delete;
-         Window& operator = (Window&&) = delete;
       };
    }
 }

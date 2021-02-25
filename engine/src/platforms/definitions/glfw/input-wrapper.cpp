@@ -40,6 +40,7 @@ namespace platform
 
       InputWrapper::InputWrapper(app::Window* window)
       {
+         auto n = window->GetNative<GLFWwindow>();
          glfwSetWindowUserPointer(window->GetNative<GLFWwindow>(), reinterpret_cast<void*>(this));
 
 
