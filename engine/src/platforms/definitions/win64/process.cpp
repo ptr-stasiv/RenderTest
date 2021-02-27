@@ -20,7 +20,7 @@ namespace platform
       ZeroMemory(&Native->ProcessInfo, sizeof(Native->ProcessInfo));
 
       Native->StartupInfo.cb = sizeof(Native->StartupInfo);
-      
+
       if (!CreateProcessA(NULL,
            const_cast<char*>(appName.data()),
            NULL,

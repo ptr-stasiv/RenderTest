@@ -5,6 +5,7 @@
 #include "platforms/declarations/utils/timer.h"
 #include "jobs/job-system.h"
 #include "input/input-manager.h"
+#include "bgl/buffers/vertex-array.h"
 #include "gui.h"
 
 namespace app
@@ -16,7 +17,7 @@ namespace app
 
       std::unique_ptr<graphics::ShaderPipeline> GuiShader;
       GLuint SurfaceTexture;
-      GLuint Vao;
+      std::unique_ptr<bgl::VertexArray> Vao;
    public:
       std::shared_ptr<platform::app::Window> Window;
       std::shared_ptr<input::InputManager> InputManager;
@@ -67,7 +68,8 @@ namespace app
       
             void main()
             {
-               Color = texture(Texture, Uv);
+               //Color = texture(Texture, Uv);
+               Color=vec4(Uv, 0.0f, 1.0f);
             })";
 
          GuiShader = std::make_unique<graphics::ShaderPipeline>();
@@ -87,26 +89,14 @@ namespace app
             -1.0f, -1.0f, 0.0f, 1.0f,
          };
 
-         GLuint vbo;
+         bgl::Buffer vbo(sizeof(vertices), vertices);
 
-         glGenVertexArrays(1, &Vao);
-         glGenBuffers(1, &vbo);
+         Vao = std::make_unique<bgl::VertexArray>();
 
-         glBindVertexArray(Vao);
+         GLuint b = Vao->LinkBuffer(vbo, 4 * sizeof(float));
 
-         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-         glEnableVertexAttribArray(0);
-         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
-
-         glEnableVertexAttribArray(1);
-         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(2 * sizeof(float)));
-
-         glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-         glBindVertexArray(0);
+         Vao->AddAttribFormat(0, b, 2, GL_FLOAT, GL_FALSE, 0);
+         Vao->AddAttribFormat(1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
 
          glCreateTextures(GL_TEXTURE_2D, 1, &SurfaceTexture);
          glActiveTexture(GL_TEXTURE0);
@@ -160,7 +150,7 @@ namespace app
 
          GuiShader->SetInt("Texture", 0);
 
-         glBindVertexArray(Vao);
+         glBindVertexArray(Vao->BindId);
          glDrawArrays(GL_TRIANGLES, 0, 12);
          glBindVertexArray(0);
       }
@@ -187,7 +177,6 @@ int main()
       app->InputManager->Poll();
 
       app->OnTick();
-
       app->GuiUpdate();
 
       app->Window->EndFrame();
