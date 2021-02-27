@@ -9,7 +9,7 @@ namespace bgl
       size_t Size;
    };
 
-   VertexBuffer CreateVertexBuffer(const size_t size, const void* data)
+   inline VertexBuffer CreateVertexBuffer(const size_t size, const void* data)
    {
       GLuint bindId;
       glCreateBuffers(1, &bindId);
@@ -18,7 +18,7 @@ namespace bgl
       return { bindId, size };
    }
 
-   void DeleteVertexBuffer(const VertexBuffer& buffer)
+   inline void DeleteVertexBuffer(const VertexBuffer& buffer)
    {
       glDeleteBuffers(1, &buffer.BindId);
    }
