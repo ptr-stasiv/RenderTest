@@ -6,6 +6,7 @@
 #include "jobs/job-system.h"
 #include "input/input-manager.h"
 #include "bgl/buffers/vertex-array.h"
+#include "bgl/texture2d.h"
 #include "gui.h"
 
 namespace app
@@ -16,8 +17,8 @@ namespace app
       std::shared_ptr<gui::GuiController> GuiController;
 
       std::unique_ptr<graphics::ShaderPipeline> GuiShader;
-      GLuint SurfaceTexture;
       std::unique_ptr<bgl::VertexArray> Vao;
+      bgl::Texture2D SurfaceTexture;
    public:
       std::shared_ptr<platform::app::Window> Window;
       std::shared_ptr<input::InputManager> InputManager;
@@ -68,8 +69,7 @@ namespace app
       
             void main()
             {
-               //Color = texture(Texture, Uv);
-               Color=vec4(Uv, 0.0f, 1.0f);
+               Color = texture(Texture, Uv);
             })";
 
          GuiShader = std::make_unique<graphics::ShaderPipeline>();
@@ -98,15 +98,13 @@ namespace app
          Vao->AddAttribFormat(0, b, 2, GL_FLOAT, GL_FALSE, 0);
          Vao->AddAttribFormat(1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
 
-         glCreateTextures(GL_TEXTURE_2D, 1, &SurfaceTexture);
-         glActiveTexture(GL_TEXTURE0);
-         glBindTexture(GL_TEXTURE_2D, SurfaceTexture);
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window->GetWidth(), Window->GetHeight(), 0, GL_BGRA, GL_UNSIGNED_BYTE, nullptr);
+         bgl::TextureParams params;
+         params.WrapS = GL_CLAMP_TO_EDGE;
+         params.WrapT = GL_CLAMP_TO_EDGE;
+         params.MinFilter = GL_NEAREST;
+         params.MagFilter = GL_NEAREST;
 
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+         SurfaceTexture = bgl::CreateTexture(Window->GetWidth(), Window->GetHeight(), GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
 
          uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(GuiController.get());
 
@@ -139,14 +137,13 @@ namespace app
       {
          GuiShader->Use();
 
-         glActiveTexture(GL_TEXTURE0);
-         glBindTexture(GL_TEXTURE_2D, SurfaceTexture);
+         bgl::BindTexture2D(SurfaceTexture, 0);
 
          uint32_t w, h;
          void* pixels;
          GuiController->GetRenderingInfo(w, h, pixels);
 
-         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+         bgl::UpdateTexture2D(SurfaceTexture, w, h, pixels);
 
          GuiShader->SetInt("Texture", 0);
 
