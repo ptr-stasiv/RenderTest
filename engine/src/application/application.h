@@ -17,7 +17,7 @@ namespace app
       std::shared_ptr<gui::GuiController> GuiController;
 
       std::unique_ptr<graphics::ShaderPipeline> GuiShader;
-      std::unique_ptr<bgl::VertexArray> Vao;
+      bgl::VertexArray Vao;
       bgl::Texture2D SurfaceTexture;
    public:
       std::shared_ptr<platform::app::Window> Window;
@@ -89,14 +89,14 @@ namespace app
             -1.0f, -1.0f, 0.0f, 1.0f,
          };
 
-         bgl::Buffer vbo(sizeof(vertices), vertices);
+         bgl::VertexBuffer vbo = bgl::CreateVertexBuffer(sizeof(vertices), vertices);
 
-         Vao = std::make_unique<bgl::VertexArray>();
+         Vao = bgl::CreateVertexArray();
 
-         GLuint b = Vao->LinkBuffer(vbo, 4 * sizeof(float));
-
-         Vao->AddAttribFormat(0, b, 2, GL_FLOAT, GL_FALSE, 0);
-         Vao->AddAttribFormat(1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+         GLuint b = bgl::AddBufferVertexArray(Vao, vbo, 4 * sizeof(float));
+         
+         bgl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+         bgl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
 
          bgl::TextureParams params;
          params.WrapS = GL_CLAMP_TO_EDGE;
@@ -147,7 +147,7 @@ namespace app
 
          GuiShader->SetInt("Texture", 0);
 
-         glBindVertexArray(Vao->BindId);
+         glBindVertexArray(Vao.BindId);
          glDrawArrays(GL_TRIANGLES, 0, 12);
          glBindVertexArray(0);
       }

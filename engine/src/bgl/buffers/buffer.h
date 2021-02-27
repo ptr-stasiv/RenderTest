@@ -3,23 +3,23 @@
 
 namespace bgl
 {
-   class Buffer
+   struct VertexBuffer
    {
-   public:
       GLuint BindId;
-
-      inline Buffer(const size_t size, const void* data)
-      {
-         glCreateBuffers(1, &BindId);
-         glNamedBufferData(BindId, size, data, GL_STATIC_DRAW);
-      }
-
-      inline ~Buffer()
-      {
-         glDeleteBuffers(1, &BindId);
-      }
-
-      Buffer(const Buffer&) = delete;
-      Buffer& operator = (const Buffer&) = delete;
+      size_t Size;
    };
+
+   VertexBuffer CreateVertexBuffer(const size_t size, const void* data)
+   {
+      GLuint bindId;
+      glCreateBuffers(1, &bindId);
+      glNamedBufferData(bindId, size, data, GL_STATIC_DRAW);
+
+      return { bindId, size };
+   }
+
+   void DeleteVertexBuffer(const VertexBuffer& buffer)
+   {
+      glDeleteBuffers(1, &buffer.BindId);
+   }
 }

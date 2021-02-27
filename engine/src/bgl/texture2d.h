@@ -62,6 +62,11 @@ namespace bgl
       }
    }
 
+   inline void DeleteTexture2D(const Texture2D& texture)
+   {
+      glDeleteTextures(1, &texture.BindId);
+   }
+
    inline void BindTexture2D(const Texture2D& texture, const GLuint unit)
    {
       glBindTextureUnit(unit, texture.BindId);
