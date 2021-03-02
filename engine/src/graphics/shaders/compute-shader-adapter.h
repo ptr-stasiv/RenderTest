@@ -9,21 +9,23 @@ namespace graphics
    {
    private:
       GLuint ProgramId;
-
-      bool Created = false;
    public:
-      inline void Create(const std::string_view& shaderSource)
+      inline ComputeShader(const std::string_view& shaderSource)
       {
+         GLuint shader = bgl::CreateShader(GL_COMPUTE_SHADER, shaderSource.data());
+       
          ProgramId = glCreateProgram();
 
-         GLuint shader = bgl::CreateShader(GL_COMPUTE_SHADER, shaderSource.data());
-         
          glAttachShader(ProgramId, shader);
-         glDeleteShader(shader);
 
          glLinkProgram(ProgramId);
 
-         Created = true;
+         glDeleteShader(shader);
+      }
+
+      inline ~ComputeShader()
+      {
+         glDeleteProgram(ProgramId);
       }
 
       inline void Use() const
@@ -31,16 +33,10 @@ namespace graphics
          glUseProgram(ProgramId);
       }
 
-      inline void Dispatch(const GLuint numGroupsX, GLuint numGroupsY, const GLuint numGroupsZ) const
+      inline void Dispatch(const GLuint numGroupsX = 1, GLuint numGroupsY = 1, const GLuint numGroupsZ = 1) const
       {
          Use();
          glDispatchCompute(numGroupsX, numGroupsY, numGroupsZ);
-      }
-
-      inline void Destroy()
-      {
-         if (Created)
-            glDeleteProgram(ProgramId);
       }
 
       inline void SetFloats(const std::string_view& name, const math::Matrix4& m) const

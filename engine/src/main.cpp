@@ -24,12 +24,24 @@
 
 #include "application/application.h"
 
+#include "graphics/shaders/compute-shader-adapter.h"
+
+#include "utils/read-from-file.h"
+
 class MainApp : public app::BaseApplication
 {
 public:
    graphics::Camera MainCamera;
    assets::AssetManager AssetManager;
    core::Scene Scene;
+
+   std::unique_ptr<graphics::ComputeShader> testCS;
+   std::unique_ptr<graphics::ShaderPipeline> testSP;
+
+   bgl::VertexArray  Vao;
+   bgl::VertexBuffer Vbo;
+
+   bgl::Texture2D csTexture;
 
    void OnStartup() override
    {
@@ -112,6 +124,78 @@ public:
          Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));
 
       graphics::ForwardRender::Initialize();
+
+
+      bgl::TextureParams params;
+      params.MagFilter = GL_NEAREST;
+      params.MinFilter = GL_NEAREST;
+      params.WrapS = GL_CLAMP_TO_EDGE;
+      params.WrapT = GL_CLAMP_TO_EDGE;
+
+      csTexture = bgl::CreateTexture(Window->GetWidth(), Window->GetHeight(),
+                                                    GL_RGBA32F, GL_RGBA, GL_FLOAT,
+                                                    params);
+
+      float vertices[] =
+      {
+         -1.0f, -1.0f, 0.0f, 1.0f,
+         -1.0f, 1.0f, 0.0f, 0.0f,
+         1.0f, 1.0f, 1.0f, 0.0f,
+         1.0f, 1.0f, 1.0f, 0.0f,
+         1.0f, -1.0f, 1.0f, 1.0f,
+         -1.0f, -1.0f, 0.0f, 1.0f,
+      };
+
+      const char* vertexShaderSrc = R"(
+            #version 330 core
+      
+            layout(location = 0) in vec2 pos;
+            layout(location = 1) in vec2 uv;
+      
+            out vec2 Uv;
+         
+            void main()
+            {
+               Uv = uv;
+               gl_Position = vec4(pos, 0.0f, 1.0f);
+            })";
+
+      const char* fragmentShaderSrc = R"(
+            #version 330 core
+         
+            out vec4 Color;
+         
+            in vec2 Uv;
+      
+            uniform sampler2D Texture;
+      
+            void main()
+            {
+               Color = texture(Texture, Uv);
+            })";
+
+      testSP = std::make_unique<graphics::ShaderPipeline>();
+
+      testSP->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
+      testSP->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
+
+      testSP->Compile();
+
+      Vbo = bgl::CreateVertexBuffer(sizeof(vertices), vertices);
+
+      Vao = bgl::CreateVertexArray();
+
+      GLuint b = bgl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
+
+      bgl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+      bgl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+
+      glBindImageTexture(0, csTexture.BindId, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+
+      testCS = std::make_unique<graphics::ComputeShader>(utils::ReadFromFile("res/shaders/compute/ray-tracing.cs"));
+
+      testCS->Dispatch(Window->GetWidth(), Window->GetHeight());
+      glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
    }
 
    void OnTick() override
