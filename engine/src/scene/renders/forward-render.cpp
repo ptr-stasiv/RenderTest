@@ -86,11 +86,20 @@ namespace graphics
          char* quadraticMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Quadratic");
          char* constantMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Constant");
 
-          g_RenderShaderPipeline->SetFloats(posMemberStr, scene.PointLightsList.at(i).Position);
-          g_RenderShaderPipeline->SetFloats(colorMemberStr, scene.PointLightsList.at(i).Color);
-          g_RenderShaderPipeline->SetFloat(linearMemberStr, scene.PointLightsList.at(i).Linear);
-          g_RenderShaderPipeline->SetFloat(quadraticMemberStr, scene.PointLightsList.at(i).Quadratic);
-          g_RenderShaderPipeline->SetFloat(constantMemberStr, scene.PointLightsList.at(i).Constant);
+         g_RenderShaderPipeline->SetFloats(posMemberStr, scene.PointLightsList.at(i).Position);
+         g_RenderShaderPipeline->SetFloats(colorMemberStr, scene.PointLightsList.at(i).Color);
+         g_RenderShaderPipeline->SetFloat(linearMemberStr, scene.PointLightsList.at(i).Linear);
+         g_RenderShaderPipeline->SetFloat(quadraticMemberStr, scene.PointLightsList.at(i).Quadratic);
+         g_RenderShaderPipeline->SetFloat(constantMemberStr, scene.PointLightsList.at(i).Constant);
+
+         auto pos = scene.PointLightsList.at(i).Position;
+         auto linear = scene.PointLightsList.at(i).Linear;
+         auto quad = scene.PointLightsList.at(i).Quadratic;
+         auto con = scene.PointLightsList.at(i).Constant;
+
+         auto d = linear * linear - 4 * quad * (-10 + con);
+         auto r1 = (-linear + std::sqrt(d)) / (2 * quad);
+         auto r2 = (-linear - std::sqrt(d)) / (2 * quad);
 
          free(posMemberStr);
          free(colorMemberStr);
@@ -107,11 +116,11 @@ namespace graphics
          char* outerAngleMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].OuterAngle");
          char* innerAngleMemberStr = ArrayMemberToStr("SpotlightsArray[", i, "].InnerAngle");
 
-          g_RenderShaderPipeline->SetFloats(posMemberStr, scene.SpotlightsList.at(i).Position);
-          g_RenderShaderPipeline->SetFloats(directionMemberStr, scene.SpotlightsList.at(i).Direction);
-          g_RenderShaderPipeline->SetFloats(colorMemberStr, scene.SpotlightsList.at(i).Color);
-          g_RenderShaderPipeline->SetFloat(outerAngleMemberStr, scene.SpotlightsList.at(i).OuterAngle);
-          g_RenderShaderPipeline->SetFloat(innerAngleMemberStr, scene.SpotlightsList.at(i).InnerAngle);
+         g_RenderShaderPipeline->SetFloats(posMemberStr, scene.SpotlightsList.at(i).Position);
+         g_RenderShaderPipeline->SetFloats(directionMemberStr, scene.SpotlightsList.at(i).Direction);
+         g_RenderShaderPipeline->SetFloats(colorMemberStr, scene.SpotlightsList.at(i).Color);
+         g_RenderShaderPipeline->SetFloat(outerAngleMemberStr, scene.SpotlightsList.at(i).OuterAngle);
+         g_RenderShaderPipeline->SetFloat(innerAngleMemberStr, scene.SpotlightsList.at(i).InnerAngle);
 
          free(posMemberStr);
          free(colorMemberStr);

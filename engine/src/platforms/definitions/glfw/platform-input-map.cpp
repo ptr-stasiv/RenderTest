@@ -137,7 +137,7 @@ namespace platform
 
       InputEventState TranslatePlatformState(const uint32_t state)
       {
-         if (state == GLFW_PRESS)
+         if (state == GLFW_PRESS || state == GLFW_REPEAT) //TODO Later make for repeat separate state
             return InputEventState::Pressed;
          else
             return InputEventState::Released;

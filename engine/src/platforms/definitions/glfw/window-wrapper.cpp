@@ -34,6 +34,7 @@ namespace platform
 
 
       Window::Window(const uint16_t width, const uint16_t height, const std::string_view title)
+         : Width(width), Height(height), Title(title)
       {
          GASSERT(glfwInit(), "Error in window creation");
 
@@ -68,10 +69,6 @@ namespace platform
          glDebugMessageCallback(MessageCallbackOGL, 0);
 
          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-         Width = width;
-         Height = height;
-         Title = title;
 
          NativeInfo::GlfwWindow = window;
       }

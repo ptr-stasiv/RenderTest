@@ -43,6 +43,20 @@ public:
 
    bgl::Texture2D csTexture;
 
+   std::unique_ptr<graphics::ShaderPipeline> sphereSP;
+   bgl::VertexArray sphereVao;
+
+   struct Tile
+   {
+      float x;
+      float y;
+
+      bgl::VertexArray Vao;
+   };
+   std::vector<Tile> Tiles;
+
+   std::unique_ptr<graphics::ShaderPipeline> TileShader;
+
    void OnStartup() override
    {
       uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(this);
@@ -58,6 +72,7 @@ public:
          {
             MainApp* app = reinterpret_cast<MainApp*>(args);
             app->MainCamera.Move(graphics::CameraMoveType::MoveForward, value, app->DeltaTime);
+            LOG_ERROR("%f", value);
          }, callbackArgs);
 
       InputManager->BindAxis("MoveRight", [](const float value, const uintptr_t args)
@@ -120,8 +135,8 @@ public:
 
       Scene.AddLight(graphics::PointLight(math::Vector3(1.2f, 1.0f, 2.0f), math::Vector3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
 
-      for (int i = 0; i < 1; ++i)
-         Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));
+     /* for (int i = 0; i < 1; ++i)
+         Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));*/
 
       graphics::ForwardRender::Initialize();
 
@@ -196,11 +211,151 @@ public:
 
       testCS->Dispatch(Window->GetWidth(), Window->GetHeight());
       glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+      //Calculate tiles
+
+      constexpr uint8_t tilesX = 8;
+      constexpr uint8_t tilesY = 8;
+
+      float ar = (float)Window->GetHeight() / Window->GetWidth();
+      const float tileSizeX = 2.0f / tilesX; //Calculated in NDC
+      const float tileSizeY = 2.0f / tilesY;
+
+      {
+         const char* vertexShaderSrc = R"(
+            #version 330 core
+      
+            layout(location = 0) in vec2 pos;
+
+            flat out vec2 Position;
+      
+            void main()
+            {
+               Position = pos;
+               gl_Position = vec4(pos, 0.0f, 1.0f);
+            })";
+
+         const char* fragmentShaderSrc = R"(
+            #version 460 core
+         
+            out vec4 Color;
+
+            flat in vec2 Position;
+      
+            void main()
+            {
+               Color = vec4((Position.xy + 0.5) / 2, 0.2f, 1.0f);
+            })";
+
+            TileShader = std::make_unique<graphics::ShaderPipeline>();
+
+            TileShader->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
+            TileShader->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
+
+            TileShader->Compile();
+      }
+
+
+      for (float y = 1.0f; y > -1.0f; y -= tileSizeY)
+      {
+         for (float x = -1.0f; x < 1.0f; x += tileSizeX)
+         {
+            float sX = tileSizeX;
+            float sY = tileSizeY * (1.0f / ar);
+
+            float fY = y * (1.0f / ar);
+
+            float res[]
+            {
+               x, fY,
+               x, fY - sY,
+               x + sX, fY,
+               x + sX, fY,
+               x + sX, fY - sY,
+               x, fY - sY,
+            };
+
+            bgl::VertexBuffer vbo = bgl::CreateVertexBuffer(sizeof(res), res);
+
+            Tile newTile;
+
+            newTile.x = x;
+            newTile.y = y;
+
+            newTile.Vao = bgl::CreateVertexArray();
+
+            GLuint b = bgl::AddBufferVertexArray(newTile.Vao, vbo, 2 * sizeof(float));
+            bgl::AddAttribFormatVertexArray(newTile.Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+
+            Tiles.push_back(newTile);
+         }
+
+
+         {
+            const char* vertexShaderSrc = R"(
+            #version 330 core
+      
+            layout(location = 0) in vec2 pos;
+
+            uniform mat4 view = mat4(1.0f);
+            uniform mat4 model = mat4(1.0f);
+            uniform mat4 projection = mat4(1.0f);
+
+            void main()
+            {
+               gl_Position = projection * model * view * vec4(pos, 0.0f, 1.0f);
+            })";
+
+            const char* fragmentShaderSrc = R"(
+            #version 460 core
+         
+            out vec4 Color;
+
+            void main()
+            {
+               Color = vec4(1.0f, 0.2f, 0.2f, 1.0f);
+            })";
+
+
+            sphereSP = std::make_unique<graphics::ShaderPipeline>();
+
+            sphereSP->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
+            sphereSP->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
+
+            sphereSP->Compile();
+         }
+
+         float pos[] =
+         {
+            -1.0f, -1.0f,
+            1.0f, 1.0f
+         };
+
+         bgl::VertexBuffer vbo = bgl::CreateVertexBuffer(sizeof(pos), pos);
+         GLuint b = bgl::AddBufferVertexArray(sphereVao, vbo, 2 * sizeof(float));
+         bgl::AddAttribFormatVertexArray(sphereVao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+      }
+
    }
 
    void OnTick() override
    {
       graphics::ForwardRender::Update(Scene, DeltaTime);
+
+
+      TileShader->Use();
+
+      //for (auto t : Tiles)
+      //{
+      //   glBindVertexArray(t.Vao.BindId);
+      //   glDrawArrays(GL_TRIANGLES, 0, 12);
+      //}
+
+      sphereSP->Use();
+      //sphereSP->SetFloats("projection", MainCamera.GetCameraProjection());
+
+      glBindVertexArray(sphereVao.BindId);
+      glDrawArrays(GL_LINES, 0, 8);
    }
 };
 
