@@ -2,7 +2,7 @@
 #include <sstream>
 #include <memory>
 
-namespace platform
+namespace utils
 {
    class ProcessHandle
    {

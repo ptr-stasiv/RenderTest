@@ -1,89 +1,45 @@
 #pragma once
 #include <string_view>
+#include <memory>
 
-#include "bgl/shader.h"
 #include "math/matrices/matrix4x4.h"
 #include "math/vectors/vector4.h"
 #include "math/vectors/vector3.h"
 
-#include "debug/log/log.h"
-
 namespace graphics
-{
-#define SHADER_TYPE_LIST \
-   X(Vertex, GL_VERTEX_SHADER) \
-   X(Fragment, GL_FRAGMENT_SHADER)  
-   
-
+{   
    enum class ShaderType : uint8_t
    {
-#define X(e, v) e,
-      SHADER_TYPE_LIST
-#undef X
+      Vertex,
+      Fragment,
 
       LAST_ENUM_ELEMENT
    };
 
-   static constexpr const uint8_t g_ShadersTypeCount = static_cast<uint8_t>(ShaderType::LAST_ENUM_ELEMENT);
-
-
    struct ShaderPipeline
    {
    private:
-      GLuint ProgramId;
-      std::string_view ShaderArr[g_ShadersTypeCount];
+      struct NativeInfo;
+      std::unique_ptr<NativeInfo> Native;
    public:
-      inline ShaderPipeline()
-      {
-         ProgramId = glCreateProgram();
-      }
+      ShaderPipeline();
 
-      inline ~ShaderPipeline()
-      {
-         glDeleteProgram(ProgramId);
-      }
+      ~ShaderPipeline();
 
-      inline void Add(const ShaderType shaderType, const std::string_view& shaderSrc)
-      {
-         if (static_cast<uint8_t>(shaderType) >= g_ShadersTypeCount)
-         {
-            LOG_ERROR("Shader pipeline error!");
-            return;
-         }
-
-         ShaderArr[static_cast<uint8_t>(shaderType)] = shaderSrc;
-      }
+      void Add(const ShaderType shaderType, const std::string_view& shaderSrc); 
 
       void Compile();
 
-      inline void Use() const
-      {
-         glUseProgram(ProgramId);
-      }
+      void Use() const;
 
-      inline void SetFloats(const std::string_view& name, const math::Matrix4& m) const
-      {
-         bgl::SetShaderMatrix4(ProgramId, &name[0], m);
-      }
+      void SetFloats(const std::string_view& name, const math::Matrix4& m) const;
 
-      inline void SetFloats(const std::string_view& name, const math::Vector4& v) const
-      {
-         bgl::SetShaderVector4(ProgramId, &name[0], v);
-      }
+      void SetFloats(const std::string_view& name, const math::Vector4& v) const;
 
-      inline void SetFloats(const std::string_view& name, const math::Vector3& v) const
-      {
-         bgl::SetShaderVector3(ProgramId, &name[0], v);
-      }
+      void SetFloats(const std::string_view& name, const math::Vector3& v) const;
 
-      inline void SetFloat(const std::string_view& name, const float s) const
-      {
-         bgl::SetShaderFloat(ProgramId, &name[0], s);
-      }
+      void SetFloat(const std::string_view& name, const float s) const;
 
-      inline void SetInt(const std::string_view& name, const int32_t s) const
-      {
-         bgl::SetShaderInt(ProgramId, &name[0], s);
-      }
+      void SetInt(const std::string_view& name, const int32_t s) const;
    };
 }

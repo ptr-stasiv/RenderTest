@@ -10,13 +10,13 @@
 #include "asset-manager/asset-manager.h"
 
 #include "math/math_utils.h"
-#include "platforms/declarations/utils/timer.h"
+#include "utils/timer.h"
 
 #include "gui.h"
 
 #include "jobs/job-system.h"
 
-#include "platforms/declarations/window/window-wrapper.h"
+#include "application/window/window-wrapper.h"
 
 #include "input/input-manager.h"
 
@@ -38,20 +38,20 @@ public:
    std::unique_ptr<graphics::ComputeShader> testCS;
    std::unique_ptr<graphics::ShaderPipeline> testSP;
 
-   bgl::VertexArray  Vao;
-   bgl::VertexBuffer Vbo;
+   gl::VertexArray  Vao;
+   gl::VertexBuffer Vbo;
 
-   bgl::Texture2D csTexture;
+   gl::Texture2D csTexture;
 
    std::unique_ptr<graphics::ShaderPipeline> sphereSP;
-   bgl::VertexArray sphereVao;
+   gl::VertexArray sphereVao;
 
    struct Tile
    {
       float x;
       float y;
 
-      bgl::VertexArray Vao;
+      gl::VertexArray Vao;
    };
    std::vector<Tile> Tiles;
 
@@ -72,7 +72,6 @@ public:
          {
             MainApp* app = reinterpret_cast<MainApp*>(args);
             app->MainCamera.Move(graphics::CameraMoveType::MoveForward, value, app->DeltaTime);
-            LOG_ERROR("%f", value);
          }, callbackArgs);
 
       InputManager->BindAxis("MoveRight", [](const float value, const uintptr_t args)
@@ -102,12 +101,12 @@ public:
       //  AssetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
 
       {
-         platform::utils::Timer assetTimer(true);
+         utils::Timer assetTimer(true);
          AssetManager.Load();
          LOG_WARNING("Assets loading time: %f ms", assetTimer.GetElaspedTime());
       }
 
-      MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), PI / 4, 1.7f, 5.0f);
+      MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
 
       graphics::Material floorM;
       floorM.Color = math::Vector3(0.0f, 0.2f, 0.2f);
@@ -135,19 +134,19 @@ public:
 
       Scene.AddLight(graphics::PointLight(math::Vector3(1.2f, 1.0f, 2.0f), math::Vector3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
 
-     /* for (int i = 0; i < 1; ++i)
-         Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), PI / 12, PI / 15));*/
+      for (int i = 0; i < 1; ++i)
+         Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), math::Pi / 12, math::Pi / 15));
 
       graphics::ForwardRender::Initialize();
 
 
-      bgl::TextureParams params;
+      gl::TextureParams params;
       params.MagFilter = GL_NEAREST;
       params.MinFilter = GL_NEAREST;
       params.WrapS = GL_CLAMP_TO_EDGE;
       params.WrapT = GL_CLAMP_TO_EDGE;
 
-      csTexture = bgl::CreateTexture(Window->GetWidth(), Window->GetHeight(),
+      csTexture = gl::CreateTexture(Window->GetWidth(), Window->GetHeight(),
                                                     GL_RGBA32F, GL_RGBA, GL_FLOAT,
                                                     params);
 
@@ -196,14 +195,14 @@ public:
 
       testSP->Compile();
 
-      Vbo = bgl::CreateVertexBuffer(sizeof(vertices), vertices);
+      Vbo = gl::CreateVertexBuffer(sizeof(vertices), vertices);
 
-      Vao = bgl::CreateVertexArray();
+      Vao = gl::CreateVertexArray();
 
-      GLuint b = bgl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
+      GLuint b = gl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
 
-      bgl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
-      bgl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+      gl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+      gl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
 
       glBindImageTexture(0, csTexture.BindId, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 
@@ -223,7 +222,7 @@ public:
 
       {
          const char* vertexShaderSrc = R"(
-            #version 330 core
+            #version 460 core
       
             layout(location = 0) in vec2 pos;
 
@@ -275,17 +274,17 @@ public:
                x, fY - sY,
             };
 
-            bgl::VertexBuffer vbo = bgl::CreateVertexBuffer(sizeof(res), res);
+            gl::VertexBuffer vbo = gl::CreateVertexBuffer(sizeof(res), res);
 
             Tile newTile;
 
             newTile.x = x;
             newTile.y = y;
 
-            newTile.Vao = bgl::CreateVertexArray();
+            newTile.Vao = gl::CreateVertexArray();
 
-            GLuint b = bgl::AddBufferVertexArray(newTile.Vao, vbo, 2 * sizeof(float));
-            bgl::AddAttribFormatVertexArray(newTile.Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+            GLuint b = gl::AddBufferVertexArray(newTile.Vao, vbo, 2 * sizeof(float));
+            gl::AddAttribFormatVertexArray(newTile.Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
 
             Tiles.push_back(newTile);
          }
@@ -293,9 +292,9 @@ public:
 
          {
             const char* vertexShaderSrc = R"(
-            #version 330 core
+            #version 460 core
       
-            layout(location = 0) in vec2 pos;
+            layout(location = 0) in vec3 pos;
 
             uniform mat4 view = mat4(1.0f);
             uniform mat4 model = mat4(1.0f);
@@ -303,7 +302,7 @@ public:
 
             void main()
             {
-               gl_Position = projection * model * view * vec4(pos, 0.0f, 1.0f);
+               gl_Position = projection * model * view * vec4(pos, 1.0f);
             })";
 
             const char* fragmentShaderSrc = R"(
@@ -325,21 +324,38 @@ public:
             sphereSP->Compile();
          }
 
-         float pos[] =
-         {
-            -1.0f, -1.0f,
-            1.0f, 1.0f
-         };
+         math::Vector3 center(0.0f, 1.0f, 0.0f);
+         float radius = 5.0f;
+         const size_t segments = 64;
 
-         bgl::VertexBuffer vbo = bgl::CreateVertexBuffer(sizeof(pos), pos);
-         GLuint b = bgl::AddBufferVertexArray(sphereVao, vbo, 2 * sizeof(float));
-         bgl::AddAttribFormatVertexArray(sphereVao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+         float pos[segments * 3 + 6];
+         
+         pos[0] = 0.0f;
+         pos[1] = 0.0f;
+         pos[2] = 0.0f;
+
+         for (size_t i = 3; i <= segments * 3 + 3; i += 3)
+         {
+            pos[i] = radius * cos((math::Pi2 / segments) * (i / 3));
+            pos[i + 1] = radius * sin((math::Pi2 / segments) * (i / 3));
+            pos[i + 2] = 0.0f;
+         }
+
+         //pos[49] = cos((math::Pi2 / segments) * 1);
+         //pos[50] = 0.0f;
+         //pos[49] = cos((math::Pi2 / segments) * 1);
+
+         gl::VertexBuffer vbo = gl::CreateVertexBuffer(sizeof(pos), pos);
+         GLuint b = gl::AddBufferVertexArray(sphereVao, vbo, 3 * sizeof(float));
+         gl::AddAttribFormatVertexArray(sphereVao, 0, b, 3, GL_FLOAT, GL_FALSE, 0);
       }
 
    }
 
    void OnTick() override
    {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
       graphics::ForwardRender::Update(Scene, DeltaTime);
 
 
@@ -351,11 +367,14 @@ public:
       //   glDrawArrays(GL_TRIANGLES, 0, 12);
       //}
 
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
       sphereSP->Use();
-      //sphereSP->SetFloats("projection", MainCamera.GetCameraProjection());
+      sphereSP->SetFloats("projection", MainCamera.GetCameraProjection());
+      sphereSP->SetFloats("view", MainCamera.GetCameraViewMatrix());
 
       glBindVertexArray(sphereVao.BindId);
-      glDrawArrays(GL_LINES, 0, 8);
+      glDrawArrays(GL_TRIANGLE_FAN, 0, 256);
    }
 };
 

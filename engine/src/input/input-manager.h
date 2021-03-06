@@ -148,7 +148,7 @@ namespace input
          return NativeInputManager;
       }
 
-      inline const std::shared_ptr<platform::input::InputWrapper> GetInputWrapper() const
+      inline const std::shared_ptr<input::InputWrapper> GetInputWrapper() const
       {
          return NativeInputManager->GetInputWrapper();
       }

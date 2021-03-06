@@ -5,7 +5,7 @@
 #include <cstring>
 #include <vector>
 
-#include "platforms/declarations/utils/timer.h"
+#include "utils/timer.h"
 
 namespace assets
 {
@@ -15,7 +15,7 @@ namespace assets
       resData.Info.LoadTime = 0.0f;
       resData.Info.IsValid  = false;
 
-      platform::utils::Timer loadTimer(true);
+      utils::Timer loadTimer(true);
 
       FILE* file = fopen(&filepath[0], "rb");
       if (!file)

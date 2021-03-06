@@ -1,6 +1,6 @@
 #include "callback.h"
 
-#include "../../debug/log/log.h"
+#include "debug/log/log.h"
 
 static const char* g_MessageSources[] =
 {

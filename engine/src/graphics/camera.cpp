@@ -10,9 +10,9 @@ namespace graphics
 {
    void CameraComputeBasis(Camera& camera)
    {
-      camera.ForwardAxis.x = cos(DegToRad(camera.Yaw)) * cos(DegToRad(camera.Pitch));
-      camera.ForwardAxis.y = sin(DegToRad(camera.Pitch));
-      camera.ForwardAxis.z = sin(DegToRad(camera.Yaw)) * cos(DegToRad(camera.Pitch));
+      camera.ForwardAxis.x = cos(math::ToRad(camera.Yaw)) * cos(math::ToRad(camera.Pitch));
+      camera.ForwardAxis.y = sin(math::ToRad(camera.Pitch));
+      camera.ForwardAxis.z = sin(math::ToRad(camera.Yaw)) * cos(math::ToRad(camera.Pitch));
 
       camera.ForwardAxis = math::Normalize(camera.ForwardAxis);
 

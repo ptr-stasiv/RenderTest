@@ -1,7 +1,7 @@
 #pragma once
 #include "buffer.h"
 
-namespace bgl
+namespace gl
 {
    struct VertexArray
    {

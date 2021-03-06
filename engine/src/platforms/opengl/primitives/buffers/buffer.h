@@ -1,7 +1,7 @@
 #pragma once
 #include "GL/glew.h"
 
-namespace bgl
+namespace gl
 {
    struct VertexBuffer
    {

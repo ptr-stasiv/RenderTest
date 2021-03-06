@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include "platforms/declarations/window/window-wrapper.h"
+#include "application/window/window-wrapper.h"
 
 namespace input
 {

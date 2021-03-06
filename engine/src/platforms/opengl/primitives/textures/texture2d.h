@@ -1,7 +1,7 @@
 #pragma once
 #include "GL/glew.h"
 
-namespace bgl
+namespace gl
 {
    struct Texture2D
    {
@@ -23,8 +23,8 @@ namespace bgl
    };
 
    static Texture2D CreateTexture(const GLuint sizeX, const GLuint sizeY,
-                           const GLenum internalFormat, const GLenum format, const GLenum type, 
-                           const TextureParams& params)
+                                  const GLenum internalFormat, const GLenum format, const GLenum type, 
+                                  const TextureParams& params)
    {
       GLuint bindId;
       glCreateTextures(GL_TEXTURE_2D, 1, &bindId);
@@ -48,7 +48,7 @@ namespace bgl
    }
 
    static void UpdateTexture2D(const Texture2D& texture, 
-                        const GLuint sizeX, const GLuint sizeY, const void* data)
+                               const GLuint sizeX, const GLuint sizeY, const void* data)
    {
       if (sizeX <= texture.SizeX
           || sizeY <= texture.SizeY)

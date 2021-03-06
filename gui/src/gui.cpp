@@ -8,8 +8,8 @@
 #include "AppCore/Platform.h"
 
 #include "key-map.h"
-#include "platforms/declarations/window/platform-input-map.h"
-#include "platforms/declarations/process/process.h"
+#include "application/window/platform-input-map.h"
+#include "utils/process/process.h"
 
 namespace gui
 {
@@ -21,7 +21,7 @@ namespace gui
       ultralight::RefPtr<ultralight::Renderer> Renderer;
       ultralight::RefPtr<ultralight::View> View;
 
-      std::unique_ptr<platform::ProcessHandle> ServerHandle;
+      std::unique_ptr<utils::ProcessHandle> ServerHandle;
    };
 
    GuiController::GuiController()
@@ -33,7 +33,7 @@ namespace gui
    {
       ultralight::MouseEvent e;
       e.type = !state ? ultralight::MouseEvent::Type::kType_MouseUp : ultralight::MouseEvent::Type::kType_MouseDown;
-      e.button = static_cast<ultralight::MouseEvent::Button>(input::UltralightInputMap[platform::input::PlatformInputMap[button]]);
+      e.button = static_cast<ultralight::MouseEvent::Button>(input::UltralightInputMap[input::PlatformInputMap[button]]);
 
       UlInfo->View->FireMouseEvent(e);
    }
@@ -61,7 +61,7 @@ namespace gui
 
    void GuiController::Setup(const uint32_t resX, const uint32_t resY)
    {
-      UlInfo->ServerHandle = std::make_unique<platform::ProcessHandle>(ServerApplicationPath, ServerWorkingDir);
+      UlInfo->ServerHandle = std::make_unique<utils::ProcessHandle>(ServerApplicationPath, ServerWorkingDir);
 
       ultralight::Config config;
 

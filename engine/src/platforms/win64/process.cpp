@@ -1,10 +1,10 @@
-#include "platforms/declarations/process/process.h"
+#include "utils/process/process.h"
 
 #include <Windows.h>
 
 #include "debug/log/log.h"
 
-namespace platform
+namespace utils
 {
    struct ProcessHandle::NativeInfo
    {

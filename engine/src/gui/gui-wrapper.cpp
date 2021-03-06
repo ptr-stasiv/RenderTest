@@ -53,29 +53,29 @@ namespace gui
          -1.0f, -1.0f, 0.0f, 1.0f,
       };
 
-      Vbo = bgl::CreateVertexBuffer(sizeof(vertices), vertices);
+      Vbo = gl::CreateVertexBuffer(sizeof(vertices), vertices);
 
-      Vao = bgl::CreateVertexArray();
+      Vao = gl::CreateVertexArray();
 
-      GLuint b = bgl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
+      GLuint b = gl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
 
-      bgl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
-      bgl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+      gl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+      gl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
 
-      bgl::TextureParams params;
+      gl::TextureParams params;
       params.WrapS = GL_CLAMP_TO_EDGE;
       params.WrapT = GL_CLAMP_TO_EDGE;
       params.MinFilter = GL_NEAREST;
       params.MagFilter = GL_NEAREST;
 
-      SurfaceTexture = bgl::CreateTexture(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
+      SurfaceTexture = gl::CreateTexture(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
    }
 
    GuiWrapper::~GuiWrapper()
    {
-      bgl::DeleteVertexArray(Vao);
-      bgl::DeleteVertexBuffer(Vbo);
-      bgl::DeleteTexture2D(SurfaceTexture);
+      gl::DeleteVertexArray(Vao); 
+      gl::DeleteVertexBuffer(Vbo);
+      gl::DeleteTexture2D(SurfaceTexture);
    }
 
    void GuiWrapper::SetupInput(input::InputManager& inputManager)
@@ -111,13 +111,13 @@ namespace gui
    {
       GuiShader->Use();
 
-      bgl::BindTexture2D(SurfaceTexture, 0);
+      gl::BindTexture2D(SurfaceTexture, 0);
 
       uint32_t w, h;
       void* pixels;
       GuiController->GetRenderingInfo(w, h, pixels);
 
-      bgl::UpdateTexture2D(SurfaceTexture, w, h, pixels);
+      gl::UpdateTexture2D(SurfaceTexture, w, h, pixels);
 
       GuiShader->SetInt("Texture", 0);
 
