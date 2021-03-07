@@ -7,6 +7,7 @@
 #include "graphics/shaders/shader-pipeline.h"
 #include "utils/read-from-file.h"
 
+
 namespace graphics
 {
    static std::unique_ptr<graphics::ShaderPipeline> g_RenderShaderPipeline;
@@ -78,6 +79,8 @@ namespace graphics
          free(colorMemberStr);
       }
 
+      debug::DebugDrawManager debugManager;
+
       for (int i = 0; i < scene.PointLightsList.size(); ++i)
       {
          char* posMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Position");
@@ -97,9 +100,16 @@ namespace graphics
          auto quad = scene.PointLightsList.at(i).Quadratic;
          auto con = scene.PointLightsList.at(i).Constant;
 
-         auto d = linear * linear - 4 * quad * (-10 + con);
-         auto r1 = (-linear + std::sqrt(d)) / (2 * quad);
-         auto r2 = (-linear - std::sqrt(d)) / (2 * quad);
+
+         //Test for the tile rendering
+         //Compute the point light influence radius
+         //This can be computed by resolving 1 / (constant + linear * lightDist + quadratic * lightDist * lightDist) > n
+         //Where n is the number which define what influence should light have to not being cull for specific fragment
+
+         auto d = (linear * linear) - 4 * quad * (con - 10.0f); //Here 10.0f mean the minimum brightness of 0.1f
+         auto r = (-linear + std::sqrt(d)) / (2 * quad);
+
+         debugManager.AddDebugSphere(scene.PointLightsList.at(i).Position, r, 12, 12);
 
          free(posMemberStr);
          free(colorMemberStr);
@@ -182,5 +192,7 @@ namespace graphics
          glDrawArrays(GL_TRIANGLES, 0, r.MeshData.VerticesCount);
          glBindVertexArray(0);
       }
+
+      debugManager.Draw(*scene.GetCamera());
    }
 }

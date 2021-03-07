@@ -10,8 +10,10 @@ namespace debug
       gl::VertexArray Vao;
       size_t VerticesCount;
 
-      DrawInfo(const gl::VertexArray& vao, const size_t vc)
-         : Vao(vao), VerticesCount(vc) {}
+      math::Vector3 Position;
+
+      DrawInfo(const math::Vector3& position, const gl::VertexArray& vao, const size_t vc)
+         : Position(position), Vao(vao), VerticesCount(vc) {}
    };
 
    DebugDrawManager::DebugDrawManager()
@@ -27,7 +29,7 @@ namespace debug
 
             void main()
             {
-               gl_Position = projection * model * view * vec4(pos, 1.0f);
+               gl_Position = projection * view * model * vec4(pos, 1.0f);
             })";
 
       auto* fragmentShaderSrc = R"(
@@ -100,7 +102,7 @@ namespace debug
       GLuint b = gl::AddBufferVertexArray(vao, vbo, 3 * sizeof(float));
       gl::AddAttribFormatVertexArray(vao, 0, b, 3, GL_FLOAT, GL_FALSE, 0);
 
-      DrawPrimitivesArray.emplace_back(std::make_unique<DrawInfo>(vao, vertices.size() * 3));
+      DrawPrimitivesArray.emplace_back(std::make_unique<DrawInfo>(center, vao, vertices.size() * 3));
    }
 
    void DebugDrawManager::Draw(const graphics::Camera& camera)
@@ -113,8 +115,12 @@ namespace debug
 
       for(size_t i = 0; i < DrawPrimitivesArray.size(); ++i)
       {
-         gl::BindVertexArray(DrawPrimitivesArray[i]->Vao);
-         glDrawArrays(GL_TRIANGLES, 0, DrawPrimitivesArray[i]->VerticesCount);
+         auto& p = DrawPrimitivesArray[i];
+         
+         PrimitiveShader.SetFloats("model", math::CreateTranslateMatrix(p->Position));
+
+         gl::BindVertexArray(p->Vao);
+         glDrawArrays(GL_TRIANGLES, 0, p->VerticesCount);
       }
       
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

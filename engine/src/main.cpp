@@ -129,13 +129,13 @@ public:
       Scene.AddRenderObject({ graphics::Mesh(pistolAssetRef), CreateTranslateMatrix(math::Vector3(0.0f, 0.0f, 0.0f)), pistolMaterial });
 
       math::Matrix4 cubeTransform = CreateTranslateMatrix(math::Vector3(0.0f, -2.0f, 0.0f));
-      cubeTransform = cubeTransform * CreateScaleMatrix(math::Vector3(5.0f, 1.0f, 5.0f));
+      cubeTransform = cubeTransform * CreateScaleMatrix(math::Vector3(15.0f, 1.0f, 15.0f));
       Scene.AddRenderObject({ graphics::Mesh(cubeAssetRef), cubeTransform, floorMaterial });
 
       Scene.AddLight(graphics::PointLight(math::Vector3(1.2f, 1.0f, 2.0f), math::Vector3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
 
-      for (int i = 0; i < 1; ++i)
-         Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), math::Pi / 12, math::Pi / 15));
+     /* for (int i = 0; i < 1; ++i)
+         Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), math::Pi / 12, math::Pi / 15));*/
 
       graphics::ForwardRender::Initialize();
 
@@ -288,10 +288,7 @@ public:
 
             Tiles.push_back(newTile);
          }
-
-         debugDrawM.AddDebugSphere(math::Vector3(0.0, 5.0f, 0.0f), 2.0f, 16, 16);
       }
-
    }
 
    void OnTick() override
