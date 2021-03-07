@@ -3,7 +3,7 @@
 namespace math
 {
    static constexpr float Pi = 3.14f;
-   static constexpr float Pi2 = 2 * Pi;
+   static constexpr float Pi2 = 2.0f * Pi;
 
    inline constexpr float ToRad(const float degree)
    {

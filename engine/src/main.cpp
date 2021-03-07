@@ -24,9 +24,11 @@
 
 #include "application/application.h"
 
-#include "graphics/shaders/compute-shader-adapter.h"
+#include "graphics/shaders/compute.h"
 
 #include "utils/read-from-file.h"
+
+#include "debug/graphics/debug-draw-manager.h"
 
 class MainApp : public app::BaseApplication
 {
@@ -42,10 +44,6 @@ public:
    gl::VertexBuffer Vbo;
 
    gl::Texture2D csTexture;
-
-   std::unique_ptr<graphics::ShaderPipeline> sphereSP;
-   gl::VertexArray sphereVao;
-
    struct Tile
    {
       float x;
@@ -56,6 +54,8 @@ public:
    std::vector<Tile> Tiles;
 
    std::unique_ptr<graphics::ShaderPipeline> TileShader;
+
+   debug::DebugDrawManager debugDrawM;
 
    void OnStartup() override
    {
@@ -289,73 +289,13 @@ public:
             Tiles.push_back(newTile);
          }
 
-
-         {
-            const char* vertexShaderSrc = R"(
-            #version 460 core
-      
-            layout(location = 0) in vec3 pos;
-
-            uniform mat4 view = mat4(1.0f);
-            uniform mat4 model = mat4(1.0f);
-            uniform mat4 projection = mat4(1.0f);
-
-            void main()
-            {
-               gl_Position = projection * model * view * vec4(pos, 1.0f);
-            })";
-
-            const char* fragmentShaderSrc = R"(
-            #version 460 core
-         
-            out vec4 Color;
-
-            void main()
-            {
-               Color = vec4(1.0f, 0.2f, 0.2f, 1.0f);
-            })";
-
-
-            sphereSP = std::make_unique<graphics::ShaderPipeline>();
-
-            sphereSP->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
-            sphereSP->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
-
-            sphereSP->Compile();
-         }
-
-         math::Vector3 center(0.0f, 1.0f, 0.0f);
-         float radius = 5.0f;
-         const size_t segments = 64;
-
-         float pos[segments * 3 + 6];
-         
-         pos[0] = 0.0f;
-         pos[1] = 0.0f;
-         pos[2] = 0.0f;
-
-         for (size_t i = 3; i <= segments * 3 + 3; i += 3)
-         {
-            pos[i] = radius * cos((math::Pi2 / segments) * (i / 3));
-            pos[i + 1] = radius * sin((math::Pi2 / segments) * (i / 3));
-            pos[i + 2] = 0.0f;
-         }
-
-         //pos[49] = cos((math::Pi2 / segments) * 1);
-         //pos[50] = 0.0f;
-         //pos[49] = cos((math::Pi2 / segments) * 1);
-
-         gl::VertexBuffer vbo = gl::CreateVertexBuffer(sizeof(pos), pos);
-         GLuint b = gl::AddBufferVertexArray(sphereVao, vbo, 3 * sizeof(float));
-         gl::AddAttribFormatVertexArray(sphereVao, 0, b, 3, GL_FLOAT, GL_FALSE, 0);
+         debugDrawM.AddDebugSphere(math::Vector3(0.0, 5.0f, 0.0f), 2.0f, 16, 16);
       }
 
    }
 
    void OnTick() override
    {
-      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
       graphics::ForwardRender::Update(Scene, DeltaTime);
 
 
@@ -366,15 +306,8 @@ public:
       //   glBindVertexArray(t.Vao.BindId);
       //   glDrawArrays(GL_TRIANGLES, 0, 12);
       //}
-
-      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-      sphereSP->Use();
-      sphereSP->SetFloats("projection", MainCamera.GetCameraProjection());
-      sphereSP->SetFloats("view", MainCamera.GetCameraViewMatrix());
-
-      glBindVertexArray(sphereVao.BindId);
-      glDrawArrays(GL_TRIANGLE_FAN, 0, 256);
+      
+      debugDrawM.Draw(MainCamera);
    }
 };
 

@@ -17,6 +17,11 @@ namespace gl
       return { bindId, 0 };
    }
 
+   inline void BindVertexArray(const VertexArray& va)
+   {
+      glBindVertexArray(va.BindId);
+   }
+
    inline void DeleteVertexArray(const VertexArray& va)
    {
       glDeleteVertexArrays(1, &va.BindId);
