@@ -22,7 +22,7 @@ namespace gl
       GLenum MinFilter;
    };
 
-   static Texture2D CreateTexture(const GLuint sizeX, const GLuint sizeY,
+   static Texture2D CreateTexture2D(const GLuint sizeX, const GLuint sizeY,
                                   const GLenum internalFormat, const GLenum format, const GLenum type, 
                                   const TextureParams& params)
    {

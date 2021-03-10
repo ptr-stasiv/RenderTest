@@ -49,7 +49,13 @@ namespace debug
       PrimitiveShader.Compile();
    }
    
-   DebugDrawManager::~DebugDrawManager() = default;
+   DebugDrawManager::~DebugDrawManager()
+   {
+      for (size_t i = 0; i < DrawPrimitivesArray.size(); ++i)
+      {
+         gl::DeleteVertexArray(DrawPrimitivesArray[i]->Vao);
+      }
+   }
 
 
    void DebugDrawManager::AddDebugSphere(const math::Vector3& center, const float radius, const uint8_t sectors, const uint8_t stacks)
@@ -101,6 +107,8 @@ namespace debug
       gl::VertexBuffer vbo = gl::CreateVertexBuffer(vertices.size() * 3 * sizeof(float), vertices.data());
       GLuint b = gl::AddBufferVertexArray(vao, vbo, 3 * sizeof(float));
       gl::AddAttribFormatVertexArray(vao, 0, b, 3, GL_FLOAT, GL_FALSE, 0);
+
+      gl::DeleteVertexBuffer(vbo);
 
       DrawPrimitivesArray.emplace_back(std::make_unique<DrawInfo>(center, vao, vertices.size() * 3));
    }

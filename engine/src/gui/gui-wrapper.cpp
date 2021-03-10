@@ -68,7 +68,7 @@ namespace gui
       params.MinFilter = GL_NEAREST;
       params.MagFilter = GL_NEAREST;
 
-      SurfaceTexture = gl::CreateTexture(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
+      SurfaceTexture = gl::CreateTexture2D(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
    }
 
    GuiWrapper::~GuiWrapper()
