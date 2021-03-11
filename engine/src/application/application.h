@@ -59,7 +59,7 @@ int main()
 
       app->Window->EndFrame();
 
-      app->DeltaTime = 1.0f / deltaTimer.GetElaspedTime();
+      app->DeltaTime = 1.0f / deltaTimer.GetElapsedTime();
    }
 
    return 0;

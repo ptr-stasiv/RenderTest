@@ -26,7 +26,7 @@ namespace utils
       QueryPerformanceCounter(&Native->StartTicks);
    }
 
-   float Timer::GetElaspedTime() const
+   float Timer::GetElapsedTime() const
    {
       LARGE_INTEGER endTicks;
       QueryPerformanceCounter(&endTicks);

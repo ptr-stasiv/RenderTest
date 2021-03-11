@@ -220,8 +220,6 @@ namespace graphics
          free(colorMemberStr);
       }
 
-      debug::DebugDrawManager debugManager;
-
       for (int i = 0; i < scene.PointLightsList.size(); ++i)
       {
          char* posMemberStr = ArrayMemberToStr("PointLightsArray[", i, "].Position");
@@ -249,8 +247,6 @@ namespace graphics
 
          auto d = (linear * linear) - 4 * quad * (con - 10.0f); //Here 10.0f mean the minimum brightness of 0.1f
          auto r = (-linear + std::sqrt(d)) / (2 * quad);
-
-         debugManager.AddDebugSphere(scene.PointLightsList.at(i).Position, r, 12, 12);
 
          free(posMemberStr);
          free(colorMemberStr);
@@ -332,28 +328,6 @@ namespace graphics
          glBindVertexArray(r.MeshData.VaoId);
          glDrawArrays(GL_TRIANGLES, 0, r.MeshData.VerticesCount);
          glBindVertexArray(0);
-      }
-
-      debugManager.Draw(*scene.GetCamera());
-
-      TileShader->Use();
-
-      math::Vector4 pixels[tilesX * tilesY * 4];
-
-      SphereList.clear();
-
-      for (size_t y = 0; y < tilesY; ++y)
-      {
-         for (size_t x = 0; x < tilesX; ++x)
-         {
-            if (Tiles[y + x * tilesX].Position.x < 0.5f
-               && Tiles[y + x * tilesX].Position.x > -0.5f)
-            {
-               pixels[y + x * tilesX] = math::Vector4(1.0f, 0.2f, 0.2f, 0.5f);
-            }
-            else
-               pixels[y + x * tilesX] = math::Vector4(0.5f);
-         }
       }
    }
 }

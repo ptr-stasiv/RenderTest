@@ -4,7 +4,6 @@
 
 #include "../scene.h"
 #include "graphics/camera.h"
-#include "debug/graphics/debug-draw-manager.h"
 
 namespace graphics
 {

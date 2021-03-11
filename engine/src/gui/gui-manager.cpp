@@ -1,9 +1,12 @@
-#include "gui-wrapper.h"
+#include "gui-manager.h"
 
 namespace gui
 {
-   GuiWrapper::GuiWrapper(const uint32_t width, const uint32_t height)
+   GuiManager::GuiManager(const std::shared_ptr<app::Window>& window)
    {
+      uint16_t width = window->GetWidth();
+      uint16_t height = window->GetHeight();
+
       GuiController = std::make_unique<gui::GuiController>();
 
       GuiController->Setup(width, height);
@@ -69,45 +72,52 @@ namespace gui
       params.MagFilter = GL_NEAREST;
 
       SurfaceTexture = gl::CreateTexture2D(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
+
+
+      SetupInput();
    }
 
-   GuiWrapper::~GuiWrapper()
+   GuiManager::~GuiManager()
    {
       gl::DeleteVertexArray(Vao); 
       gl::DeleteVertexBuffer(Vbo);
       gl::DeleteTexture2D(SurfaceTexture);
    }
 
-   void GuiWrapper::SetupInput(input::InputManager& inputManager)
+   void GuiManager::SetupInput()
    {
       uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(GuiController.get());
 
-      //inputManager.GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
-      //   {
-      //      auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
-      //      gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      MouseButtonSubject.AddObserver([](event::BaseEvent& e, uintptr_t args)
+         {
+            event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
+            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-      //      gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
-      //   }, callbackArgs);
+            gc->OnMouseButton(mouseE.Button, mouseE.State);
+         }, callbackArgs);
 
-      //inputManager.GetInputWrapper()->MouseScrollEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
-      //   {
-      //      auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
-      //      gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      CursorSubject.AddObserver([](event::BaseEvent& e, uintptr_t args)
+         {
+            auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
+            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-      //      gc->OnMouseScroll(mouseE.Value);
-      //   }, callbackArgs);
+            gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
+         }, callbackArgs);
 
-      //inputManager.GetInputWrapper()->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
-      //   {
-      //      event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
-      //      gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      ScrollSubject.AddObserver([](event::BaseEvent& e, uintptr_t args)
+         {
+            auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
+            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-      //      gc->OnMouseButton(mouseE.Button, mouseE.State);
-      //   }, callbackArgs);
+            gc->OnMouseScroll(mouseE.Value);
+         }, callbackArgs);
+
+      input::native::AddMouseButtonCallback(MouseButtonSubject);
+      input::native::AddCursorCallback(CursorSubject);
+      input::native::AddScrollCallback(ScrollSubject);
    }
 
-   void GuiWrapper::Update()
+   void GuiManager::Update()
    {
       GuiShader->Use();
 

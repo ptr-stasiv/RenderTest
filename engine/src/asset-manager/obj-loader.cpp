@@ -95,7 +95,7 @@ namespace assets
       resData.UVs = resultUvArray;
 
       resData.Info.Name     = filepath;
-      resData.Info.LoadTime = loadTimer.GetElaspedTime();
+      resData.Info.LoadTime = loadTimer.GetElapsedTime();
       resData.Info.IsValid  = true;
 
       return  resData;

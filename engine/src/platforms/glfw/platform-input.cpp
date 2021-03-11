@@ -27,7 +27,7 @@ namespace input
       inline void MouseButtonCallback(GLFWwindow* w, int button, int action, int mods)
       {
          for (auto e : MouseButtonSubjectList)
-            e.Invoke(event::KeyEvent(button, action));
+            e.Invoke(event::MouseButtonEvent(button, action));
       }
 
       inline void CursorCallback(GLFWwindow* w, double x, double y)

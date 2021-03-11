@@ -15,6 +15,6 @@ namespace utils
 
       void Reset();
 
-      float GetElaspedTime() const;
+      float GetElapsedTime() const;
    };
 }

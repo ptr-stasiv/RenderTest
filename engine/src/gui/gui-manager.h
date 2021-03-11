@@ -7,7 +7,7 @@
 
 namespace gui
 {
-   class GuiWrapper
+   class GuiManager
    {
    private:
       std::unique_ptr<gui::GuiController> GuiController;
@@ -16,12 +16,17 @@ namespace gui
       gl::VertexArray  Vao;
       gl::VertexBuffer Vbo;
       gl::Texture2D SurfaceTexture;
-   public:
-      GuiWrapper(const uint32_t width, const uint32_t height);
-      ~GuiWrapper();
 
-      void SetupInput(input::InputManager& inputManager);
+      event::Subject MouseButtonSubject;
+      event::Subject CursorSubject;
+      event::Subject ScrollSubject;
+   public:
+      GuiManager(const std::shared_ptr<app::Window>& window);
+
+      ~GuiManager();
 
       void Update();
+   private:
+      void SetupInput();
    };
 }
