@@ -3,7 +3,7 @@
 #include "graphics/shaders/shader-pipeline.h"
 #include "platforms/opengl/primitives/buffers/vertex-array.h"
 #include "platforms/opengl/primitives/textures/texture2d.h"
-#include "input/input-manager.h"
+#include "window/input/input-manager.h"
 
 namespace gui
 {

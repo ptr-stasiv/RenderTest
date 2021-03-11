@@ -1,10 +1,10 @@
 #pragma once
 #include <memory>
 
-#include "window/window-wrapper.h"
+#include "window/window.h"
 #include "utils/timer.h"
 #include "jobs/job-system.h"
-#include "input/input-manager.h"
+#include "window/input/input-manager.h"
 #include "gui/gui-wrapper.h"
 
 namespace app
@@ -22,7 +22,7 @@ namespace app
       inline BaseApplication()
       {
          Window = std::make_shared<app::Window>();
-         InputManager = std::make_shared<input::InputManager>(new input::native::NativeInput(new input::InputWrapper(Window.get())));
+         InputManager = std::make_shared<input::InputManager>(Window);
          
          Gui = std::make_unique<gui::GuiWrapper>(Window->GetWidth(), Window->GetHeight());
          Gui->SetupInput(*InputManager);

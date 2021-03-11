@@ -82,29 +82,29 @@ namespace gui
    {
       uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(GuiController.get());
 
-      inputManager.GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
-         {
-            auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
-            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      //inputManager.GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      //   {
+      //      auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
+      //      gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
-         }, callbackArgs);
+      //      gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
+      //   }, callbackArgs);
 
-      inputManager.GetInputWrapper()->MouseScrollEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
-         {
-            auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
-            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      //inputManager.GetInputWrapper()->MouseScrollEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      //   {
+      //      auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
+      //      gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            gc->OnMouseScroll(mouseE.Value);
-         }, callbackArgs);
+      //      gc->OnMouseScroll(mouseE.Value);
+      //   }, callbackArgs);
 
-      inputManager.GetInputWrapper()->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
-         {
-            event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
-            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      //inputManager.GetInputWrapper()->MouseButtonEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      //   {
+      //      event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
+      //      gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            gc->OnMouseButton(mouseE.Button, mouseE.State);
-         }, callbackArgs);
+      //      gc->OnMouseButton(mouseE.Button, mouseE.State);
+      //   }, callbackArgs);
    }
 
    void GuiWrapper::Update()

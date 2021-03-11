@@ -1,0 +1,162 @@
+#pragma once
+#include <cstdint>
+
+namespace input
+{
+   //Here is composed all events that have relation to the input devices
+   //In engine 'InputEvent' impersonates also as the gesture events
+
+   enum class InputEvent : uint8_t
+   {
+      //Keyboard events
+
+      Space,
+      Apostrophe,
+      Comma,
+      Minus,
+      Period,
+      Slash,
+      _0,
+      _1,
+      _2,
+      _3,
+      _4,
+      _5,
+      _6,
+      _7,
+      _8,
+      _9,
+      Semicolon,
+      Equal,
+      A,
+      B,
+      C,
+      D,
+      E,
+      F,
+      G,
+      H,
+      I,
+      J,
+      K,
+      L,
+      M,
+      N,
+      O,
+      P,
+      Q,
+      R,
+      S,
+      T,
+      U,
+      V,
+      W,
+      X,
+      Y,
+      Z,
+      LeftBracket,
+      BackSlash,
+      RightBracket,
+      GraveAccent,
+      Escape,
+      Enter,
+      Tab,
+      Backspace,
+      Insert,
+      Delete,
+      Right,
+      Left,
+      Down,
+      Up,
+      Page_up,
+      Page_down,
+      Home,
+      End,
+      Caps_lock,
+      Scroll_lock,
+      Num_lock,
+      Print_screen,
+      Pause,
+      F1,
+      F2,
+      F3,
+      F4,
+      F5,
+      F6,
+      F7,
+      F8,
+      F9,
+      F10,
+      F11,
+      F12,
+      F13,
+      F14,
+      F15,
+      F16,
+      F17,
+      F18,
+      F19,
+      F20,
+      F21,
+      F22,
+      F23,
+      F24,
+      F25,
+      KeyPad_0,
+      KeyPad_1,
+      KeyPad_2,
+      KeyPad_3,
+      KeyPad_4,
+      KeyPad_5,
+      KeyPad_6,
+      KeyPad_7,
+      KeyPad_8,
+      KeyPad_9,
+      KeyPad_Decimal,
+      KeyPad_Divide,
+      KeyPad_Multiply,
+      KeyPad_Subtract,
+      KeyPad_Add,
+      KeyPad_Enter,
+      KeyPad_Equal,
+      LeftShift,
+      LeftControl,
+      LeftAlt,
+      RightShift,
+      RightControl,
+      RightAlt,
+
+      LastKeyboardKey = RightAlt,
+
+      //Mouse events
+
+      M_Left,
+      M_Right,
+      M_Middle,
+      M_4,
+      M_5,
+      M_6,
+      M_7,
+      M_8,
+
+      LastMouseButton = M_8,
+
+
+      //Mouse gestures
+
+      MouseMove_X,
+      MouseMove_Y,
+      MouseScroll,
+
+      LastMouseGesture = MouseScroll,
+
+
+      LAST_ENUM_ELEMENT
+   };
+
+   enum class InputEventState : uint8_t
+   {
+      Pressed = 1,
+      Released = 0,
+   };
+}

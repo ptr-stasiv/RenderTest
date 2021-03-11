@@ -8,7 +8,7 @@
 #include "AppCore/Platform.h"
 
 #include "key-map.h"
-#include "application/window/platform-input-map.h"
+#include "window/input/maps/platform-key-map.h"
 #include "utils/process/process.h"
 
 namespace gui

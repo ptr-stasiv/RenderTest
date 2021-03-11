@@ -10,9 +10,6 @@
 #include "platforms/opengl/primitives/textures/texture2d.h"
 #include "graphics/shaders/compute.h"
 
-#include "vendors/glm/glm.hpp"
-#include "vendors/glm/gtc/matrix_transform.hpp"
-
 namespace graphics
 {
    static std::unique_ptr<graphics::ShaderPipeline> g_RenderShaderPipeline;
@@ -255,17 +252,6 @@ namespace graphics
 
          debugManager.AddDebugSphere(scene.PointLightsList.at(i).Position, r, 12, 12);
 
-         glm::vec4 posg(scene.PointLightsList.at(i).Position.x, scene.PointLightsList.at(i).Position.y, scene.PointLightsList.at(i).Position.z, 1.0f);
-         glm::mat4 proj = glm::perspective(scene.GetCamera()->Fov, scene.GetCamera()->Aspect, 0.1f, 1000.0f);
-         glm::mat4 view = glm::lookAt(glm::vec3(scene.GetCamera()->Position.x, scene.GetCamera()->Position.y, scene.GetCamera()->Position.z + 1.0f), glm::vec3(scene.GetCamera()->Position.x, scene.GetCamera()->Position.y, scene.GetCamera()->Position.z), glm::vec3(scene.GetCamera()->UpAxis.x, scene.GetCamera()->UpAxis.y, scene.GetCamera()->UpAxis.z));
-
-         glm::vec4 clips = proj * (posg * view);
-         glm::vec4 clipsR = proj * ((posg + r) * view);
-         math::Vector3 ndc = math::Vector3(clips.x / clips.w, clips.y / clips.w, clips.z / clips.w);
-         math::Vector3 ndcR = math::Vector3(clipsR.x / clipsR.w, clipsR.y / clipsR.w, clipsR.z / clipsR.w);
-
-         SphereList.push_back({ndc, math::Length(ndcR - ndc)});
-
          free(posMemberStr);
          free(colorMemberStr);
          free(linearMemberStr);
@@ -354,8 +340,6 @@ namespace graphics
 
       math::Vector4 pixels[tilesX * tilesY * 4];
 
-      LOG_ERROR("%f, %f, %f", SphereList[0].Center.x, SphereList[0].Center.y, SphereList[0].Center.z);
-
       SphereList.clear();
 
       for (size_t y = 0; y < tilesY; ++y)
@@ -371,13 +355,5 @@ namespace graphics
                pixels[y + x * tilesX] = math::Vector4(0.5f);
          }
       }
-
-      gl::UpdateTexture2D(TileStatesTexture, tilesX, tilesY, pixels);
-
-      gl::BindTexture2D(TileStatesTexture, 0);
-      TileShader->SetInt("Texture", 0);
-
-      glBindVertexArray(TilesVao.BindId);
-      glDrawArrays(GL_TRIANGLES, 0, tilesX * tilesY * 12);
    }
 }

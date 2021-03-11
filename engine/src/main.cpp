@@ -16,10 +16,6 @@
 
 #include "jobs/job-system.h"
 
-#include "application/window/window-wrapper.h"
-
-#include "input/input-manager.h"
-
 #include "events/subject.h"
 
 #include "application/application.h"
@@ -63,12 +59,16 @@ public:
             app->MainCamera.Move(graphics::CameraMoveType::MoveUp, value, app->DeltaTime);
          }, callbackArgs);
 
-      InputManager->GetInputWrapper()->MouseCursorPosEventSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      //This temporal solution for smooth camera move
+      //Its will have reworked soon
+      event::Subject cameraSubj;
+      cameraSubj.AddObserver([](event::BaseEvent& e, uintptr_t args)
          {
             event::MouseCursorPosEvent mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
             MainApp* app = reinterpret_cast<MainApp*>(args);
             app->MainCamera.Rotate(mouseE.PosX, mouseE.PosY, app->DeltaTime);
          }, callbackArgs);
+      input::native::AddCursorCallback(cameraSubj);
 
       assets::AssetRef pistolAssetRef = AssetManager.RequireAsssetRef("res/meshes/pistol/pistol.obj");
       assets::AssetRef cubeAssetRef = AssetManager.RequireAsssetRef("res/meshes/cube.obj");
