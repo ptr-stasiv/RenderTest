@@ -1,6 +1,6 @@
 #pragma once
 #include "gui.h"
-#include "graphics/shaders/shader-pipeline.h"
+#include "graphics/shaders/shader-program.h"
 #include "platforms/opengl/primitives/buffers/vertex-array.h"
 #include "platforms/opengl/primitives/textures/texture2d.h"
 #include "window/input/input-manager.h"
@@ -11,7 +11,7 @@ namespace gui
    {
    private:
       std::unique_ptr<gui::GuiController> GuiController;
-      std::unique_ptr<graphics::ShaderPipeline> GuiShader;
+      std::unique_ptr<graphics::ShaderProgram> GuiShader;
 
       gl::VertexArray  Vao;
       gl::VertexBuffer Vbo;

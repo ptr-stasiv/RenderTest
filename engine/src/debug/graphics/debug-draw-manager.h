@@ -3,15 +3,15 @@
 #include <memory>
 
 #include "math/vectors/vector3.h"
-#include "graphics/shaders/shader-pipeline.h"
-#include "graphics/camera.h"
+#include "graphics/shaders/shader-program.h"
+#include "graphics/camera/camera.h"
 
 namespace debug
 {
    class DebugDrawManager
    {
    private:
-      graphics::ShaderPipeline PrimitiveShader;
+      graphics::ShaderProgram PrimitiveShader;
 
       struct DrawInfo;
       std::vector<std::unique_ptr<DrawInfo>> DrawPrimitivesArray;

@@ -1,4 +1,4 @@
-#include "graphics/shaders/shader-pipeline.h"
+#include "graphics/shaders/shader-program.h"
 
 #include "platforms/opengl/primitives/shaders/shader.h"
 #include "debug/log/log.h"
@@ -11,24 +11,24 @@ namespace graphics
    X(Vertex, GL_VERTEX_SHADER) \
    X(Fragment, GL_FRAGMENT_SHADER) 
 
-   struct ShaderPipeline::NativeInfo
+   struct ShaderProgram::NativeInfo
    {
       gl::Program ProgramId;
       std::string_view ShaderArr[ShadersTypeCount];
    };
 
-   ShaderPipeline::ShaderPipeline()
+   ShaderProgram::ShaderProgram()
    {
       Native = std::make_unique<NativeInfo>();
       Native->ProgramId = gl::CreateProgram();
    }
 
-   ShaderPipeline::~ShaderPipeline()
+   ShaderProgram::~ShaderProgram()
    {
       gl::DeleteProgram(Native->ProgramId);
    }
 
-   void  ShaderPipeline::Add(const ShaderType shaderType, const std::string_view& shaderSrc)
+   void  ShaderProgram::Add(const ShaderType shaderType, const std::string_view& shaderSrc)
    {
       if (static_cast<uint8_t>(shaderType) >= ShadersTypeCount)
       {
@@ -39,7 +39,7 @@ namespace graphics
       Native->ShaderArr[static_cast<uint8_t>(shaderType)] = shaderSrc;
    }
 
-   void ShaderPipeline::Compile()
+   void ShaderProgram::Compile()
    {
       for (uint8_t i = 0; i < ShadersTypeCount; ++i)
       {
@@ -67,32 +67,32 @@ namespace graphics
       gl::LinkProgram(Native->ProgramId);
    }
 
-   void ShaderPipeline::Use() const
+   void ShaderProgram::Use() const
    {
       gl::UseProgram(Native->ProgramId);
    }
 
-   void ShaderPipeline::SetFloats(const std::string_view& name, const math::Matrix4& m) const
+   void ShaderProgram::SetFloats(const std::string_view& name, const math::Matrix4& m) const
    {
       gl::SetShaderMatrix4(Native->ProgramId, &name[0], m);
    }
 
-   void ShaderPipeline::SetFloats(const std::string_view& name, const math::Vector4& v) const
+   void ShaderProgram::SetFloats(const std::string_view& name, const math::Vector4& v) const
    {
       gl::SetShaderVector4(Native->ProgramId, &name[0], v);
    }
 
-   void ShaderPipeline::SetFloats(const std::string_view& name, const math::Vector3& v) const
+   void ShaderProgram::SetFloats(const std::string_view& name, const math::Vector3& v) const
    {
       gl::SetShaderVector3(Native->ProgramId, &name[0], v);
    }
 
-   void ShaderPipeline::SetFloat(const std::string_view& name, const float s) const
+   void ShaderProgram::SetFloat(const std::string_view& name, const float s) const
    {
       gl::SetShaderFloat(Native->ProgramId, &name[0], s);
    }
 
-   void ShaderPipeline::SetInt(const std::string_view& name, const int32_t s) const
+   void ShaderProgram::SetInt(const std::string_view& name, const int32_t s) const
    {
       gl::SetShaderInt(Native->ProgramId, &name[0], s);
    }

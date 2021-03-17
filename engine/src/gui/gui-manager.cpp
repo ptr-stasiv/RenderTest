@@ -39,7 +39,7 @@ namespace gui
                Color = texture(Texture, Uv);
             })";
 
-      GuiShader = std::make_unique<graphics::ShaderPipeline>();
+      GuiShader = std::make_unique<graphics::ShaderProgram>();
 
       GuiShader->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
       GuiShader->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);

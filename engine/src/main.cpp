@@ -1,8 +1,4 @@
-#include "scene/scene.h"
-
 #include "math/matrices/matrix4x4.h"
-#include "scene/renders/forward-render.h"
-#include "graphics/shaders/shader-pipeline.h"
 
 #include "asset-manager/obj-loader.h"
 #include "asset-manager/image-loader.h"
@@ -24,6 +20,8 @@
 
 #include "entry-point/entry-point.h"
 
+#include "graphics/renders/forward-render.h"
+
 int main()
 {
    app::CreateEngineApp();
@@ -31,7 +29,6 @@ int main()
 
    graphics::Camera MainCamera;
    assets::AssetManager AssetManager;
-   core::Scene Scene;
 
    uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(&MainCamera);
 
@@ -75,9 +72,6 @@ int main()
 
    assets::AssetRef pistolTextureRef = AssetManager.RequireAsssetRef("res/meshes/pistol/textures/handgun_C.jpg");
 
-   //for(size_t i = 0; i < 15; ++i)
-   //  AssetManager.RequireAsssetId("res/meshes/pistol/pistol.obj");
-
    {
       utils::Timer assetTimer(true);
       AssetManager.Load();
@@ -86,40 +80,28 @@ int main()
 
    MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
 
-   graphics::Material floorM;
-   floorM.Color = math::Vector3(0.0f, 0.2f, 0.2f);
-   floorM.Specular = math::Vector3(0.5f, 0.5f, 0.5f);
-   floorM.ShineExponent = 10.0f;
-   floorM.Emissive = math::Vector3(0.0f);
+   graphics::Mesh pistolMesh(pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->UVs);
+   graphics::Mesh cubeMesh(cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->UVs);
 
    graphics::Material pistolM;
-   pistolM.Color = math::Vector3(0.7f, 0.2f, 0.2f);
-   pistolM.DiffuseTexture = pistolTextureRef;
-   pistolM.Specular = math::Vector3(1.0f);
-   pistolM.ShineExponent = 10.0f;
-   pistolM.Emissive = math::Vector3(0.0f);
+   pistolM.DiffuseColor = math::Vector3(0.5f, 0.2f, 0.5f);
+   pistolM.SpecularColor = math::Vector3(0.8f);
+   pistolM.Glossiness = 16.0f;
 
-   Scene.SetCamera(&MainCamera);
+   graphics::Material cubeM;
+   cubeM.DiffuseColor = math::Vector3(0.3f, 0.3f, 0.3f);
+   cubeM.SpecularColor = math::Vector3(1.0f);
+   cubeM.Glossiness = 8.0f;
 
-   size_t floorMaterial = Scene.AddMaterial(floorM);
-   size_t pistolMaterial = Scene.AddMaterial(pistolM);
+   graphics::ForwardRender fr;
 
-   Scene.AddRenderObject({ graphics::Mesh(pistolAssetRef), CreateTranslateMatrix(math::Vector3(0.0f, 0.0f, 0.0f)), pistolMaterial });
-
-   math::Matrix4 cubeTransform = CreateTranslateMatrix(math::Vector3(0.0f, -2.0f, 0.0f));
-   cubeTransform = cubeTransform * CreateScaleMatrix(math::Vector3(15.0f, 1.0f, 15.0f));
-   Scene.AddRenderObject({ graphics::Mesh(cubeAssetRef), cubeTransform, floorMaterial });
-
-   Scene.AddLight(graphics::PointLight(math::Vector3(1.2f, 1.0f, 2.0f), math::Vector3(1.0f, 1.0f, 1.0f), 0.09f, 1.0f, 0.032f));
-
-   /* for (int i = 0; i < 1; ++i)
-       Scene.AddLight(graphics::Spotlight(math::Vector3(0, 10.0f, 0), math::Vector3(0.0f, -1.0f, 0.0f), math::Vector3(1.0f, 1.0f, 1.0f), math::Pi / 12, math::Pi / 15));*/
-
-   graphics::ForwardRender::Initialize();
+   fr.AddRenderer({ pistolMesh, pistolM, math::CreateIdentityMatrix4() });
+   fr.AddRenderer({ cubeMesh, pistolM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f }) 
+                                   * math::CreateScaleMatrix({ 5.0f, 0.5f, 5.0f }) });
 
    app::RunEngineApp([&]()
       {
-         graphics::ForwardRender::Update(Scene, app::g_DeltaTime);
+         fr.Render(MainCamera);
       });
 
    return 0;

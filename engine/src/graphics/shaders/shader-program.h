@@ -16,15 +16,15 @@ namespace graphics
       LAST_ENUM_ELEMENT
    };
 
-   struct ShaderPipeline
+   struct ShaderProgram
    {
    private:
       struct NativeInfo;
       std::unique_ptr<NativeInfo> Native;
    public:
-      ShaderPipeline();
+      ShaderProgram();
 
-      ~ShaderPipeline();
+      ~ShaderProgram();
 
       void Add(const ShaderType shaderType, const std::string_view& shaderSrc); 
 

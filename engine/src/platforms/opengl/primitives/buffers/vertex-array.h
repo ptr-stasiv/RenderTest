@@ -1,5 +1,5 @@
 #pragma once
-#include "buffer.h"
+#include "vertex-buffer.h"
 
 namespace gl
 {

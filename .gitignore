@@ -1,9 +1,12 @@
 #Directories
 binaries/
 .vs
+.cache
 
 #Files
 *.sln
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+
+compile_commands.json
