@@ -18,15 +18,16 @@ namespace graphics
 
       virtual ~GraphicsDevice() = default;
 
-      virtual std::unique_ptr<Canvas> CreateCanvas() = 0;
+      virtual std::shared_ptr<Canvas> CreateCanvas(const uint16_t sizeX, const uint16_t sizeY,
+                                                   const std::string_view& title) = 0;
 
-      virtual std::unique_ptr<ShaderProgram> CreateShaderProgram() = 0;
+      virtual std::shared_ptr<ShaderProgram> CreateShaderProgram() = 0;
 
       //virtual std::unique_ptr<ComputeShader> CreateComputeShader() = 0;
 
-      virtual std::unique_ptr<Texture2D> CreateTexture2D() = 0;
+      virtual std::shared_ptr<Texture2D> CreateTexture2D() = 0;
 
-      virtual std::unique_ptr<VertexBuffer> CreateVBO() = 0;
+      virtual std::shared_ptr<VertexBuffer> CreateVBO() = 0;
 
       //virtual std::unique_ptr<UniformBuffer> CreateUBO() = 0;
 

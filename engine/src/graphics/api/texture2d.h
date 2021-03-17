@@ -5,12 +5,24 @@
 
 namespace graphics
 {
+   enum class TextureWrap
+   {
+      ClampToEdge,
+      Repeat
+   };
+
+   enum class TextureFilter
+   {
+      Nearest,
+      Linear
+   };
+
    struct TextureParams
    {
-      uint16_t WrapS;
-      uint16_t WrapT;
-      uint16_t MagFilter;
-      uint16_t MinFilter;
+      TextureWrap WrapS;
+      TextureWrap WrapT;
+      TextureFilter MagFilter;
+      TextureFilter MinFilter;
    };
 
    class Texture2D

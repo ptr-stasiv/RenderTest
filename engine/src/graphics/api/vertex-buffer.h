@@ -12,7 +12,5 @@ namespace graphics
       virtual void InitData(const size_t size, const void* data) = 0;
 
       virtual void UpdateData(const size_t size, const void* data) = 0;
-
-      virtual std::any GetNative() = 0;
    };
 }

@@ -2,15 +2,17 @@
 #include <unordered_map>
 
 #include "debug/log/log.h"
+#include "gl-api.h"
 #include "graphics/api/shader-program.h"
+#include "gl-vertex-buffer.h"
 #include "GL/glew.h"
 
 namespace graphics
 {
    static std::unordered_map<ShaderType, GLenum> ShaderTypeLookupMap = 
    {
-      { ShaderTypeVertex, GL_VERTEX_SHADER },
-      { ShaderTypeFragment, GL_FRAGMENT_SHADER }
+      { ShaderType::Vertex, GL_VERTEX_SHADER },
+      { ShaderType::Fragment, GL_FRAGMENT_SHADER }
    };
 
 #define OGL_SHADER_TYPE(t) ShaderTypeLookupMap.at(t)
@@ -20,12 +22,18 @@ namespace graphics
       class ShaderProgramGL : public ShaderProgram
       {
       private:
-         GLuint ProgramId;
-         std::string_view ShaderArr[ShadersTypeCount];
+         uint8_t BufferCounter = 0;
       public:   
+         GLuint ProgramId;
+         GLuint Vao;
+
+         std::string_view ShaderArr[ShadersTypeCount];
+
          inline ShaderProgramGL()
          {
             ProgramId = glCreateProgram();
+
+            glCreateVertexArrays(1, &Vao);
          }
 
          inline ~ShaderProgramGL() override
@@ -44,11 +52,20 @@ namespace graphics
             ShaderArr[static_cast<uint8_t>(type)] = src;
          }
 
-         inline void AddInputBuffer(const VertexBuffer& vbo, const uint8_t attribIndex, const size_t offset, const size_t stride) override {}
+         inline void AddInputBuffer(const std::shared_ptr<VertexBuffer>& vbo, const uint8_t elements, const uint8_t attribIndex,
+                                    const size_t stride, const Type type, const size_t offset = 0, const size_t elementsOffset = 0) override
+         {
+            auto glVbo = std::static_pointer_cast<VertexBufferGL>(vbo);
+
+            glVertexArrayVertexBuffer(Vao, BufferCounter, glVbo->BindId, offset, stride);
+
+            glEnableVertexArrayAttrib(Vao, attribIndex);
+            glVertexArrayAttribBinding(Vao, attribIndex, BufferCounter);
+            glVertexArrayAttribFormat(Vao, attribIndex, elements, OGL_TYPE(type), GL_FALSE, elementsOffset);
+         }
 
          inline void Compile() override
          {
-
             for (uint8_t i = 0; i < ShadersTypeCount; ++i)
             {
                if (ShaderArr[i].empty())

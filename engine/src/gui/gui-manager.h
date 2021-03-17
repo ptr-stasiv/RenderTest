@@ -1,8 +1,5 @@
 #pragma once
 #include "gui.h"
-#include "graphics/shaders/shader-program.h"
-#include "platforms/opengl/primitives/buffers/vertex-array.h"
-#include "platforms/opengl/primitives/textures/texture2d.h"
 #include "window/input/input-manager.h"
 
 namespace gui
@@ -11,11 +8,11 @@ namespace gui
    {
    private:
       std::unique_ptr<gui::GuiController> GuiController;
-      std::unique_ptr<graphics::ShaderProgram> GuiShader;
+      //std::unique_ptr<graphics::ShaderProgram> GuiShader;
 
-      gl::VertexArray  Vao;
-      gl::VertexBuffer Vbo;
-      gl::Texture2D SurfaceTexture;
+      //gl::VertexArray  Vao;
+      //gl::VertexBuffer Vbo;
+      //gl::Texture2D SurfaceTexture;
 
       event::Subject MouseButtonSubject;
       event::Subject CursorSubject;

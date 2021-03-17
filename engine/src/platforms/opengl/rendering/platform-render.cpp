@@ -50,20 +50,20 @@ namespace graphics
       glVertexArrayAttribFormat(pr->Native->Vao, NormalAttribLocation, 3, GL_FLOAT, GL_FALSE, 0);
       glVertexArrayAttribFormat(pr->Native->Vao, UvAttribLocation, 2, GL_FLOAT, GL_FALSE, 0);
 
-      struct alignas(16) PL
-      {
-         math::Vector4 Position;
-         math::Vector4 Color;
+      //struct alignas(16) PL
+      //{
+      //   math::Vector4 Position;
+      //   math::Vector4 Color;
 
-         float Quadratic;
-         float Linear;
-         float Constant;
-      };
+      //   float Quadratic;
+      //   float Linear;
+      //   float Constant;
+      //};
 
-      std::vector<PL> pl;
+     /* std::vector<PL> pl;
       pl.push_back(PL({ {1.0f, 0.2, 0.2f, 0.7f}, {0}, 0.5f, 0.0f, 1.0f }));
       pl.push_back(PL({ {0.2f, 0.2, 1.0f, 0.7f}, {0}, 0.5f, 0.0f, 1.0f }));
-      pl.push_back(PL({ {0.2f, 1.0, 0.2f, 0.7f}, {0}, 0.5f, 0.0f, 1.0f }));
+      pl.push_back(PL({ {0.2f, 1.0, 0.2f, 0.7f}, {0}, 0.5f, 0.0f, 1.0f }));*/
 
       //UBO's
 

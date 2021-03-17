@@ -15,8 +15,6 @@ namespace graphics
 
       virtual bool ShouldClose() = 0;
 
-      virtual std::any GetNative() = 0;
-
       virtual uint16_t GetWidth() const = 0;
       virtual uint16_t GetHeight() const = 0;
    };

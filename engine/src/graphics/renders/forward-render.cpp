@@ -9,10 +9,10 @@ namespace graphics
 
    ForwardRender::ForwardRender()
    {  
-      MainShader = std::make_unique<ShaderProgram>();
+      /*MainShader = std::make_unique<ShaderProgram>();
       MainShader->Add(ShaderType::Vertex, utils::ReadFromFile(VertexShaderLocation));
       MainShader->Add(ShaderType::Fragment, utils::ReadFromFile(FragmentShaderLocation));
-      MainShader->Compile();
+      MainShader->Compile();*/
 
       CurrentRender = CreatePlatformRender();
    }
@@ -24,7 +24,7 @@ namespace graphics
 
    void ForwardRender::Render(const Camera& camera)
    {
-      MainShader->Use();
+      /*MainShader->Use();
 
       MainShader->SetFloats("projection", camera.GetCameraProjection());
       MainShader->SetFloats("view", camera.GetCameraViewMatrix());
@@ -35,6 +35,6 @@ namespace graphics
 
          SetPlatformRenderMaterial(CurrentRender, r.Material);
          DrawPlatformRender(CurrentRender, r.Mesh);
-      }
+      }*/
    }
 }

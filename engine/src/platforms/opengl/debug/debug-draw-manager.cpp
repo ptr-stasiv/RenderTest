@@ -43,10 +43,10 @@ namespace debug
             })";
 
 
-      PrimitiveShader.Add(graphics::ShaderType::Vertex, vertexShaderSrc);
-      PrimitiveShader.Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
+      /*PrimitiveShader.Add(graphics::ShaderType::Vertex, vertexShaderSrc);
+      PrimitiveShader.Add(graphics::ShaderType::Fragment, fragmentShaderSrc);*/
 
-      PrimitiveShader.Compile();
+      //PrimitiveShader.Compile();
    }
    
    DebugDrawManager::~DebugDrawManager()
@@ -115,9 +115,9 @@ namespace debug
 
    void DebugDrawManager::Draw(const graphics::Camera& camera)
    {
-      PrimitiveShader.Use();
+      /*PrimitiveShader.Use();
       PrimitiveShader.SetFloats("projection", camera.GetCameraProjection());
-      PrimitiveShader.SetFloats("view", camera.GetCameraViewMatrix());
+      PrimitiveShader.SetFloats("view", camera.GetCameraViewMatrix());*/
 
       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -125,7 +125,7 @@ namespace debug
       {
          auto& p = DrawPrimitivesArray[i];
          
-         PrimitiveShader.SetFloats("model", math::CreateTranslateMatrix(p->Position));
+         //PrimitiveShader.SetFloats("model", math::CreateTranslateMatrix(p->Position));
 
          gl::BindVertexArray(p->Vao);
          glDrawArrays(GL_TRIANGLES, 0, p->VerticesCount);

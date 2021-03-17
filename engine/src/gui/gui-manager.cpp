@@ -4,12 +4,12 @@ namespace gui
 {
    GuiManager::GuiManager(const std::shared_ptr<app::Window>& window)
    {
-      uint16_t width = window->GetWidth();
-      uint16_t height = window->GetHeight();
+      //uint16_t width = window->GetWidth();
+      //uint16_t height = window->GetHeight();
 
       GuiController = std::make_unique<gui::GuiController>();
 
-      GuiController->Setup(width, height);
+      //GuiController->Setup(width, height);
 
       const char* vertexShaderSrc = R"(
             #version 330 core
@@ -39,12 +39,12 @@ namespace gui
                Color = texture(Texture, Uv);
             })";
 
-      GuiShader = std::make_unique<graphics::ShaderProgram>();
+      /*GuiShader = std::make_unique<graphics::ShaderProgram>();
 
       GuiShader->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
       GuiShader->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
 
-      GuiShader->Compile();
+      GuiShader->Compile();*/
 
       float vertices[] =
       {
@@ -56,22 +56,22 @@ namespace gui
          -1.0f, -1.0f, 0.0f, 1.0f,
       };
 
-      Vbo = gl::CreateVertexBuffer(sizeof(vertices), vertices);
+      //Vbo = gl::CreateVertexBuffer(sizeof(vertices), vertices);
 
-      Vao = gl::CreateVertexArray();
+      //Vao = gl::CreateVertexArray();
 
-      GLuint b = gl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
+      //GLuint b = gl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
 
-      gl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
-      gl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+      //gl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
+      //gl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
 
-      gl::TextureParams params;
-      params.WrapS = GL_CLAMP_TO_EDGE;
-      params.WrapT = GL_CLAMP_TO_EDGE;
-      params.MinFilter = GL_NEAREST;
-      params.MagFilter = GL_NEAREST;
+      //gl::TextureParams params;
+      //params.WrapS = GL_CLAMP_TO_EDGE;
+      //params.WrapT = GL_CLAMP_TO_EDGE;
+      //params.MinFilter = GL_NEAREST;
+      //params.MagFilter = GL_NEAREST;
 
-      SurfaceTexture = gl::CreateTexture2D(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
+      //SurfaceTexture = gl::CreateTexture2D(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
 
 
       SetupInput();
@@ -79,9 +79,9 @@ namespace gui
 
    GuiManager::~GuiManager()
    {
-      gl::DeleteVertexArray(Vao); 
-      gl::DeleteVertexBuffer(Vbo);
-      gl::DeleteTexture2D(SurfaceTexture);
+      //gl::DeleteVertexArray(Vao); 
+      //gl::DeleteVertexBuffer(Vbo);
+      //gl::DeleteTexture2D(SurfaceTexture);
    }
 
    void GuiManager::SetupInput()
@@ -119,20 +119,20 @@ namespace gui
 
    void GuiManager::Update()
    {
-      GuiShader->Use();
+      //GuiShader->Use();
 
-      gl::BindTexture2D(SurfaceTexture, 0);
+      //gl::BindTexture2D(SurfaceTexture, 0);
 
-      uint32_t w, h;
-      void* pixels;
-      GuiController->GetRenderingInfo(w, h, pixels);
+      //uint32_t w, h;
+      //void* pixels;
+      //GuiController->GetRenderingInfo(w, h, pixels);
 
-      gl::UpdateTexture2D(SurfaceTexture, w, h, pixels);
+      //gl::UpdateTexture2D(SurfaceTexture, w, h, pixels);
 
-      GuiShader->SetInt("Texture", 0);
+      ////GuiShader->SetInt("Texture", 0);
 
-      glBindVertexArray(Vao.BindId);
-      glDrawArrays(GL_TRIANGLES, 0, 12);
-      glBindVertexArray(0);
+      //glBindVertexArray(Vao.BindId);
+      //glDrawArrays(GL_TRIANGLES, 0, 12);
+      //glBindVertexArray(0);
    }
 }

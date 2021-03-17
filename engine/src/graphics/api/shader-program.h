@@ -4,6 +4,7 @@
 
 #include "math/matrices/matrix4x4.h"
 #include "vertex-buffer.h"
+#include "api.h"
 
 namespace graphics
 {
@@ -26,7 +27,8 @@ namespace graphics
 
       virtual void AddShader(const ShaderType& type, const std::string_view& src) = 0;
 
-      virtual void AddInputBuffer(const VertexBuffer& vbo, const uint8_t attribIndex, const size_t offset, const size_t stride) = 0;
+      virtual void AddInputBuffer(const std::shared_ptr<VertexBuffer>& vbo, const uint8_t elements, const uint8_t attribIndex, 
+                                  const size_t stride, const Type type, const size_t offset = 0, const size_t elementsOffset = 0) = 0;
 
       virtual void Compile() = 0;
 

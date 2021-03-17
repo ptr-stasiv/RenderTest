@@ -12,7 +12,7 @@ namespace graphics
    class ForwardRender
    {
    private:
-      std::unique_ptr<ShaderProgram> MainShader;
+      //std::unique_ptr<ShaderProgram> MainShader;
 
       std::vector<Renderer> RendererList;
       std::unique_ptr<PlatformRender> CurrentRender;

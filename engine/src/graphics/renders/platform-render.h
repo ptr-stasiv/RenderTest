@@ -2,7 +2,6 @@
 #include <memory>
 
 #include "graphics/mesh.h"
-#include "graphics/shaders/shader-program.h"
 #include "graphics/light/material.h"
 
 namespace graphics

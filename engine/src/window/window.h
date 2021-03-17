@@ -3,42 +3,45 @@
 #include <memory>
 
 #include "math/vectors/vector2.h"
+#include "graphics/api/devices/graphics-device.h"
 
 namespace app
 {
+   //Now window is perform the role of canvas wrapper but later I'm planning to give it additional functional 
+
    class Window
    {
    private:
-      uint16_t Width;
-      uint16_t Height;
-      std::string_view Title;
-
-      struct NativeInfo;
-      std::unique_ptr<NativeInfo> Native;
+      std::shared_ptr<graphics::Canvas> Canvas;
    public:
-      Window(const uint16_t width = 1280, const uint16_t height = 720,
-             const std::string_view title = "RenderTest");
-      ~Window();
+      inline Window(const std::shared_ptr<graphics::GraphicsDevice>& device)
+      {
+         Canvas = device->CreateCanvas(1280, 720, "RenderTest"); //TODO values loading from config
+      }
+
+      ~Window() = default;
 
       Window(Window&&) = default;
       Window& operator = (Window&&) = default;
 
-      void BeginFrame() const;
-      void EndFrame() const;
-
-      bool ShouldClose() const;
-
-      template<typename T>
-      T* GetNative() const;
-
-      inline const uint32_t GetWidth() const
+      inline void BeginFrame()
       {
-         return Width;
+         Canvas->BeginFrame();
       }
 
-      inline const uint32_t GetHeight() const
+      inline void EndFrame()
       {
-         return Height;
+         Canvas->EndFrame();
+      }
+
+      bool ShouldClose()
+      {
+         return Canvas->ShouldClose();
+      }
+
+      const std::shared_ptr<graphics::Canvas>& GetCanvas() const
+      {
+         return Canvas;
       }
 
       Window(const Window*) = delete;

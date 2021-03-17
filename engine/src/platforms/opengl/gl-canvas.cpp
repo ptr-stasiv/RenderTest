@@ -1,7 +1,6 @@
 #include "gl-canvas.h"
 
 #include "debug/gassert.h"
-#include "platforms/opengl/primitives/debug/callback.h"
 
 namespace graphics
 {
@@ -15,11 +14,11 @@ namespace graphics
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-            GLFWwindow* window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
+            GlfwWindow = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
-            GASSERT(window, "Error in window creation");
+            GASSERT(GlfwWindow, "Error in window creation");
 
-            glfwMakeContextCurrent(window);
+            glfwMakeContextCurrent(GlfwWindow);
 
             GASSERT(glewInit() == GLEW_OK, "Error in window creation");
 
@@ -43,12 +42,10 @@ namespace graphics
 
             glEnable(GL_DEPTH_TEST);
 
-            glEnable(GL_DEBUG_OUTPUT);
-            glDebugMessageCallback(MessageCallbackOGL, 0);
+            //glEnable(GL_DEBUG_OUTPUT);
+            //glDebugMessageCallback(MessageCallbackOGL, 0);
 
-            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-            Native.GlfwWindow = window;
+            glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
          }
    }
 }

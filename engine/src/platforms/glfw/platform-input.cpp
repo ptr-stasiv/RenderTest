@@ -47,13 +47,13 @@ namespace input
    {
       void SetupInputCallbacks(const std::shared_ptr<app::Window>& window)
       {
-         glfwSetKeyCallback(window->GetNative<GLFWwindow>(), callback::KeyCallback);
+         //glfwSetKeyCallback(window->GetNative<GLFWwindow>(), callback::KeyCallback);
 
-         glfwSetMouseButtonCallback(window->GetNative<GLFWwindow>(), callback::MouseButtonCallback);
+         //glfwSetMouseButtonCallback(window->GetNative<GLFWwindow>(), callback::MouseButtonCallback);
 
-         glfwSetCursorPosCallback(window->GetNative<GLFWwindow>(), callback::CursorCallback);
+         //glfwSetCursorPosCallback(window->GetNative<GLFWwindow>(), callback::CursorCallback);
 
-         glfwSetScrollCallback(window->GetNative<GLFWwindow>(), callback::ScrollCallback);
+         //glfwSetScrollCallback(window->GetNative<GLFWwindow>(), callback::ScrollCallback);
       }
 
       void AddKeyCallback(const event::Subject& keySubject)
