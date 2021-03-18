@@ -8,7 +8,7 @@ namespace graphics
 {
    namespace gl
    {
-      static std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap = 
+      inline std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap = 
       {
          { InternalFormat::RGB8, GL_RGB8 },
          { InternalFormat::RGBA8, GL_RGBA8 },
@@ -16,7 +16,7 @@ namespace graphics
          { InternalFormat::RGBA16, GL_RGBA16 }
       };
 
-      static std::unordered_map<Format, GLenum> FormatLookupMap =
+      inline std::unordered_map<Format, GLenum> FormatLookupMap =
       {
          { Format::RGB, GL_RGB },
          { Format::RGBA, GL_RGBA },
@@ -24,7 +24,7 @@ namespace graphics
          { Format::BGRA, GL_BGRA }
       };
 
-      static std::unordered_map<Type, GLenum> TypeLookupMap =
+      inline std::unordered_map<Type, GLenum> TypeLookupMap =
       {
          { Type::Ubyte, GL_UNSIGNED_BYTE },
          { Type::Uint, GL_UNSIGNED_INT },

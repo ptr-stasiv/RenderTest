@@ -8,7 +8,7 @@ using namespace ::input;
 
 namespace input
 {
-   static std::unordered_map<uint32_t, InputEvent> GlfwInputMap =
+   inline std::unordered_map<uint32_t, InputEvent> GlfwInputMap =
    {
       { GLFW_KEY_SPACE, InputEvent::Space },
       { GLFW_KEY_APOSTROPHE, InputEvent::Apostrophe },

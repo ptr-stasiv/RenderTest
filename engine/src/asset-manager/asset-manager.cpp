@@ -11,7 +11,7 @@
 
 namespace assets
 {
-   static std::unordered_map<std::string_view, AssetType> g_AssetTypeLookup =
+   std::unordered_map<std::string_view, AssetType> g_AssetTypeLookup =
    {
       {".obj", AssetType::Mesh},
       {".png", AssetType::Image},

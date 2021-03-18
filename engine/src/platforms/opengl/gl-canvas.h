@@ -14,10 +14,10 @@ namespace graphics
    {
       namespace input
       {
-         extern event::Subject KeySubject;
-         extern event::Subject MouseButtonSubject;
-         extern event::Subject CursorSubject;
-         extern event::Subject MouseScrollSubject;
+         inline event::Subject KeySubject;
+         inline event::Subject MouseButtonSubject;
+         inline event::Subject CursorSubject;
+         inline event::Subject MouseScrollSubject;
       }
 
       class CanvasGL : public Canvas

@@ -6,14 +6,14 @@
 
 #include "utils/sync/spin-lock.h"
 
-static const char* g_FontColorModes[] =
+const char* g_FontColorModes[] =
 {
    "\033[0m",  //Default
    "\033[31m", //Red
    "\033[33m"  //Yellow
 };
 
-static utils::sync::SpinLock g_CmdSpinLock;
+utils::sync::SpinLock g_CmdSpinLock;
 
 void PrintLog(const LogLevels level, const char* filepath, const int line, const const char* format, ...)
 {

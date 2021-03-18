@@ -13,7 +13,7 @@ namespace input
 {
    namespace native
    {
-      static constexpr uint8_t MaxEvents = (uint8_t)(input::InputEvent::LAST_ENUM_ELEMENT);
+      inline constexpr uint8_t MaxEvents = (uint8_t)(input::InputEvent::LAST_ENUM_ELEMENT);
 
       class NativeInputManager
       {

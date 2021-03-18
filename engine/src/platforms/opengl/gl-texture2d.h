@@ -9,13 +9,13 @@ namespace graphics
 {
    namespace gl
    {
-      static std::unordered_map<TextureWrap, GLenum> TextureWrappLookupMap = 
+      inline std::unordered_map<TextureWrap, GLenum> TextureWrappLookupMap = 
       {
          { TextureWrap::ClampToEdge, GL_CLAMP_TO_EDGE },
          { TextureWrap::Repeat, GL_REPEAT } 
       };
 
-      static std::unordered_map<TextureFilter, GLenum> TextureFilterLookupMap = 
+      inline std::unordered_map<TextureFilter, GLenum> TextureFilterLookupMap =
       {
          { TextureFilter::Nearest, GL_NEAREST },
          { TextureFilter::Linear, GL_LINEAR }

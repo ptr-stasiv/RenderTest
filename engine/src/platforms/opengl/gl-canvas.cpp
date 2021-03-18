@@ -10,12 +10,6 @@ namespace graphics
    { 
       namespace input
       {
-         static event::Subject KeySubject;
-         static event::Subject MouseButtonSubject;
-         static event::Subject CursorSubject;
-         static event::Subject MouseScrollSubject;
-
-
          inline void KeyCallback(GLFWwindow* w, int key, int sc, int action, int mods)
          {
             KeySubject.Invoke(event::KeyEvent(GlfwInputMap.at(key), GlfwTranslateState(action)));

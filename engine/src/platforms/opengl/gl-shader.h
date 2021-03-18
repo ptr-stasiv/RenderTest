@@ -9,7 +9,7 @@
 
 namespace graphics
 {
-   static std::unordered_map<ShaderType, GLenum> ShaderTypeLookupMap = 
+   inline std::unordered_map<ShaderType, GLenum> ShaderTypeLookupMap = 
    {
       { ShaderType::Vertex, GL_VERTEX_SHADER },
       { ShaderType::Fragment, GL_FRAGMENT_SHADER }

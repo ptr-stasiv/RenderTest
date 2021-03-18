@@ -16,8 +16,7 @@ namespace graphics
       LAST_ENUM_ELEMENT
    };
    
-   static constexpr const uint8_t ShadersTypeCount = static_cast<uint8_t>(ShaderType::LAST_ENUM_ELEMENT);
-
+   inline constexpr uint8_t ShadersTypeCount = static_cast<uint8_t>(ShaderType::LAST_ENUM_ELEMENT);
 
    class ShaderProgram
    {
