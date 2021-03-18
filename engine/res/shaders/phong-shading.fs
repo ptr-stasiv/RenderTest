@@ -30,5 +30,5 @@ uniform int PointLightsCount;
 
 void main()
 {
-    FragColor = vec4(vs_in.Normal, 1.0f);
+    FragColor = vec4(1.0f, 0.2f, 0.2f, 1.0f);
 }

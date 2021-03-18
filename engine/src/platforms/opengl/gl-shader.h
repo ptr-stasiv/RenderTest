@@ -55,13 +55,15 @@ namespace graphics
          inline void AddInputBuffer(const std::shared_ptr<VertexBuffer>& vbo, const uint8_t elements, const uint8_t attribIndex,
                                     const size_t stride, const Type type, const size_t offset = 0, const size_t elementsOffset = 0) override
          {
-            auto glVbo = std::static_pointer_cast<VertexBufferGL>(vbo);
+            auto& glVbo = std::static_pointer_cast<VertexBufferGL>(vbo);
 
             glVertexArrayVertexBuffer(Vao, BufferCounter, glVbo->BindId, offset, stride);
 
             glEnableVertexArrayAttrib(Vao, attribIndex);
             glVertexArrayAttribBinding(Vao, attribIndex, BufferCounter);
             glVertexArrayAttribFormat(Vao, attribIndex, elements, OGL_TYPE(type), GL_FALSE, elementsOffset);
+
+            ++BufferCounter;
          }
 
          inline void Compile() override
