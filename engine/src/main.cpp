@@ -31,6 +31,48 @@ int main()
          LOG_ERROR("Test");
       }, 0);
 
+
+   const char* vertexShaderSrc = R"(
+            #version 460 core
+      
+            layout(location = 0) in vec2 pos;
+      
+            void main()
+            {
+               gl_Position = vec4(pos, 0.0f, 1.0f);
+            })";
+
+   const char* fragmentShaderSrc = R"(
+            #version 460 core
+         
+            out vec4 Color;
+      
+            void main()
+            {
+               Color = vec4(1.0f, 0.2f, 0.2f, 1.0f);
+            })";
+
+   auto program = app::g_GraphicsDevice->CreateShaderProgram();
+
+   program->AddShader(graphics::ShaderType::Vertex, vertexShaderSrc);
+   program->AddShader(graphics::ShaderType::Fragment, fragmentShaderSrc);
+   program->Compile();
+
+   auto vbo = app::g_GraphicsDevice->CreateVBO();
+
+   float vertices[] =
+   {
+      -1.0f, -1.0f,
+      -1.0f, 1.0f,
+      1.0f, 1.0f,
+      1.0f, 1.0f,
+      1.0f, -1.0f,
+      -1.0f, -1.0f
+   };
+   vbo->InitData(sizeof(vertices), vertices);
+
+   program->AddInputBuffer(vbo, 2, 0, 8, graphics::Type::Float);
+
    //graphics::Camera MainCamera;
    //assets::AssetManager AssetManager;
 
@@ -106,6 +148,8 @@ int main()
    app::RunEngineApp([&]()
       {
          //fr.Render(MainCamera);
+
+         app::g_GraphicsDevice->DrawTriangles(program, 8);
       });
 
    return 0;

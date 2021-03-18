@@ -31,7 +31,7 @@ namespace graphics
 
       virtual void Compile() = 0;
 
-      virtual void Use() = 0;
+      virtual void Use() const = 0;
 
       virtual void SetFloats(const std::string_view& name, const math::Matrix4& m) const = 0;
 

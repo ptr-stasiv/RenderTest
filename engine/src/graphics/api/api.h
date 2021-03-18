@@ -3,6 +3,12 @@
 
 namespace graphics
 {
+   enum class Feature : uint8_t 
+   {
+      Blend,
+      Depth
+   };
+
    enum class InternalFormat : uint8_t
    {
       RGB8,
@@ -24,5 +30,18 @@ namespace graphics
       Ubyte,
       Uint,
       Float
+   };
+
+   enum class BlendFunc : uint8_t
+   {
+      Add,
+      Subtract
+   };
+
+   enum class BlendValue : uint8_t
+   {
+      One,
+      SrcAlpha,
+      OneMinusSrcAlpha
    };
 }

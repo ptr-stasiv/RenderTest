@@ -8,6 +8,12 @@ namespace graphics
 {
    namespace gl
    {
+      inline std::unordered_map<Feature, GLenum> FeatureLookupMap = 
+      {
+         { Feature::Blend, GL_BLEND },
+         { Feature::Depth, GL_DEPTH_TEST }
+      };
+
       inline std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap = 
       {
          { InternalFormat::RGB8, GL_RGB8 },
@@ -31,8 +37,25 @@ namespace graphics
          { Type::Float, GL_FLOAT }
       };
 
-#define OGL_IFORMAT(f) InternalFormatLookupMap.at(f)
-#define OGL_FORMAT(f) FormatLookupMap.at(f)
-#define OGL_TYPE(t) TypeLookupMap.at(t)
+      inline std::unordered_map<BlendFunc, GLenum> BlendFuncLookupMap = 
+      {
+         { BlendFunc::Add, GL_FUNC_ADD },
+         { BlendFunc::Subtract, GL_FUNC_SUBTRACT }
+      };
+
+      inline std::unordered_map<BlendValue, GLenum> BlendValueLookupMap = 
+      {  
+         { BlendValue::One, GL_ONE },
+         { BlendValue::SrcAlpha, GL_SRC_ALPHA },
+         { BlendValue::OneMinusSrcAlpha, GL_ONE_MINUS_SRC_ALPHA }
+      };
    }
 }
+
+#define OGL_FEATURE(f) graphics::gl::FeatureLookupMap.at(f)
+#define OGL_IFORMAT(f) graphics::gl::InternalFormatLookupMap.at(f)
+#define OGL_FORMAT(f) graphics::gl::FormatLookupMap.at(f)
+#define OGL_TYPE(t) graphics::gl::TypeLookupMap.at(t)
+#define OGL_BLEND_FUNC(f) graphics::gl::BlendFuncLookupMap.at(f)
+#define OGL_BLEND_VALUE(v) graphics::gl::BlendValueLookupMap.at(v)
+

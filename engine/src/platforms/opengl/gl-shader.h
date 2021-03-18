@@ -74,7 +74,9 @@ namespace graphics
                GLenum oglShaderType = OGL_SHADER_TYPE(ShaderType(i));
 
                GLuint shader = glCreateShader(oglShaderType);
-               glShaderSource(shader, 1, (const char* const*)ShaderArr[i].data(), NULL);
+
+               const char* src = ShaderArr[i].data();
+               glShaderSource(shader, 1, &src, NULL);
 
                glAttachShader(ProgramId, shader);
                glDeleteShader(shader);
@@ -83,7 +85,7 @@ namespace graphics
             glLinkProgram(ProgramId);
          }
 
-         inline void Use() override
+         inline void Use() const override
          {
             glUseProgram(ProgramId);
          }

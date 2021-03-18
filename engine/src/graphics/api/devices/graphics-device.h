@@ -32,5 +32,22 @@ namespace graphics
       //virtual std::unique_ptr<UniformBuffer> CreateUBO() = 0;
 
       //virtual std::unique_ptr<ShaderBuffer> CreateSBO() = 0;
+      
+      
+      //Commands
+    
+      virtual std::string GetDeviceInfo() const = 0;
+
+      virtual void EnableFeature(const Feature feature) const = 0;
+
+      virtual void DisableFeature(const Feature feature) const = 0;
+
+      virtual void Clear() = 0;
+
+      virtual void SetClearColor(const math::Vector4& color) const = 0;
+
+      virtual void SetBlendSettings(const BlendFunc func, const BlendValue src, const BlendValue dst) const = 0;
+
+      virtual void DrawTriangles(const std::shared_ptr<ShaderProgram>& program, const size_t verticesCount) const = 0;
    };
 }
