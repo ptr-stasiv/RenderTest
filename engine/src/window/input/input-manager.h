@@ -3,6 +3,7 @@
 #include <vector>
 #include <deque>
 #include <utility>
+#include <unordered_map>
 
 #include "native-input-handling.h"
 

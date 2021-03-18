@@ -15,6 +15,8 @@ namespace app
 
    std::shared_ptr<app::Window> g_Window;
 
+   std::shared_ptr<input::InputManager> g_InputManager;
+
 
    float g_DeltaTime;
    float g_FPS;
@@ -26,6 +28,8 @@ namespace app
       g_GraphicsDevice = std::make_shared<graphics::OpenglGraphicsDevice>(); //TODO make the device selectable from the config if the will be one more
 
       g_Window = std::make_shared<app::Window>(g_GraphicsDevice);
+
+      g_InputManager = std::make_shared<input::InputManager>(g_Window);
 
       
       //Independent subsystems setup's
@@ -43,6 +47,8 @@ namespace app
 
 
         g_Window->BeginFrame();
+
+        g_InputManager->Poll();
 
 
         userTickFunc();

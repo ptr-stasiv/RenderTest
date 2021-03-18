@@ -1,11 +1,14 @@
-#include "window/input/maps/platform-key-map.h"
+#pragma once
+#include <unordered_map>
+
 #include "GLFW/glfw3.h" 
+#include "window/input/input-events.h"
 
 using namespace ::input;
 
 namespace input
 {
-   std::unordered_map<uint32_t, InputEvent> PlatformInputMap =
+   static std::unordered_map<uint32_t, InputEvent> GlfwInputMap =
    {
       { GLFW_KEY_SPACE, InputEvent::Space },
       { GLFW_KEY_APOSTROPHE, InputEvent::Apostrophe },
@@ -133,9 +136,9 @@ namespace input
       { GLFW_MOUSE_BUTTON_8 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_8 }
    };
 
-   InputEventState TranslatePlatformState(const uint32_t state)
+   inline InputEventState GlfwTranslateState(const uint32_t state)
    {
-      if (state == GLFW_PRESS || state == GLFW_REPEAT) //TODO Later make for repeat separate state
+      if (state == GLFW_PRESS || state == GLFW_REPEAT) //TODO Later make for 'repeat' separate state
          return InputEventState::Pressed;
       else
          return InputEventState::Released;

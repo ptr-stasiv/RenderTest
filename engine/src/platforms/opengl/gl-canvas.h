@@ -3,6 +3,8 @@
 #include <memory>
 
 #include "graphics/api/canvas.h"
+#include "events/subject.h"
+#include "events/input-events.h"
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
@@ -10,6 +12,14 @@ namespace graphics
 {
    namespace gl
    {
+      namespace input
+      {
+         extern event::Subject KeySubject;
+         extern event::Subject MouseButtonSubject;
+         extern event::Subject CursorSubject;
+         extern event::Subject MouseScrollSubject;
+      }
+
       class CanvasGL : public Canvas
       {
       private:
@@ -52,6 +62,26 @@ namespace graphics
          inline uint16_t GetHeight() const override
          {
             return Height;
+         }
+
+         inline void AddKeyCallback(const event::Callback& callback) override
+         {
+            input::KeySubject.AddObserver(callback);
+         }
+
+         inline void AddMouseButtonCallback(const event::Callback& callback) override
+         {
+            input::MouseButtonSubject.AddObserver(callback);
+         }
+
+         inline void AddCursorCallback(const event::Callback& callback) override
+         {
+            input::CursorSubject.AddObserver(callback);
+         }
+
+         inline void AddScrollCallback(const event::Callback& callback) override
+         {
+            input::MouseScrollSubject.AddObserver(callback);
          }
 
          CanvasGL(const CanvasGL&) = delete;

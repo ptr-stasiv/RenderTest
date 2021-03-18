@@ -2,10 +2,12 @@
 #include <cstdint>
 #include <bitset>
 
-#include "window/input/maps/platform-key-map.h"
+#include "window/window.h"
+#include "events/subject.h"
+#include "events/input-events.h"
+#include "window/input/input-events.h"
 #include "debug/log/log.h"
 #include "math/vectors/vector2.h"
-#include "window/input/platform-input.h"
 
 namespace input
 {
@@ -15,11 +17,6 @@ namespace input
 
       class NativeInputManager
       {
-      private:
-         event::Subject KeySubject;
-         event::Subject MouseButtonSubject;
-         event::Subject CursorSubject;
-         event::Subject ScrollSubject;
       public:
          struct
          {
@@ -36,49 +33,45 @@ namespace input
 
          inline NativeInputManager(const std::shared_ptr<app::Window>& window)
          {
-            native::SetupInputCallbacks(window);
-
-
             uintptr_t args = reinterpret_cast<uintptr_t>(this);
 
-            KeySubject.AddObserver([](event::BaseEvent& e, const uintptr_t args)
-               {
-                  NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
-                  event::KeyEvent keyE = event::CastEvent<event::KeyEvent>(e);
+            event::Callback keyCallback = { [](event::BaseEvent& e, const uintptr_t args)
+            {
+               NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
+               event::KeyEvent keyE = event::CastEvent<event::KeyEvent>(e);
 
-                  native->CurrentFrameEventStates[static_cast<size_t>(input::PlatformInputMap[keyE.Key])] = input::TranslatePlatformState(keyE.State) == InputEventState::Pressed;
-               }, args);
+               native->CurrentFrameEventStates[static_cast<size_t>(keyE.Key)] = keyE.State == InputEventState::Pressed;
+            }, args };
 
-            MouseButtonSubject.AddObserver([](event::BaseEvent& e, const uintptr_t args)
-               {
-                  NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
-                  event::MouseButtonEvent mouseButtonE = event::CastEvent<event::MouseButtonEvent>(e);
+            event::Callback mouseButtonCallback = { [](event::BaseEvent& e, const uintptr_t args)
+            {
+               NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
+               event::MouseButtonEvent mouseButtonE = event::CastEvent<event::MouseButtonEvent>(e);
 
-                  size_t pos = static_cast<size_t>(input::PlatformInputMap[1 + mouseButtonE.Button + (size_t)(input::InputEvent::LastKeyboardKey)]);
-                  native->CurrentFrameEventStates[pos] = input::TranslatePlatformState(mouseButtonE.State) == InputEventState::Pressed;
-               }, args);
+               size_t pos = static_cast<size_t>(1 + size_t(mouseButtonE.Button) + size_t(input::InputEvent::LastKeyboardKey));
+               native->CurrentFrameEventStates[pos] = mouseButtonE.State == InputEventState::Pressed;
+            }, args };
 
-            CursorSubject.AddObserver([](event::BaseEvent& e, const uintptr_t args)
-               {
-                  NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
-                  event::MouseCursorPosEvent mouseCursorE = event::CastEvent<event::MouseCursorPosEvent>(e);
+            event::Callback cursorCallback = { [](event::BaseEvent& e, const uintptr_t args)
+            {
+               NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
+               event::MouseCursorPosEvent mouseCursorE = event::CastEvent<event::MouseCursorPosEvent>(e);
+            
+               native->MouseInfo.CursorPosition = { mouseCursorE.PosX, mouseCursorE.PosY };
+            }, args };
 
-                  native->MouseInfo.CursorPosition = { mouseCursorE.PosX, mouseCursorE.PosY };
-               }, args);
+            event::Callback mouseScrollCallback = { [](event::BaseEvent& e, const uintptr_t args)
+            {
+               NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
+               event::MouseScrollEvent mouseScrollE = event::CastEvent<event::MouseScrollEvent>(e);
 
-            ScrollSubject.AddObserver([](event::BaseEvent& e, const uintptr_t args)
-               {
-                  NativeInputManager* native = reinterpret_cast<NativeInputManager*>(args);
-                  event::MouseScrollEvent mouseScrollE = event::CastEvent<event::MouseScrollEvent>(e);
+               native->MouseInfo.ScrollValue = mouseScrollE.Value;
+            }, args };
 
-                  native->MouseInfo.ScrollValue = mouseScrollE.Value;
-               }, args);
-
-
-            native::AddKeyCallback(KeySubject);
-            native::AddMouseButtonCallback(MouseButtonSubject);
-            native::AddCursorCallback(CursorSubject);
-            native::AddScrollCallback(ScrollSubject);
+            window->GetCanvas()->AddKeyCallback(keyCallback);
+            window->GetCanvas()->AddMouseButtonCallback(mouseButtonCallback);
+            window->GetCanvas()->AddCursorCallback(cursorCallback);
+            window->GetCanvas()->AddScrollCallback(mouseScrollCallback);
          }
 
          inline void Update()

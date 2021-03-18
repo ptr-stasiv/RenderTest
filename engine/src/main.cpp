@@ -16,8 +16,6 @@
 
 #include "utils/read-from-file.h"
 
-#include "debug/graphics/debug-draw-manager.h"
-
 #include "entry-point/entry-point.h"
 
 #include "graphics/renders/forward-render.h"
@@ -28,6 +26,10 @@ int main()
 {
    app::CreateEngineApp();
 
+   app::g_InputManager->BindAction(input::InputEvent::A, input::InputEventState::Pressed, [](uintptr_t)
+      {
+         LOG_ERROR("Test");
+      }, 0);
 
    //graphics::Camera MainCamera;
    //assets::AssetManager AssetManager;

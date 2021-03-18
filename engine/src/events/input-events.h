@@ -1,14 +1,16 @@
+#pragma once
 #include "events/event.h"
+#include "window/input/input-events.h"
 
 namespace event
 {
    class KeyEvent : public BaseEvent
    {
    public:
-      uint32_t Key;
-      uint32_t State;
+      input::InputEvent Key;
+      input::InputEventState State;
 
-      inline KeyEvent(const uint32_t key, const uint32_t state)
+      inline KeyEvent(const input::InputEvent key, const input::InputEventState state)
          : Key(key), State(state) {}
 
       ASSIGN_EVENT_TYPE(0x01)
@@ -17,10 +19,10 @@ namespace event
    class MouseButtonEvent : public BaseEvent
    {
    public:
-      uint32_t Button;
-      uint32_t State;
+      input::InputEvent Button;
+      input::InputEventState State;
 
-      inline MouseButtonEvent(const uint32_t button, const uint32_t state)
+      inline MouseButtonEvent(const input::InputEvent button, const input::InputEventState state)
          : Button(button), State(state) {}
 
       ASSIGN_EVENT_TYPE(0x02)

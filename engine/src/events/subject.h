@@ -6,31 +6,31 @@
 
 namespace event
 {
-   using EventCallback = void(*)(BaseEvent&, const uintptr_t);
+   using CallbackFuncSignature = void(*)(BaseEvent&, const uintptr_t);
+
+   struct Callback
+   {
+      CallbackFuncSignature Func;
+      uintptr_t Args;
+
+      inline Callback(const CallbackFuncSignature& func, const uintptr_t args = 0)
+         : Func(func), Args(args) {}
+   };
 
    class Subject
    {
    private:
-      struct EventInfo
-      {
-         EventCallback Callback;
-         uintptr_t Args;
-
-         inline EventInfo(EventCallback callback, uintptr_t args)
-            : Callback(callback), Args(args) {}
-      };
-
-      std::vector<EventInfo> ObserversArray;
+      std::vector<Callback> ObserversArray;
    public:
       inline void Invoke(BaseEvent& e)
       {
          for (auto info : ObserversArray)
-            info.Callback(e, info.Args);
+            info.Func(e, info.Args);
       }
 
-      inline size_t AddObserver(const EventCallback& callback, const uintptr_t args = 0)
+      inline size_t AddObserver(const Callback& callback)
       {
-         ObserversArray.emplace_back(callback, args);
+         ObserversArray.emplace_back(callback);
          return ObserversArray.size() - 1;
       }
 

@@ -8,7 +8,6 @@
 #include "AppCore/Platform.h"
 
 #include "key-map.h"
-#include "window/input/maps/platform-key-map.h"
 #include "utils/process/process.h"
 
 namespace gui
@@ -33,7 +32,7 @@ namespace gui
    {
       ultralight::MouseEvent e;
       e.type = !state ? ultralight::MouseEvent::Type::kType_MouseUp : ultralight::MouseEvent::Type::kType_MouseDown;
-      e.button = static_cast<ultralight::MouseEvent::Button>(input::UltralightInputMap[input::PlatformInputMap[button]]);
+      //e.button = static_cast<ultralight::MouseEvent::Button>(input::UltralightInputMap[size_t(button)]);
 
       UlInfo->View->FireMouseEvent(e);
    }

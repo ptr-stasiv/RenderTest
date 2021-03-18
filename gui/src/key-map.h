@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include "Ultralight/Ultralight.h"
-#include "window/input/maps/input-events.h"
+#include "window/input/input-events.h"
 
 namespace input
 {

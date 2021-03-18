@@ -88,33 +88,33 @@ namespace gui
    {
       uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(GuiController.get());
 
-      MouseButtonSubject.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      MouseButtonSubject.AddObserver({ [](event::BaseEvent& e, uintptr_t args)
          {
             event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
             gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            gc->OnMouseButton(mouseE.Button, mouseE.State);
-         }, callbackArgs);
+            //gc->OnMouseButton(mouseE.Button, mouseE.State);
+         }, callbackArgs });
 
-      CursorSubject.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      CursorSubject.AddObserver({ [](event::BaseEvent& e, uintptr_t args)
          {
             auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
             gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
             gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
-         }, callbackArgs);
+         }, callbackArgs });
 
-      ScrollSubject.AddObserver([](event::BaseEvent& e, uintptr_t args)
+      ScrollSubject.AddObserver({ [](event::BaseEvent& e, uintptr_t args)
          {
             auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
             gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
             gc->OnMouseScroll(mouseE.Value);
-         }, callbackArgs);
+         }, callbackArgs });
 
-      input::native::AddMouseButtonCallback(MouseButtonSubject);
-      input::native::AddCursorCallback(CursorSubject);
-      input::native::AddScrollCallback(ScrollSubject);
+      //input::native::AddMouseButtonCallback(MouseButtonSubject);
+      //input::native::AddCursorCallback(CursorSubject);
+      //input::native::AddScrollCallback(ScrollSubject);
    }
 
    void GuiManager::Update()

@@ -1,11 +1,42 @@
 #include "gl-canvas.h"
 
 #include "debug/gassert.h"
+#include "glfw/glfw-input-map.h"
+#include "events/input-events.h"
 
 namespace graphics
 {
    namespace gl
    { 
+      namespace input
+      {
+         static event::Subject KeySubject;
+         static event::Subject MouseButtonSubject;
+         static event::Subject CursorSubject;
+         static event::Subject MouseScrollSubject;
+
+
+         inline void KeyCallback(GLFWwindow* w, int key, int sc, int action, int mods)
+         {
+            KeySubject.Invoke(event::KeyEvent(GlfwInputMap.at(key), GlfwTranslateState(action)));
+         }
+
+         inline void MouseButtonCallback(GLFWwindow* w, int button, int action, int mods)
+         {
+            MouseButtonSubject.Invoke(event::MouseButtonEvent(GlfwInputMap.at(button), GlfwTranslateState(action)));
+         }
+
+         inline void CursorCallback(GLFWwindow* w, double x, double y)
+         {
+            CursorSubject.Invoke(event::MouseCursorPosEvent(x, y));
+         }
+
+         inline void ScrollCallback(GLFWwindow* w, double x, double y)
+         {
+            MouseScrollSubject.Invoke(event::MouseScrollEvent(y));
+         }
+      }
+
          CanvasGL::CanvasGL(const uint16_t width, const uint16_t height, const std::string_view& title)
             : Width(width), Height(height)
          {
@@ -21,6 +52,17 @@ namespace graphics
             glfwMakeContextCurrent(GlfwWindow);
 
             GASSERT(glewInit() == GLEW_OK, "Error in window creation");
+
+
+            //Setup input
+
+            glfwSetKeyCallback(GlfwWindow, input::KeyCallback);
+
+            glfwSetMouseButtonCallback(GlfwWindow, input::MouseButtonCallback);
+
+            glfwSetCursorPosCallback(GlfwWindow, input::CursorCallback);
+
+            glfwSetScrollCallback(GlfwWindow, input::ScrollCallback);
 
 
             //
