@@ -4,19 +4,19 @@
 
 namespace graphics
 {
-   //Layouts of the structures shouldn't be changed without careful check it's can break render!!!
-
-   struct alignas(16) PointLight
+   struct PointLight
    {
-      math::Vector4 Position;
-      math::Vector4 Color;
+      math::Vector3 Position;
+      math::Vector3 Color;
 
       float Quadratic;
       float Linear;
       float Constant;
 
-      inline PointLight(const math::Vector4 position,
-                        const math::Vector4 color,
+      PointLight() = default;
+
+      inline PointLight(const math::Vector3 position,
+                        const math::Vector3 color,
                         const float quadratic,
                         const float linear,
                         const float constant)
@@ -27,18 +27,20 @@ namespace graphics
            Constant(constant) {}                 
    };
 
-   struct alignas(16) Spotlight
+   struct Spotlight
    {
-      math::Vector4 Position;
-      math::Vector4 Direction;
-      math::Vector4 Color;
+      math::Vector3 Position;
+      math::Vector3 Direction;
+      math::Vector3 Color;
 
       float InnerAngle;
       float OuterAngle;
 
-      inline Spotlight(const math::Vector4& position,
-                       const math::Vector4& direction,
-                       const math::Vector4& color,
+      Spotlight() = default;
+
+      inline Spotlight(const math::Vector3& position,
+                       const math::Vector3& direction,
+                       const math::Vector3& color,
                        const float outerAngle,
                        const float innerAngle)
          : Position(position),

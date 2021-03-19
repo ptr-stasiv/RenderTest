@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
 
+#include "vector3.h"
+
 namespace math
 {
    struct Vector4
@@ -9,6 +11,8 @@ namespace math
 
       inline Vector4(const float _x, const float _y, const float _z, const float _w)
          : x(_x), y(_y), z(_z), w(_w) {}
+      inline Vector4(const Vector3& v)
+         : x(v.x), y(v.y), z(v.z) {}
       inline Vector4(const float s)
          : x(s), y(s), z(s), w(s) {}
 

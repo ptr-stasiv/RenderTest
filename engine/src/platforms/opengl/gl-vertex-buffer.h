@@ -23,7 +23,7 @@ namespace graphics
 
          inline void InitData(const size_t size, const void* data) override
          {
-            glNamedBufferData(BindId, size, data, GL_STREAM_DRAW);
+            glNamedBufferData(BindId, size, data, GL_DYNAMIC_DRAW);
          }
 
          inline void UpdateData(const size_t size, const void* data) override

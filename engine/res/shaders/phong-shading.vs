@@ -6,20 +6,20 @@ layout(location = 2) in vec2 uv;
 
 out VS_OUT
 {
-	vec3 Position;
+	vec3 FragPos;
 	vec3 Normal;
 	vec2 UV;
 } vs_out;
 
-uniform mat4 projection = mat4(1.0f);
-uniform mat4 view = mat4(1.0f);
-uniform mat4 model = mat4(1.0f);
+uniform mat4 Projection = mat4(1.0f);
+uniform mat4 View = mat4(1.0f);
+uniform mat4 Model = mat4(1.0f);
 
 void main()
 {
-	vs_out.Position = position;
+	vs_out.FragPos = (vec4(position, 1.0f) * Model).xyz;
 	vs_out.Normal = normal;
 	vs_out.UV = uv;
 
-	gl_Position = projection * view * model * vec4(position, 1.0f);
+	gl_Position = Projection * View * Model * vec4(position, 1.0f);
 }

@@ -23,15 +23,15 @@ namespace graphics
 
       virtual std::shared_ptr<ShaderProgram> CreateShaderProgram() = 0;
 
-      //virtual std::unique_ptr<ComputeShader> CreateComputeShader() = 0;
+      //virtual std::shared_ptr<ComputeShader> CreateComputeShader() = 0;
 
       virtual std::shared_ptr<Texture2D> CreateTexture2D() = 0;
 
       virtual std::shared_ptr<VertexBuffer> CreateVBO() = 0;
 
-      //virtual std::unique_ptr<UniformBuffer> CreateUBO() = 0;
+      virtual std::shared_ptr<UniformBuffer> CreateUBO() = 0;
 
-      //virtual std::unique_ptr<ShaderBuffer> CreateSBO() = 0;
+      //virtual std::shared_ptr<ShaderBuffer> CreateSBO() = 0;
       
       
       //Commands
