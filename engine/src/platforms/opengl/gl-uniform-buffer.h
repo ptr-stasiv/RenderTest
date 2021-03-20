@@ -30,7 +30,7 @@ namespace graphics
          inline void UpdateData(const size_t size, const void* data, const size_t offset = 0) override
          {
             glBindBuffer(GL_UNIFORM_BUFFER, BindId);
-            glBufferSubData(GL_UNIFORM_BUFFER, 0, size, data);
+            glBufferSubData(GL_UNIFORM_BUFFER, static_cast<GLintptr>(offset), size, data);
          }
       };
    }

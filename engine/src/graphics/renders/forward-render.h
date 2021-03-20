@@ -107,7 +107,7 @@ namespace graphics
          uboSL.InnerAngle = sl.InnerAngle;
          uboSL.OuterAngle = sl.OuterAngle;
 
-         SpotlightList[SpotlightCounter] = uboSL;
+         SpotlightList[SpotlightCounter++] = uboSL;
       }
    private:
       void UpdateLight();

@@ -36,7 +36,7 @@ namespace graphics
 
       LightUBO = GraphicsDevice->CreateUBO();
 
-      LightUBO->InitData(sizeof(PointLightA) * MaxPointLights, nullptr);
+      LightUBO->InitData((sizeof(PointLightA) + sizeof(SpotlightA)) * (MaxPointLights + MaxSpotlights), nullptr);
 
       MainShader->AddInputBuffer(LightUBO, "LightBlock", sizeof(PointLightA) * MaxPointLights);
 
@@ -51,8 +51,10 @@ namespace graphics
    void ForwardRender::UpdateLight()
    {
       MainShader->SetInt("PointLightsCount", PointLightCounter);
-
+      MainShader->SetInt("SpotlightsCount", SpotlightCounter);
+      
       LightUBO->UpdateData(sizeof(PointLightA) * PointLightCounter, PointLightList);
+      LightUBO->UpdateData(sizeof(SpotlightA) * SpotlightCounter, SpotlightList, sizeof(PointLightA) * MaxPointLights); 
    }
 
    void ForwardRender::Render(const Camera& camera)

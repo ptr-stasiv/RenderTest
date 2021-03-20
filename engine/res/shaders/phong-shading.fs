@@ -1,6 +1,7 @@
 #version 460 core
 
 #define MAX_POINT_LIGHTS 32
+#define MAX_SPOTLIGHTS 32
 
 out vec4 FragColor;
 
@@ -22,6 +23,16 @@ struct PointLight
     float Offset;
 };
 
+struct Spotlight
+{
+    vec4 Position;
+    vec4 Direction;
+    vec4 Color;
+
+    float InnnerAngle;
+    float OuterAngle;
+};
+
 layout(std140) uniform MaterialBlock
 {
     vec4 DiffuseColor;
@@ -36,9 +47,11 @@ layout(std140) uniform MaterialBlock
 layout(std140) uniform LightBlock
 {
     PointLight PointLightArray[MAX_POINT_LIGHTS];
+    Spotlight SpotlightArray[MAX_SPOTLIGHTS];
 } lightBlock;
 
 uniform int PointLightsCount;
+uniform int SpotlightsCount;
 
 
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
@@ -65,7 +78,7 @@ void main()
     vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 
 
-    for(int i = 0; i < PointLightsCount; ++i)
+    for(int i = 0; i < min(PointLightsCount, MAX_POINT_LIGHTS); ++i)
     {
         vec3 lightPos = lightBlock.PointLightArray[i].Position.xyz;
         vec3 lightDir = normalize(lightPos - vs_in.FragPos);
@@ -79,6 +92,26 @@ void main()
         float lightDist = abs(length(lightPos - vs_in.FragPos));
         float attentuation = (1 / pow(offset + lightDist, 2) * lightDist) * stretch;
 
+        lightSum += phong * attentuation;
+    }
+
+    for(int i = 0; i < min(SpotlightsCount, MAX_POINT_LIGHTS); ++i)
+    {
+        vec3 lightPos = lightBlock.SpotlightArray[i].Position.xyz;
+        vec3 spotDir = lightBlock.SpotlightArray[i].Direction.xyz;
+        vec3 lightDir = normalize(lightPos - vs_in.FragPos);
+        vec3 lightColor = lightBlock.SpotlightArray[i].Color.xyz;
+
+        float innerAngle = lightBlock.SpotlightArray[i].InnnerAngle;
+        float outerAngle = lightBlock.SpotlightArray[i].OuterAngle;
+
+        vec3 phong = CalculatePhong(lightColor, materialBlock.SpecularColor.xyz, materialBlock.Glossiness, materialBlock.Emissive.xyz, 
+                                    lightDir, normal, viewDir);
+        
+        float currentA = outerAngle - acos(dot(spotDir, -lightDir));
+        float diff = outerAngle - innerAngle;
+
+        float attentuation = clamp(currentA / diff, 0.0f, 1.0f);
         lightSum += phong * attentuation;
     }
 

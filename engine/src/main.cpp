@@ -96,7 +96,8 @@ int main()
    app::g_Renderer->AddRenderer({ cubeMesh, cubeM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
                                    * math::CreateScaleMatrix({ 5.0f, 0.5f, 5.0f }) });
 
-   app::g_Renderer->AddLight(graphics::PointLight({ -1.0f, 5.0f, 3.0f }, { 1.0f }, 10.0f, 1.0f));
+   app::g_Renderer->AddLight(graphics::PointLight({ -1.0f, 5.0f, 3.0f }, { 1.0f }, 5.0f, 1.0f));
+   app::g_Renderer->AddLight(graphics::Spotlight({ 3.0f, 5.0f, 3.0f }, { 0.0f, -1.0f, 0.0f }, { 0.2f, 0.2f, 0.5f }, math::Pi / 6.0f, math::Pi / 8.0f));
 
    app::RunEngineApp([&]()
       {
