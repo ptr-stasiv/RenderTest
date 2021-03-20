@@ -35,16 +35,24 @@ namespace graphics
       //UBO's setup
 
       LightUBO = GraphicsDevice->CreateUBO();
-      LightUBO->InitData(sizeof(PointLightUBO) * MaxPointLights, nullptr);
 
-      LightUBO->BindBlock(MainShader, "LightBlock", sizeof(PointLightUBO) * MaxPointLights);
+      LightUBO->InitData(sizeof(PointLightA) * MaxPointLights, nullptr);
+
+      MainShader->AddInputBuffer(LightUBO, "LightBlock", sizeof(PointLightA) * MaxPointLights);
+
+
+      MaterialUBO = GraphicsDevice->CreateUBO();
+
+      MaterialUBO->InitData(sizeof(MaterialA), nullptr);
+
+      MainShader->AddInputBuffer(MaterialUBO, "MaterialBlock", sizeof(MaterialA));
    }
 
    void ForwardRender::UpdateLight()
    {
       MainShader->SetInt("PointLightsCount", PointLightCounter);
 
-      LightUBO->UpdateData(sizeof(PointLightUBO) * PointLightCounter, PointLightList);
+      LightUBO->UpdateData(sizeof(PointLightA) * PointLightCounter, PointLightList);
    }
 
    void ForwardRender::Render(const Camera& camera)
@@ -59,6 +67,15 @@ namespace graphics
 
       for(auto r : RendererList)
       { 
+         MaterialA material;
+         material.DiffuseColor = r.Material.DiffuseColor;
+         material.SpecularColor = r.Material.SpecularColor;
+         material.Emissive = r.Material.Emissive;
+         material.Glossiness = r.Material.Glossiness;
+
+         MaterialUBO->UpdateData(sizeof(MaterialA), &material);
+
+
          MainShader->SetFloats("Model", r.Transformation);
 
          PositionsVBO->UpdateData(r.Mesh.Positions.size() * sizeof(math::Vector3), &r.Mesh.Positions[0]);

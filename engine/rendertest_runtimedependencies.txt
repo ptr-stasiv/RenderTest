@@ -1,8 +1,9 @@
 ﻿
 Debug|x64
-  ..\gui\output\win64\debug\enginegui.dll
-  ..\gui\output\win64\debug\enginegui.pdb
+  res
 
 Release|x64
-  ..\gui\output\win64\release\enginegui.dll
-  ..\gui\output\win64\release\enginegui.pdb
+  res
+
+Retail|x64
+  res

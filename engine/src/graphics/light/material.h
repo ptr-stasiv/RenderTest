@@ -1,11 +1,12 @@
 #pragma once
 #include "math/vectors/vector3.h"
+#include "math/vectors/vector4.h"
 
 namespace graphics
 {
    struct Material
    {
-      math::Vector3 DiffuseColor;
+      math::Vector4 DiffuseColor;
 
       math::Vector3 SpecularColor;
 

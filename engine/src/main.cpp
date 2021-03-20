@@ -83,20 +83,20 @@ int main()
    graphics::Mesh cubeMesh(cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->UVs);
 
    graphics::Material pistolM;
-   pistolM.DiffuseColor = math::Vector3(0.5f, 0.2f, 0.5f);
+   pistolM.DiffuseColor = { 1.0f, 0.2f, 0.5f, 1.0f };
    pistolM.SpecularColor = math::Vector3(0.8f);
    pistolM.Glossiness = 16.0f;
 
    graphics::Material cubeM;
-   cubeM.DiffuseColor = math::Vector3(0.3f, 0.3f, 0.3f);
+   cubeM.DiffuseColor = { 0.3f, 0.3f, 0.3f, 1.0f };
    cubeM.SpecularColor = math::Vector3(1.0f);
    cubeM.Glossiness = 8.0f;
 
    app::g_Renderer->AddRenderer({ pistolMesh, pistolM, math::CreateIdentityMatrix4() });
-   app::g_Renderer->AddRenderer({ cubeMesh, pistolM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
+   app::g_Renderer->AddRenderer({ cubeMesh, cubeM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
                                    * math::CreateScaleMatrix({ 5.0f, 0.5f, 5.0f }) });
 
-   app::g_Renderer->AddLight(graphics::PointLight({ -1.0f, 5.0f, 3.0f }, { 1.0f }, 0.032f, 0.09f, 1.0f));
+   app::g_Renderer->AddLight(graphics::PointLight({ -1.0f, 5.0f, 3.0f }, { 1.0f }, 10.0f, 1.0f));
 
    app::RunEngineApp([&]()
       {

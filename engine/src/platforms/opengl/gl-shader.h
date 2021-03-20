@@ -5,6 +5,7 @@
 #include "gl-api.h"
 #include "graphics/api/shader-program.h"
 #include "gl-vertex-buffer.h"
+#include "gl-uniform-buffer.h"
 #include "GL/glew.h"
 
 namespace graphics
@@ -23,6 +24,7 @@ namespace graphics
       {
       private:
          uint8_t BufferCounter = 0;
+         uint8_t UBufferCounter = 0;
       public:   
          GLuint ProgramId;
          GLuint Vao;
@@ -64,6 +66,20 @@ namespace graphics
             glVertexArrayAttribFormat(Vao, attribIndex, elements, OGL_TYPE(type), GL_FALSE, elementsOffset);
 
             ++BufferCounter;
+         }
+
+         inline void AddInputBuffer(const std::shared_ptr<UniformBuffer>& ubo, const std::string_view& name, const size_t dataSize, const size_t dataOffset = 0) override
+         {
+            auto& glUBO = std::static_pointer_cast<UniformBufferGL>(ubo);
+
+            GLuint blockId = glGetUniformBlockIndex(ProgramId, &name[0]);
+
+            glUniformBlockBinding(ProgramId, blockId, UBufferCounter);
+
+            glBindBuffer(GL_UNIFORM_BUFFER, glUBO->BindId);
+            glBindBufferRange(GL_UNIFORM_BUFFER, UBufferCounter, glUBO->BindId, static_cast<GLintptr>(dataOffset), dataSize);
+
+            ++UBufferCounter;
          }
 
          inline void Compile() override

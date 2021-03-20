@@ -18,10 +18,20 @@ struct PointLight
     vec4 Position;
     vec4 Color;
 
-    float Quadratic;
-    float Linear;
-    float Constant;
+    float Stretch;
+    float Offset;
 };
+
+layout(std140) uniform MaterialBlock
+{
+    vec4 DiffuseColor;
+    
+    vec4 SpecularColor;
+    
+    vec4 Emissive;
+
+    float Glossiness;
+} materialBlock;
 
 layout(std140) uniform LightBlock
 {
@@ -31,7 +41,8 @@ layout(std140) uniform LightBlock
 uniform int PointLightsCount;
 
 
-vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in vec3 lightDir, in vec3 normal, in vec3 viewDir)
+vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
+                    in vec3 lightDir, in vec3 normal, in vec3 viewDir)
 {
     vec3 ambientComponent = lightColor * 0.03f;
 
@@ -39,15 +50,15 @@ vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in vec3 lightDir, in v
     vec3 diffuseComponent  = lightColor * diffC;
 
     vec3 halfVector = normalize(viewDir + lightDir);
-    float specC = max(pow(dot(halfVector, normal), 8.0f), 0.0f);
+    float specC = pow(max(dot(halfVector, normal), 0.0f), gloss);
     vec3 specularComponent = lightColor * specC * specular;
 
-    return ambientComponent + diffuseComponent + specularComponent;
+    return ambientComponent + diffuseComponent + specularComponent + emissive;
 }
 
 void main()
 {
-    vec3 fragSum;
+    vec3 lightSum;
 
     vec3 normal = normalize(vs_in.Normal);
 
@@ -56,11 +67,20 @@ void main()
 
     for(int i = 0; i < PointLightsCount; ++i)
     {
-        vec3 lightDir = normalize(lightBlock.PointLightArray[i].Position.xyz - vs_in.FragPos);
+        vec3 lightPos = lightBlock.PointLightArray[i].Position.xyz;
+        vec3 lightDir = normalize(lightPos - vs_in.FragPos);
         vec3 lightColor = lightBlock.PointLightArray[i].Color.xyz;
 
-        fragSum += vec3(0.5f, 0.5f, 0.5f) * CalculatePhong(lightColor, vec3(1.0f), lightDir, normal, viewDir);
+        float stretch = lightBlock.PointLightArray[i].Stretch;
+        float offset = lightBlock.PointLightArray[i].Offset;
+        
+        vec3 phong = CalculatePhong(lightColor, materialBlock.SpecularColor.xyz, materialBlock.Glossiness, materialBlock.Emissive.xyz, 
+                                    lightDir, normal, viewDir);
+        float lightDist = abs(length(lightPos - vs_in.FragPos));
+        float attentuation = (1 / pow(offset + lightDist, 2) * lightDist) * stretch;
+
+        lightSum += phong * attentuation;
     }
 
-    FragColor = vec4(fragSum, 1.0f);
+    FragColor = materialBlock.DiffuseColor *  vec4(lightSum, 1.0f);
 }

@@ -11,8 +11,9 @@ namespace math
          : x(_x), y(_y), z(_z) {}
       inline Vector3(const float s)
          : x(s), y(s), z(s) {}
+      inline Vector3()
+         : Vector3(0.0f) {}
 
-      Vector3()  = default;
       ~Vector3() = default;
 
       inline Vector3 operator + (const Vector3& b)

@@ -8,5 +8,6 @@ binaries/
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+tags
 
 compile_commands.json

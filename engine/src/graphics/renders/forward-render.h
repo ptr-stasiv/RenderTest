@@ -25,26 +25,27 @@ namespace graphics
    inline constexpr uint8_t UvAttribLocation = 2;
 
 
-   struct alignas(16) MaterialUBO
+   struct alignas(16) MaterialA
    {
       math::Vector4 DiffuseColor;
 
       math::Vector4 SpecularColor;
 
       math::Vector4 Emissive;
+
+      float Glossiness;
    };
 
-   struct alignas(16) PointLightUBO
+   struct alignas(16) PointLightA
    {
       math::Vector4 Position;
       math::Vector4 Color;
                               
-      float Quadratic;
-      float Linear;
-      float Constant;
+      float Stretch;
+      float Offset;
    };
 
-   struct alignas(16) SpotlightUBO
+   struct alignas(16) SpotlightA
    {
       math::Vector4 Position;
       math::Vector4 Direction;
@@ -62,8 +63,8 @@ namespace graphics
 
       std::vector<Renderer> RendererList;
       
-      PointLightUBO PointLightList[MaxPointLights];
-      SpotlightUBO SpotlightList[MaxSpotlights]; 
+      PointLightA PointLightList[MaxPointLights];
+      SpotlightA SpotlightList[MaxSpotlights]; 
 
       size_t PointLightCounter = 0;
       size_t SpotlightCounter = 0;
@@ -73,6 +74,7 @@ namespace graphics
       std::shared_ptr<VertexBuffer> UVsVBO;
 
       std::shared_ptr<UniformBuffer> LightUBO;
+      std::shared_ptr<UniformBuffer> MaterialUBO;
 
       std::shared_ptr<graphics::GraphicsDevice> GraphicsDevice;
    public:
@@ -87,19 +89,18 @@ namespace graphics
 
       inline void AddLight(const PointLight& pl)
       {
-         PointLightUBO uboPL;
+         PointLightA uboPL;
          uboPL.Position = pl.Position;
          uboPL.Color = pl.Color;
-         uboPL.Quadratic = pl.Quadratic;
-         uboPL.Linear = pl.Linear;
-         uboPL.Constant = pl.Constant;
+         uboPL.Stretch = pl.Stretch;
+         uboPL.Offset = pl.Offset;
 
          PointLightList[PointLightCounter++] = uboPL;
       }
 
       inline void AddLight(const Spotlight& sl)
       {
-         SpotlightUBO uboSL;
+         SpotlightA uboSL;
          uboSL.Position = sl.Position;
          uboSL.Direction = sl.Direction;
          uboSL.Color = sl.Color;

@@ -12,11 +12,12 @@ namespace math
       inline Vector4(const float _x, const float _y, const float _z, const float _w)
          : x(_x), y(_y), z(_z), w(_w) {}
       inline Vector4(const Vector3& v)
-         : x(v.x), y(v.y), z(v.z) {}
+         : Vector4(v.x, v.y, v.z, 0.0f) {}
       inline Vector4(const float s)
          : x(s), y(s), z(s), w(s) {}
+      inline Vector4()
+         : Vector4(0.0f) {}
 
-      Vector4() = default;
       ~Vector4() = default;
 
       inline Vector4 operator + (const Vector4& b)
