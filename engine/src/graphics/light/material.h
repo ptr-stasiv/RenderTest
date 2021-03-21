@@ -1,6 +1,7 @@
 #pragma once
 #include "math/vectors/vector3.h"
 #include "math/vectors/vector4.h"
+#include "asset-manager/image-loader.h"
 
 namespace graphics
 {
@@ -14,10 +15,10 @@ namespace graphics
 
       float Glossiness;
 
-      //Texture DiffuseTexture;
-      //Texture SpecularTexture;
-      //Textuer NormalTexture;
-      //Texture EmissiveTexture;
-      //Texture GlossinessTexture;
+      assets::ImageAssetData DiffuseTexture;
+      assets::ImageAssetData SpecularTexture;
+      assets::ImageAssetData NormalTexture;
+      assets::ImageAssetData EmissiveTexture;
+      assets::ImageAssetData GlossinessTexture;
    };
 }

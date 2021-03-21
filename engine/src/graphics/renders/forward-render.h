@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
 
 #include "graphics/renderer.h"
 
@@ -9,6 +10,8 @@
 #include "graphics/api/devices/graphics-device.h"
 #include "graphics/api/vertex-buffer.h"
 #include "graphics/api/uniform-buffer.h"
+
+#include "asset-manager/image-loader.h"
 
 namespace graphics
 {
@@ -76,6 +79,8 @@ namespace graphics
       std::shared_ptr<UniformBuffer> LightUBO;
       std::shared_ptr<UniformBuffer> MaterialUBO;
 
+      std::unordered_map<size_t, std::shared_ptr<graphics::Texture2D>> TextureLookup;
+
       std::shared_ptr<graphics::GraphicsDevice> GraphicsDevice;
    public:
       ForwardRender(const std::shared_ptr<graphics::GraphicsDevice>& device);
@@ -111,5 +116,6 @@ namespace graphics
       }
    private:
       void UpdateLight();
+      void ResolveTextures(const Material& material);
    };
 }

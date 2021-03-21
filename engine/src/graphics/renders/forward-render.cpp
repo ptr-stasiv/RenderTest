@@ -2,6 +2,9 @@
 
 #include "utils/read-from-file.h"
 
+#include "platforms/opengl/gl-shader.h"
+#include "platforms/opengl/gl-texture2d.h"
+
 namespace graphics
 {
    constexpr std::string_view VertexShaderLocation = "res/shaders/phong-shading.vs";
@@ -57,6 +60,48 @@ namespace graphics
       LightUBO->UpdateData(sizeof(SpotlightA) * SpotlightCounter, SpotlightList, sizeof(PointLightA) * MaxPointLights); 
    }
 
+   void ForwardRender::ResolveTextures(const Material& material)
+   {
+      auto diffuse = material.DiffuseTexture;
+
+      if (TextureLookup.find(diffuse.Info.HashedName) == TextureLookup.end())
+      {
+         if (!diffuse.Info.IsValid)
+            return;
+
+         auto texture = GraphicsDevice->CreateTexture2D();
+
+         graphics::TextureParams params;
+         params.MagFilter = graphics::TextureFilter::Linear;
+         params.MinFilter = graphics::TextureFilter::Nearest;
+         params.WrapS = graphics::TextureWrap::ClampToEdge;
+         params.WrapT = graphics::TextureWrap::ClampToEdge;
+         
+         texture->InitData(diffuse.Width, diffuse.Height,
+                           graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                           graphics::Type::Ubyte, params);
+         texture->UpdateData(diffuse.Width, diffuse.Height, diffuse.Pixels);
+
+         TextureLookup[diffuse.Info.HashedName] = texture;
+
+         auto glShader = std::static_pointer_cast<graphics::gl::ShaderProgramGL>(MainShader);
+         auto glTexture = std::static_pointer_cast<graphics::gl::Texture2dGL>(texture);
+
+         int loc = glGetUniformLocation(glShader->ProgramId, "DiffuseTexture");
+         glUniformHandleui64ARB(loc, glTexture->Handle);
+      }
+      else
+      {
+         auto texture = TextureLookup.at(diffuse.Info.HashedName);
+
+         auto glShader = std::static_pointer_cast<graphics::gl::ShaderProgramGL>(MainShader);
+         auto glTexture = std::static_pointer_cast<graphics::gl::Texture2dGL>(texture);
+
+         int loc = glGetUniformLocation(glShader->ProgramId, "DiffuseTexture");
+         glUniformHandleui64ARB(loc, glTexture->Handle);
+      }
+   }
+
    void ForwardRender::Render(const Camera& camera)
    {
       MainShader->Use();
@@ -77,6 +122,7 @@ namespace graphics
 
          MaterialUBO->UpdateData(sizeof(MaterialA), &material);
 
+         ResolveTextures(r.Material);
 
          MainShader->SetFloats("Model", r.Transformation);
 

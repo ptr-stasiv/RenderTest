@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstring>
 #include <vector>
+#include <functional>
 
 #include "utils/timer.h"
 
@@ -95,6 +96,7 @@ namespace assets
       resData.UVs = resultUvArray;
 
       resData.Info.Name     = filepath;
+      resData.Info.HashedName = std::hash<std::string_view>{}(filepath);
       resData.Info.LoadTime = loadTimer.GetElapsedTime();
       resData.Info.IsValid  = true;
 

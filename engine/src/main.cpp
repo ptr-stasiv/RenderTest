@@ -81,23 +81,27 @@ int main()
 
    graphics::Mesh pistolMesh(pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->UVs);
    graphics::Mesh cubeMesh(cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->UVs);
+   
+   auto imgData = *pistolTextureRef.GetData<assets::ImageAssetData>().get();
 
    graphics::Material pistolM;
    pistolM.DiffuseColor = { 1.0f, 0.2f, 0.5f, 1.0f };
    pistolM.SpecularColor = math::Vector3(0.8f);
-   pistolM.Glossiness = 16.0f;
+   pistolM.Glossiness = 32.0f;
+   pistolM.DiffuseTexture = imgData;
 
    graphics::Material cubeM;
    cubeM.DiffuseColor = { 0.3f, 0.3f, 0.3f, 1.0f };
    cubeM.SpecularColor = math::Vector3(1.0f);
    cubeM.Glossiness = 8.0f;
+   cubeM.DiffuseTexture = imgData;
 
    app::g_Renderer->AddRenderer({ pistolMesh, pistolM, math::CreateIdentityMatrix4() });
    app::g_Renderer->AddRenderer({ cubeMesh, cubeM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
                                    * math::CreateScaleMatrix({ 5.0f, 0.5f, 5.0f }) });
 
-   app::g_Renderer->AddLight(graphics::PointLight({ -1.0f, 5.0f, 3.0f }, { 1.0f }, 5.0f, 1.0f));
-   app::g_Renderer->AddLight(graphics::Spotlight({ 3.0f, 5.0f, 3.0f }, { 0.0f, -1.0f, 0.0f }, { 0.2f, 0.2f, 0.5f }, math::Pi / 6.0f, math::Pi / 8.0f));
+   app::g_Renderer->AddLight(graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
+   //app::g_Renderer->AddLight(graphics::Spotlight({ 0.0f, 3.0f, 10.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f }, math::Pi / 2.0f, math::Pi / 3.0f));
 
    app::RunEngineApp([&]()
       {

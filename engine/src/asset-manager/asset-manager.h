@@ -27,9 +27,15 @@ namespace assets
       struct LoadingInfo
       {
          std::string Name;
+         size_t HashedName;
          float LoadTime;
          bool IsValid;
       } Info;
+
+      bool operator == (const AssetData& a)
+      {
+         return a.Info.HashedName == Info.HashedName;
+      }
 
       ASSET_TYPE(AssetType::None)
    };

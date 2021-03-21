@@ -1,4 +1,7 @@
 #include "image-loader.h"
+
+#include <functional>
+
 #include "stb/stb_image.h"
 
 namespace assets
@@ -17,6 +20,7 @@ namespace assets
          return resData;
 
       resData.Info.Name     = filepath;
+      resData.Info.HashedName = std::hash<std::string_view>{}(filepath);
       resData.Info.LoadTime = 0.0f;
       resData.Info.IsValid  = true;
 

@@ -17,7 +17,7 @@ uniform mat4 Model = mat4(1.0f);
 
 void main()
 {
-	vs_out.FragPos = (vec4(position, 1.0f) * Model).xyz;
+	vs_out.FragPos = (Model * vec4(position, 1.0f)).xyz;
 	vs_out.Normal = normal;
 	vs_out.UV = uv;
 

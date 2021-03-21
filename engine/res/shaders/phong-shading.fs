@@ -1,5 +1,7 @@
 #version 460 core
 
+#extension GL_ARB_bindless_texture: enable
+
 #define MAX_POINT_LIGHTS 32
 #define MAX_SPOTLIGHTS 32
 
@@ -53,11 +55,12 @@ layout(std140) uniform LightBlock
 uniform int PointLightsCount;
 uniform int SpotlightsCount;
 
+layout(bindless_sampler) uniform sampler2D DiffuseTexture;
 
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
                     in vec3 lightDir, in vec3 normal, in vec3 viewDir)
 {
-    vec3 ambientComponent = lightColor * 0.03f;
+    vec3 ambientComponent = lightColor * 0.1f;
 
     float diffC = max(dot(lightDir, normal), 0.0f);
     vec3 diffuseComponent  = lightColor * diffC;
@@ -76,7 +79,6 @@ void main()
     vec3 normal = normalize(vs_in.Normal);
 
     vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
-
 
     for(int i = 0; i < min(PointLightsCount, MAX_POINT_LIGHTS); ++i)
     {
@@ -107,13 +109,18 @@ void main()
 
         vec3 phong = CalculatePhong(lightColor, materialBlock.SpecularColor.xyz, materialBlock.Glossiness, materialBlock.Emissive.xyz, 
                                     lightDir, normal, viewDir);
+
+        vec3 halfwayVector = normalize(viewDir + lightDir);
+        float specC = pow(max(dot(halfwayVector, normal), 0), 32.0f);
+        vec3 specularComponent = lightColor * specC;
+
         
         float currentA = outerAngle - acos(dot(spotDir, -lightDir));
         float diff = outerAngle - innerAngle;
 
         float attentuation = clamp(currentA / diff, 0.0f, 1.0f);
-        lightSum += phong * attentuation;
+        lightSum += lightDir * attentuation;
     }
 
-    FragColor = materialBlock.DiffuseColor *  vec4(lightSum, 1.0f);
+    FragColor = texture(DiffuseTexture, vs_in.UV) * vec4(lightSum, 1.0f);
 }

@@ -1,5 +1,7 @@
 #include "text-loader.h"
 
+#include <functional>
+
 namespace assets
 {
    char* ReadFromFile(const std::string_view filepath)
@@ -36,6 +38,7 @@ namespace assets
          return resData;
 
       resData.Info.Name     = filepath;
+      resData.Info.HashedName = std::hash<std::string_view>{}(filepath);
       resData.Info.LoadTime = 0.0f;
       resData.Info.IsValid  = true;
 

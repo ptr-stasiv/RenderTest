@@ -27,6 +27,7 @@ namespace graphics
       class Texture2dGL : public Texture2D
       {
       public:
+         GLuint64 Handle;
          GLuint BindId;
          uint16_t SizeX;
          uint16_t SizeY;
@@ -50,6 +51,9 @@ namespace graphics
             glTextureParameteri(BindId, GL_TEXTURE_MAG_FILTER, OGL_TEXTURE_FILTER(params.MagFilter));
 
             glTextureStorage2D(BindId, 1, OGL_IFORMAT(internalFormat), sizeX, sizeY);
+
+            Handle = glGetTextureHandleARB(BindId);
+            glMakeTextureHandleResidentARB(Handle);
          }
          
          inline void UpdateData(const size_t sizeX, const size_t sizeY, const void* data) override
