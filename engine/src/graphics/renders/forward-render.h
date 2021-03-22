@@ -58,7 +58,6 @@ namespace graphics
       float OuterAngle;
    };
 
-
    class ForwardRender
    {
    private:

@@ -1,5 +1,7 @@
 #include "forward-render.h"
 
+#include <array>
+
 #include "utils/read-from-file.h"
 
 #include "platforms/opengl/gl-shader.h"
@@ -62,43 +64,53 @@ namespace graphics
 
    void ForwardRender::ResolveTextures(const Material& material)
    {
-      auto diffuse = material.DiffuseTexture;
+      //The element organization of two next arrays shouldn't be changed aparat of each other
 
-      if (TextureLookup.find(diffuse.Info.HashedName) == TextureLookup.end())
+      static std::string_view  textureUniformLookup[] =
       {
-         if (!diffuse.Info.IsValid)
-            return;
+         "DiffuseTexture",
+         "SpecularTexture",
+         "NormalTexture",
+         "EmissiveTexture",
+         "GlossinessTexture",
+      };
 
-         auto texture = GraphicsDevice->CreateTexture2D();
-
-         graphics::TextureParams params;
-         params.MagFilter = graphics::TextureFilter::Linear;
-         params.MinFilter = graphics::TextureFilter::Nearest;
-         params.WrapS = graphics::TextureWrap::ClampToEdge;
-         params.WrapT = graphics::TextureWrap::ClampToEdge;
-         
-         texture->InitData(diffuse.Width, diffuse.Height,
-                           graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                           graphics::Type::Ubyte, params);
-         texture->UpdateData(diffuse.Width, diffuse.Height, diffuse.Pixels);
-
-         TextureLookup[diffuse.Info.HashedName] = texture;
-
-         auto glShader = std::static_pointer_cast<graphics::gl::ShaderProgramGL>(MainShader);
-         auto glTexture = std::static_pointer_cast<graphics::gl::Texture2dGL>(texture);
-
-         int loc = glGetUniformLocation(glShader->ProgramId, "DiffuseTexture");
-         glUniformHandleui64ARB(loc, glTexture->Handle);
-      }
-      else
+      std::array<assets::ImageAssetData, 5> textureArray =
       {
-         auto texture = TextureLookup.at(diffuse.Info.HashedName);
+        material.DiffuseTexture,
+        material.SpecularTexture,
+        material.NormalTexture,
+        material.EmissiveTexture,
+        material.GlossinessTexture
+      };
 
-         auto glShader = std::static_pointer_cast<graphics::gl::ShaderProgramGL>(MainShader);
-         auto glTexture = std::static_pointer_cast<graphics::gl::Texture2dGL>(texture);
+      for (size_t i = 0; i < textureArray.size(); ++i)
+      {
+         auto t = textureArray[i];
+         if (!t.Info.IsValid)
+            continue;
 
-         int loc = glGetUniformLocation(glShader->ProgramId, "DiffuseTexture");
-         glUniformHandleui64ARB(loc, glTexture->Handle);
+         auto foundTexture = TextureLookup.find(t.Info.HashedName);
+         if (foundTexture == TextureLookup.end())
+         {
+            auto texture = GraphicsDevice->CreateTexture2D();
+
+            graphics::TextureParams params;
+            params.MagFilter = graphics::TextureFilter::Linear;
+            params.MinFilter = graphics::TextureFilter::Nearest;
+            params.WrapS = graphics::TextureWrap::ClampToEdge;
+            params.WrapT = graphics::TextureWrap::ClampToEdge;
+
+            //This information shoould be later obtained from the assets manager
+            texture->InitData(t.Width, t.Height,
+                              graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                              graphics::Type::Ubyte, params);
+            texture->UpdateData(t.Width, t.Height, t.Pixels);
+
+            TextureLookup[t.Info.HashedName] = texture;
+         }
+
+         MainShader->SetTexture2D(textureUniformLookup[i], TextureLookup.at(t.Info.HashedName));
       }
    }
 

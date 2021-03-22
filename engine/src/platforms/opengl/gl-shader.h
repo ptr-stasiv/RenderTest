@@ -4,6 +4,7 @@
 #include "debug/log/log.h"
 #include "gl-api.h"
 #include "graphics/api/shader-program.h"
+#include "gl-texture2d.h"
 #include "gl-vertex-buffer.h"
 #include "gl-uniform-buffer.h"
 #include "GL/glew.h"
@@ -108,29 +109,54 @@ namespace graphics
             glUseProgram(ProgramId);
          }
 
+         inline void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Texture2D>& texture) const override
+         {
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            GASSERT(loc >= 0, "Invalid shader uniform!");
+
+            auto& glTexture = std::static_pointer_cast<gl::Texture2dGL>(texture);
+
+            glUniformHandleui64ARB(loc, glTexture->Handle);
+         }
+
          inline void SetFloats(const std::string_view& name, const math::Matrix4& m) const override
          {
-            glUniformMatrix4fv(glGetUniformLocation(ProgramId, name.data()), 1, GL_FALSE, m.Data);
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            GASSERT(loc >= 0, "Invalid shader uniform!");
+
+            glUniformMatrix4fv(loc, 1, GL_FALSE, m.Data);
          }
 
          inline void SetFloats(const std::string_view& name, const math::Vector4& v) const override
          {
-            glUniform4f(glGetUniformLocation(ProgramId, name.data()), v.x, v.y, v.z, v.w);
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            GASSERT(loc >= 0, "Invalid shader uniform!");
+
+            glUniform4f(loc, v.x, v.y, v.z, v.w);
          }
 
          inline void SetFloats(const std::string_view& name, const math::Vector3& v) const override
          {
-            glUniform3f(glGetUniformLocation(ProgramId, name.data()), v.x, v.y, v.z);
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            GASSERT(loc >= 0, "Invalid shader uniform!");
+
+            glUniform3f(loc, v.x, v.y, v.z);
          }
 
          inline void SetFloat(const std::string_view& name, const float s) const override
          {
-            glUniform1f(glGetUniformLocation(ProgramId, name.data()), s);
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            GASSERT(loc >= 0, "Invalid shader uniform!");
+
+            glUniform1f(loc, s);
          }
 
          inline void SetInt(const std::string_view& name, const int32_t s) const override
          {
-            glUniform1i(glGetUniformLocation(ProgramId, name.data()), s);
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            GASSERT(loc >= 0, "Invalid shader uniform!");
+
+            glUniform1i(loc, s);
          }
       };
    }

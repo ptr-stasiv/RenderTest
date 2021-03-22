@@ -56,6 +56,10 @@ uniform int PointLightsCount;
 uniform int SpotlightsCount;
 
 layout(bindless_sampler) uniform sampler2D DiffuseTexture;
+layout(bindless_sampler) uniform sampler2D SpecularTexture;
+layout(bindless_sampler) uniform sampler2D NormalTexture;
+layout(bindless_sampler) uniform sampler2D EmissiveTexture;
+layout(bindless_sampler) uniform sampler2D GlossinessTexture;
 
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
                     in vec3 lightDir, in vec3 normal, in vec3 viewDir)

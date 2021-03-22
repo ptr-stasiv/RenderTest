@@ -43,6 +43,9 @@ namespace graphics
                        const InternalFormat internalFormat, const Format format,
                        const Type type, const TextureParams& params) override
          {
+            SizeX = sizeX;
+            SizeY = sizeY;
+
             glCreateTextures(GL_TEXTURE_2D, 1, &BindId);
          
             glTextureParameteri(BindId, GL_TEXTURE_WRAP_S, OGL_TEXTURE_WRAP(params.WrapS));
