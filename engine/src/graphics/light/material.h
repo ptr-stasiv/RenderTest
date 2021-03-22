@@ -1,7 +1,10 @@
 #pragma once
+#include <memory>
+
 #include "math/vectors/vector3.h"
 #include "math/vectors/vector4.h"
 #include "asset-manager/image-loader.h"
+#include "graphics/api/texture2d.h"
 
 namespace graphics
 {
@@ -15,10 +18,10 @@ namespace graphics
 
       float Glossiness;
 
-      assets::ImageAssetData DiffuseTexture;
-      assets::ImageAssetData SpecularTexture;
-      assets::ImageAssetData NormalTexture;
-      assets::ImageAssetData EmissiveTexture;
-      assets::ImageAssetData GlossinessTexture;
+      std::shared_ptr<graphics::Texture2D> DiffuseTexture;
+      std::shared_ptr<graphics::Texture2D> SpecularTexture;
+      std::shared_ptr<graphics::Texture2D> NormalTexture;
+      std::shared_ptr<graphics::Texture2D> EmissiveTexture;
+      std::shared_ptr<graphics::Texture2D> GlossinessTexture;
    };
 }

@@ -78,8 +78,6 @@ namespace graphics
       std::shared_ptr<UniformBuffer> LightUBO;
       std::shared_ptr<UniformBuffer> MaterialUBO;
 
-      std::unordered_map<size_t, std::shared_ptr<graphics::Texture2D>> TextureLookup;
-
       std::shared_ptr<graphics::GraphicsDevice> GraphicsDevice;
    public:
       ForwardRender(const std::shared_ptr<graphics::GraphicsDevice>& device);
