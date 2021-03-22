@@ -75,7 +75,7 @@ namespace graphics
          "GlossinessTexture",
       };
 
-      std::array<std::shared_ptr<graphics::Texture2D>, 5> textureArray =
+      std::array<assets::ImageAssetData, 5> textureArray =
       {
         material.DiffuseTexture,
         material.SpecularTexture,
@@ -86,11 +86,31 @@ namespace graphics
 
       for (size_t i = 0; i < textureArray.size(); ++i)
       {
-         auto& texture = textureArray[i];
-         if (!texture)
+         auto t = textureArray[i];
+         if (!t.Info.IsValid)
             continue;
 
-         MainShader->SetTexture2D(textureUniformLookup[i], texture);
+         auto foundTexture = TextureLookup.find(t.Info.HashedName);
+         if (foundTexture == TextureLookup.end())
+         {
+            auto texture = GraphicsDevice->CreateTexture2D();
+
+            graphics::TextureParams params;
+            params.MagFilter = graphics::TextureFilter::Linear;
+            params.MinFilter = graphics::TextureFilter::Nearest;
+            params.WrapS = graphics::TextureWrap::ClampToEdge;
+            params.WrapT = graphics::TextureWrap::ClampToEdge;
+
+            //This information shoould be later obtained from the assets manager
+            texture->InitData(t.Width, t.Height,
+                              graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                              graphics::Type::Ubyte, params);
+            texture->UpdateData(t.Width, t.Height, t.Pixels);
+
+            TextureLookup[t.Info.HashedName] = texture;
+         }
+
+         MainShader->SetTexture2D(textureUniformLookup[i], TextureLookup.at(t.Info.HashedName));
       }
    }
 

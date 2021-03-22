@@ -2,17 +2,19 @@
 
 namespace gui
 {
-   GuiManager::GuiManager(const std::shared_ptr<app::Window>& window)
+   GuiManager::GuiManager(const std::shared_ptr<app::Window>& window,
+                          const std::shared_ptr<input::InputManager>& inputM,
+                          const std::shared_ptr<graphics::GraphicsDevice>& gd)
    {
-      //uint16_t width = window->GetWidth();
-      //uint16_t height = window->GetHeight();
+      uint16_t width = window->GetCanvas()->GetWidth();
+      uint16_t height = window->GetCanvas()->GetHeight();
 
       GuiController = std::make_unique<gui::GuiController>();
 
-      //GuiController->Setup(width, height);
+      GuiController->Setup(width, height);
 
       const char* vertexShaderSrc = R"(
-            #version 330 core
+            #version 460 core
       
             layout(location = 0) in vec2 pos;
             layout(location = 1) in vec2 uv;
@@ -26,7 +28,7 @@ namespace gui
             })";
 
       const char* fragmentShaderSrc = R"(
-            #version 330 core
+            #version 460 core
          
             out vec4 Color;
          
@@ -39,12 +41,13 @@ namespace gui
                Color = texture(Texture, Uv);
             })";
 
-      /*GuiShader = std::make_unique<graphics::ShaderProgram>();
+      SurfaceShader = gd->CreateShaderProgram();
 
-      GuiShader->Add(graphics::ShaderType::Vertex, vertexShaderSrc);
-      GuiShader->Add(graphics::ShaderType::Fragment, fragmentShaderSrc);
+      SurfaceShader->AddShader(graphics::ShaderType::Vertex, vertexShaderSrc);
+      SurfaceShader->AddShader(graphics::ShaderType::Fragment, fragmentShaderSrc);
 
-      GuiShader->Compile();*/
+      SurfaceShader->Compile();
+
 
       float vertices[] =
       {

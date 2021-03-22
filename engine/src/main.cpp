@@ -83,31 +83,17 @@ int main()
    graphics::Mesh pistolMesh(pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->UVs);
    graphics::Mesh cubeMesh(cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->UVs);
    
-
-   graphics::TextureParams params;
-   params.MagFilter = graphics::TextureFilter::Linear;
-   params.MinFilter = graphics::TextureFilter::Nearest;
-   params.WrapS = graphics::TextureWrap::ClampToEdge;
-   params.WrapT = graphics::TextureWrap::ClampToEdge;
-
-   auto textureData = concreteTextureRef.GetData<assets::ImageAssetData>();
-   auto texture = app::g_GraphicsDevice->CreateTexture2D();
-   texture->InitData(textureData->Width, textureData->Height, 
-                     graphics::InternalFormat::RGB8, graphics::Format::RGB, graphics::Type::Ubyte,
-                     params);
-   texture->UpdateData(textureData->Width, textureData->Height, textureData->Pixels);
-
    graphics::Material pistolM;
    pistolM.DiffuseColor = { 1.0f, 0.2f, 0.5f, 1.0f };
    pistolM.SpecularColor = math::Vector3(0.8f);
    pistolM.Glossiness = 8.0f;
-   pistolM.DiffuseTexture = texture;
+   pistolM.DiffuseTexture = *concreteTextureRef.GetData<assets::ImageAssetData>();;
 
    graphics::Material cubeM;
    cubeM.DiffuseColor = { 0.3f, 0.3f, 0.3f, 1.0f };
    cubeM.SpecularColor = math::Vector3(1.0f);
    cubeM.Glossiness = 8.0f;
-   cubeM.DiffuseTexture = texture;
+   cubeM.DiffuseTexture = *concreteTextureRef.GetData<assets::ImageAssetData>();
 
    app::g_Renderer->AddRenderer({ cubeMesh, pistolM, math::CreateIdentityMatrix4() });
    app::g_Renderer->AddRenderer({ cubeMesh, cubeM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
