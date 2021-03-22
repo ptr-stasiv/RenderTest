@@ -12,16 +12,26 @@ namespace graphics
       {
          inline void KeyCallback(GLFWwindow* w, int key, int sc, int action, int mods)
          {
-            GASSERT(GlfwInputMap.find(key) != GlfwInputMap.end(), "Invalid key value is passed!");
+            auto f = GlfwKeyMap.find(key);
+            if (f == GlfwKeyMap.end())
+            {
+               LOG_ERROR("Unhandling key is pressed!");
+               return;
+            }
 
-            KeySubject.Invoke(event::KeyEvent(GlfwInputMap.find(key)->second, GlfwTranslateState(action)));
+            KeySubject.Invoke(event::KeyEvent(f->second, GlfwTranslateState(action)));
          }
 
          inline void MouseButtonCallback(GLFWwindow* w, int button, int action, int mods)
          {
-            GASSERT(GlfwInputMap.find(button) != GlfwInputMap.end(), "Invalid button value is passed!");
+            auto f = GlfwMouseButtonMap.find(button);
+            if (f == GlfwMouseButtonMap.end())
+            {
+               LOG_ERROR("Unhandling mouse button is pressed!");
+               return;
+            }
 
-            MouseButtonSubject.Invoke(event::MouseButtonEvent(GlfwInputMap.find(button)->second, GlfwTranslateState(action)));
+            MouseButtonSubject.Invoke(event::MouseButtonEvent(f->second, GlfwTranslateState(action)));
          }
 
          inline void CursorCallback(GLFWwindow* w, double x, double y)

@@ -8,7 +8,7 @@ using namespace ::input;
 
 namespace input
 {
-   inline std::unordered_map<uint32_t, InputEvent> GlfwInputMap =
+   inline std::unordered_map<uint32_t, InputEvent> GlfwKeyMap =
    {
       { GLFW_KEY_SPACE, InputEvent::Space },
       { GLFW_KEY_APOSTROPHE, InputEvent::Apostrophe },
@@ -125,15 +125,18 @@ namespace input
       { GLFW_KEY_RIGHT_SHIFT, InputEvent::RightShift },
       { GLFW_KEY_RIGHT_CONTROL, InputEvent::RightControl },
       { GLFW_KEY_RIGHT_ALT, InputEvent::RightAlt },
+   };
 
-      { GLFW_MOUSE_BUTTON_1 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_Left  },
-      { GLFW_MOUSE_BUTTON_2 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_Right },
-      { GLFW_MOUSE_BUTTON_3 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_Middle },
-      { GLFW_MOUSE_BUTTON_4 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_4 },
-      { GLFW_MOUSE_BUTTON_5 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_5 },
-      { GLFW_MOUSE_BUTTON_6 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_6 },
-      { GLFW_MOUSE_BUTTON_7 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_7 },
-      { GLFW_MOUSE_BUTTON_8 + (uint8_t)InputEvent::LastKeyboardKey + 1, InputEvent::M_8 }
+   inline std::unordered_map<uint32_t, InputEvent> GlfwMouseButtonMap =
+   {
+      { GLFW_MOUSE_BUTTON_1, InputEvent::M_Left  },
+      { GLFW_MOUSE_BUTTON_2, InputEvent::M_Right },
+      { GLFW_MOUSE_BUTTON_3, InputEvent::M_Middle },
+      { GLFW_MOUSE_BUTTON_4, InputEvent::M_4 },
+      { GLFW_MOUSE_BUTTON_5, InputEvent::M_5 },
+      { GLFW_MOUSE_BUTTON_6, InputEvent::M_6 },
+      { GLFW_MOUSE_BUTTON_7, InputEvent::M_7 },
+      { GLFW_MOUSE_BUTTON_8, InputEvent::M_8 }
    };
 
    inline InputEventState GlfwTranslateState(const uint32_t state)

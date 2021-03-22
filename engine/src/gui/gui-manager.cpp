@@ -3,8 +3,8 @@
 namespace gui
 {
    GuiManager::GuiManager(const std::shared_ptr<app::Window>& window,
-                          const std::shared_ptr<input::InputManager>& inputM,
                           const std::shared_ptr<graphics::GraphicsDevice>& gd)
+      : GraphicsDevice(gd)
    {
       uint16_t width = window->GetCanvas()->GetWidth();
       uint16_t height = window->GetCanvas()->GetHeight();
@@ -17,31 +17,32 @@ namespace gui
             #version 460 core
       
             layout(location = 0) in vec2 pos;
-            layout(location = 1) in vec2 uv;
       
             out vec2 Uv;
          
             void main()
             {
-               Uv = uv;
+               Uv = normalize(pos);
                gl_Position = vec4(pos, 0.0f, 1.0f);
             })";
 
       const char* fragmentShaderSrc = R"(
             #version 460 core
+
+            #extension GL_ARB_bindless_texture: enable
          
             out vec4 Color;
          
             in vec2 Uv;
       
-            uniform sampler2D Texture;
+            layout(bindless_sampler) uniform sampler2D Texture;
       
             void main()
             {
                Color = texture(Texture, Uv);
             })";
 
-      SurfaceShader = gd->CreateShaderProgram();
+      SurfaceShader = GraphicsDevice->CreateShaderProgram();
 
       SurfaceShader->AddShader(graphics::ShaderType::Vertex, vertexShaderSrc);
       SurfaceShader->AddShader(graphics::ShaderType::Fragment, fragmentShaderSrc);
@@ -49,93 +50,80 @@ namespace gui
       SurfaceShader->Compile();
 
 
+      graphics::TextureParams params;
+      params.MagFilter = graphics::TextureFilter::Linear;
+      params.MinFilter = graphics::TextureFilter::Nearest;
+      params.WrapS = graphics::TextureWrap::ClampToEdge;
+      params.WrapT = graphics::TextureWrap::ClampToEdge;
+
+      SurfaceTexture = GraphicsDevice->CreateTexture2D();
+      SurfaceTexture->InitData(width, height, 
+                               graphics::InternalFormat::RGB8, graphics::Format::RGB, graphics::Type::Ubyte,
+                               params);
+
       float vertices[] =
       {
-         -1.0f, -1.0f, 0.0f, 1.0f,
-         -1.0f, 1.0f, 0.0f, 0.0f,
-         1.0f, 1.0f, 1.0f, 0.0f,
-         1.0f, 1.0f, 1.0f, 0.0f,
-         1.0f, -1.0f, 1.0f, 1.0f,
-         -1.0f, -1.0f, 0.0f, 1.0f,
+         -1.0f, -1.0f, 
+         -1.0f, 1.0f,
+         1.0f, 1.0f,
+         1.0f, 1.0f,
+         1.0f, -1.0f,
+         -1.0f, -1.0f, 
       };
 
-      //Vbo = gl::CreateVertexBuffer(sizeof(vertices), vertices);
+      SurfaceVBO = GraphicsDevice->CreateVBO();
+      SurfaceVBO->InitData(sizeof(vertices), vertices);
 
-      //Vao = gl::CreateVertexArray();
+      SurfaceShader->AddInputBuffer(SurfaceVBO, 2, 0, sizeof(float) * 2, graphics::Type::Float);
 
-      //GLuint b = gl::AddBufferVertexArray(Vao, Vbo, 4 * sizeof(float));
-
-      //gl::AddAttribFormatVertexArray(Vao, 0, b, 2, GL_FLOAT, GL_FALSE, 0);
-      //gl::AddAttribFormatVertexArray(Vao, 1, b, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
-
-      //gl::TextureParams params;
-      //params.WrapS = GL_CLAMP_TO_EDGE;
-      //params.WrapT = GL_CLAMP_TO_EDGE;
-      //params.MinFilter = GL_NEAREST;
-      //params.MagFilter = GL_NEAREST;
-
-      //SurfaceTexture = gl::CreateTexture2D(width, height, GL_RGBA8, GL_BGRA, GL_UNSIGNED_BYTE, params);
-
-
-      SetupInput();
+      SetupInput(window);
    }
 
-   GuiManager::~GuiManager()
-   {
-      //gl::DeleteVertexArray(Vao); 
-      //gl::DeleteVertexBuffer(Vbo);
-      //gl::DeleteTexture2D(SurfaceTexture);
-   }
-
-   void GuiManager::SetupInput()
+   void GuiManager::SetupInput(const std::shared_ptr<app::Window>& window)
    {
       uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(GuiController.get());
 
-      MouseButtonSubject.AddObserver({ [](event::BaseEvent& e, uintptr_t args)
-         {
-            event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
-            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      event::Callback mouseButtonCallback = { [](event::BaseEvent& e, uintptr_t args)
+      {
+         event::MouseButtonEvent mouseE = event::CastEvent<event::MouseButtonEvent>(e);
+         gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            //gc->OnMouseButton(mouseE.Button, mouseE.State);
-         }, callbackArgs });
+         //gc->OnMouseButton(mouseE.Button, mouseE.State);
+      }, callbackArgs };
 
-      CursorSubject.AddObserver({ [](event::BaseEvent& e, uintptr_t args)
-         {
-            auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
-            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      event::Callback cursorCallback = { [](event::BaseEvent& e, uintptr_t args)
+      {
+         auto mouseE = event::CastEvent<event::MouseCursorPosEvent>(e);
+         gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
-         }, callbackArgs });
+         gc->OnMouseMove(mouseE.PosX, mouseE.PosY);
+      }, callbackArgs };
 
-      ScrollSubject.AddObserver({ [](event::BaseEvent& e, uintptr_t args)
-         {
-            auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
-            gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
+      event::Callback scrollCallback{ [](event::BaseEvent& e, uintptr_t args)
+      {
+         auto mouseE = event::CastEvent<event::MouseScrollEvent>(e);
+         gui::GuiController* gc = reinterpret_cast<gui::GuiController*>(args);
 
-            gc->OnMouseScroll(mouseE.Value);
-         }, callbackArgs });
+         gc->OnMouseScroll(mouseE.Value);
+      }, callbackArgs };
 
-      //input::native::AddMouseButtonCallback(MouseButtonSubject);
-      //input::native::AddCursorCallback(CursorSubject);
-      //input::native::AddScrollCallback(ScrollSubject);
+      window->GetCanvas()->AddMouseButtonCallback(mouseButtonCallback);
+      window->GetCanvas()->AddCursorCallback(cursorCallback);
+      window->GetCanvas()->AddScrollCallback(scrollCallback);
    }
 
    void GuiManager::Update()
    {
-      //GuiShader->Use();
+      SurfaceShader->Use();
 
-      //gl::BindTexture2D(SurfaceTexture, 0);
+      SurfaceShader->SetTexture2D("Texture", SurfaceTexture);
 
-      //uint32_t w, h;
-      //void* pixels;
-      //GuiController->GetRenderingInfo(w, h, pixels);
+      uint32_t w, h;
+      void* pixels;
+      GuiController->GetRenderingInfo(w, h, pixels);
 
-      //gl::UpdateTexture2D(SurfaceTexture, w, h, pixels);
-
-      ////GuiShader->SetInt("Texture", 0);
-
-      //glBindVertexArray(Vao.BindId);
-      //glDrawArrays(GL_TRIANGLES, 0, 12);
-      //glBindVertexArray(0);
+      SurfaceTexture->UpdateData(w, h, pixels);
+      
+      GraphicsDevice->DrawTriangles(SurfaceShader, 12);
    }
 }

@@ -11,21 +11,17 @@ namespace gui
    private:
       std::unique_ptr<gui::GuiController> GuiController;
 
+      std::shared_ptr<graphics::VertexBuffer> SurfaceVBO;
       std::shared_ptr<graphics::ShaderProgram> SurfaceShader;
       std::shared_ptr<graphics::Texture2D> SurfaceTexture;
 
-      event::Subject MouseButtonSubject;
-      event::Subject CursorSubject;
-      event::Subject ScrollSubject;
+      std::shared_ptr<graphics::GraphicsDevice> GraphicsDevice;
    public:
       GuiManager(const std::shared_ptr<app::Window>& window,
-                 const std::shared_ptr<input::InputManager>& inputM,
                  const std::shared_ptr<graphics::GraphicsDevice>& gd);
-
-      ~GuiManager();
 
       void Update();
    private:
-      void SetupInput();
+      void SetupInput(const std::shared_ptr<app::Window>& window);
    };
 }
