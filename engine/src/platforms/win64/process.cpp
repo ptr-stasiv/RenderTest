@@ -1,46 +1,53 @@
-#include "utils/process/process.h"
-
-#include <Windows.h>
+#include "process.h"
 
 #include "debug/log/log.h"
+#include "debug/gassert.h"
 
 namespace utils
 {
-   struct ProcessHandle::NativeInfo
+   ProcessInfo CreateChildProcess(const std::string_view& execLocation, const std::string_view& workingDir)
    {
-      STARTUPINFO StartupInfo;
-      PROCESS_INFORMATION ProcessInfo;
-   };
+      HANDLE jobH = CreateJobObject(NULL, NULL);
 
-   ProcessHandle::ProcessHandle(const std::string_view& appName, const std::string_view& directory)
-   {
-      Native = std::make_unique<NativeInfo>();
+      GASSERT(jobH, "Job couldn't created");
 
-      ZeroMemory(&Native->StartupInfo, sizeof(Native->StartupInfo));
-      ZeroMemory(&Native->ProcessInfo, sizeof(Native->ProcessInfo));
+      JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
 
-      Native->StartupInfo.cb = sizeof(Native->StartupInfo);
+      jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
 
-      if (!CreateProcessA(NULL,
-           const_cast<char*>(appName.data()),
-           NULL,
-           NULL,
-           FALSE,
-           CREATE_NO_WINDOW,
-           NULL,
-           const_cast<char*>(directory.data()),
-           &Native->StartupInfo,
-           &Native->ProcessInfo))
-      {
-         LOG_ERROR("Error in process creation: %s, error code: %d", appName.data(), GetLastError());
-      }
+      SetInformationJobObject(jobH, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli));
+
+      ProcessInfo info;
+
+      ZeroMemory(&info.StartupInfo, sizeof(info.StartupInfo));
+      ZeroMemory(&info.ProcessInfo, sizeof(info.ProcessInfo));
+
+      info.StartupInfo.cb = sizeof(info.StartupInfo);
+
+      GASSERT(CreateProcessA(NULL,
+             const_cast<char*>(execLocation.data()),
+             NULL,
+             NULL,
+             FALSE,
+             CREATE_NO_WINDOW,
+             NULL,
+             const_cast<char*>(workingDir.data()),
+             &info.StartupInfo,
+             &info.ProcessInfo),
+      "Error in process creation: %s, error code: %d", execLocation.data(), GetLastError());
+
+      AssignProcessToJobObject(jobH, info.ProcessInfo.hProcess);
+
+      return info;
    }
 
-   ProcessHandle::~ProcessHandle()
+   void DestroyProcess(const ProcessInfo& processInfo)
    {
-      TerminateProcess(Native->ProcessInfo.hProcess, 0);
+      TerminateProcess(processInfo.ProcessInfo.hProcess, 0);
 
-      CloseHandle(Native->ProcessInfo.hProcess);
-      CloseHandle(Native->ProcessInfo.hThread);
+      WaitForSingleObject(processInfo.ProcessInfo.hProcess, INFINITE);
+
+      CloseHandle(processInfo.ProcessInfo.hProcess);
+      CloseHandle(processInfo.ProcessInfo.hThread);
    }
 }

@@ -8,7 +8,6 @@
 #include "AppCore/Platform.h"
 
 #include "key-map.h"
-#include "utils/process/process.h"
 
 namespace gui
 {
@@ -19,14 +18,16 @@ namespace gui
    {
       ultralight::RefPtr<ultralight::Renderer> Renderer;
       ultralight::RefPtr<ultralight::View> View;
-
-      std::unique_ptr<utils::ProcessHandle> ServerHandle;
    };
 
    GuiController::GuiController()
       : UlInfo(new UlInfoPimpl) {}
 
-   GuiController::~GuiController() = default;
+
+   GuiController::~GuiController()
+   {
+      utils::DestroyProcess(ServerProcess);
+   }
 
    void GuiController::OnMouseButton(const uint32_t button, const uint32_t state)
    {
@@ -60,7 +61,7 @@ namespace gui
 
    void GuiController::Setup(const uint32_t resX, const uint32_t resY)
    {
-      UlInfo->ServerHandle = std::make_unique<utils::ProcessHandle>(ServerApplicationPath, ServerWorkingDir);
+      ServerProcess = utils::CreateChildProcess(ServerApplicationPath, ServerWorkingDir);
 
       ultralight::Config config;
 

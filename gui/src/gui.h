@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <string>
 
+#include "utils/process/process.h"
+
 namespace gui
 {
    struct UlInfoPimpl;
@@ -11,6 +13,8 @@ namespace gui
    {
    private:
       std::unique_ptr<UlInfoPimpl> UlInfo;
+
+      utils::ProcessInfo ServerProcess;
    public:
        GuiController();
       ~GuiController();
