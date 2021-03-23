@@ -32,8 +32,8 @@ namespace graphics
          uint16_t SizeX;
          uint16_t SizeY;
 
-         Format CurFormat;
-         Type CurType;
+         Format CurrentFormat;
+         Type CurrentType;
 
          Texture2dGL() = default;
 
@@ -45,6 +45,9 @@ namespace graphics
          {
             SizeX = sizeX;
             SizeY = sizeY;
+
+            CurrentFormat = format;
+            CurrentType = type;
 
             glCreateTextures(GL_TEXTURE_2D, 1, &BindId);
          
@@ -61,7 +64,7 @@ namespace graphics
          
          inline void UpdateData(const size_t sizeX, const size_t sizeY, const void* data) override
          {
-            glTextureSubImage2D(BindId, 0, 0, 0, sizeX, sizeY, OGL_FORMAT(CurFormat), OGL_TYPE(CurType), data);
+            glTextureSubImage2D(BindId, 0, 0, 0, sizeX, sizeY, OGL_FORMAT(CurrentFormat), OGL_TYPE(CurrentType), data);
          }
          
          inline uint16_t GetSizeX() const override

@@ -22,7 +22,8 @@ namespace gui
          
             void main()
             {
-               Uv = normalize(pos);
+               //Mirror coordinates by x axis
+               Uv = vec2(pos.x, -pos.y) * 0.5f + 0.5f;
                gl_Position = vec4(pos, 0.0f, 1.0f);
             })";
 
@@ -58,17 +59,17 @@ namespace gui
 
       SurfaceTexture = GraphicsDevice->CreateTexture2D();
       SurfaceTexture->InitData(width, height, 
-                               graphics::InternalFormat::RGB8, graphics::Format::RGB, graphics::Type::Ubyte,
+                               graphics::InternalFormat::RGBA8, graphics::Format::BGRA, graphics::Type::Ubyte,
                                params);
 
       float vertices[] =
       {
-         -1.0f, -1.0f, 
          -1.0f, 1.0f,
+         -1.0f, -1.0f,
          1.0f, 1.0f,
          1.0f, 1.0f,
          1.0f, -1.0f,
-         -1.0f, -1.0f, 
+         -1.0f, -1.0f
       };
 
       SurfaceVBO = GraphicsDevice->CreateVBO();

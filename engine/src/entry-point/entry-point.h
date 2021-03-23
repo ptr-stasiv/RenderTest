@@ -39,6 +39,7 @@ namespace app
 
       g_GuiManager = std::make_shared<gui::GuiManager>(g_Window, g_GraphicsDevice);
       
+
       //Independent subsystems setup's
       
       core::JobSystem::Setup();
@@ -59,6 +60,9 @@ namespace app
 
 
         userTickFunc();
+
+
+        g_GuiManager->Update();
 
         g_Window->EndFrame();
 
