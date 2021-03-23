@@ -5,6 +5,7 @@
 #include "math/matrices/matrix4x4.h"
 #include "texture2d.h"
 #include "uniform-buffer.h"
+#include "shader-buffer.h"
 #include "vertex-buffer.h"
 #include "api.h"
 
@@ -32,6 +33,8 @@ namespace graphics
                                   const size_t stride, const Type type, const size_t offset = 0, const size_t elementsOffset = 0) = 0;
 
       virtual void AddInputBuffer(const std::shared_ptr<UniformBuffer>& ubo, const std::string_view& name, const size_t dataSize, const size_t dataOffset = 0) = 0;
+
+      virtual void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) = 0;
 
       virtual void Compile() = 0;
 

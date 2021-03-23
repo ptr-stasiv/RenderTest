@@ -7,6 +7,7 @@
 #include "platforms/opengl/gl-texture2d.h"
 #include "platforms/opengl/gl-vertex-buffer.h"
 #include "platforms/opengl/gl-uniform-buffer.h"
+#include "platforms/opengl/gl-shader-buffer.h"
 
 namespace graphics
 {
@@ -44,10 +45,13 @@ namespace graphics
          return std::make_shared<gl::UniformBufferGL>();
       }
 
-      //std::shared_ptr<ShaderBuffer> CreateSBO() override;
+      inline std::shared_ptr<ShaderBuffer> CreateSBO() override
+      {
+         return std::make_shared<gl::ShaderBufferGL>();
+      }
       
       
-      //Commands
+     //Commands
       
      inline std::string GetDeviceInfo() const override
      {

@@ -7,7 +7,10 @@
 #include "gl-texture2d.h"
 #include "gl-vertex-buffer.h"
 #include "gl-uniform-buffer.h"
+#include "gl-shader-buffer.h"
 #include "GL/glew.h"
+
+#include "debug/gassert.h"
 
 namespace graphics
 {
@@ -26,6 +29,7 @@ namespace graphics
       private:
          uint8_t BufferCounter = 0;
          uint8_t UBufferCounter = 0;
+         uint8_t SBufferCounter = 0;
       public:   
          GLuint ProgramId;
          GLuint Vao;
@@ -74,6 +78,7 @@ namespace graphics
             auto& glUBO = std::static_pointer_cast<UniformBufferGL>(ubo);
 
             GLuint blockId = glGetUniformBlockIndex(ProgramId, &name[0]);
+            GASSERT(blockId >= 0, "Invalid UBO id!");
 
             glUniformBlockBinding(ProgramId, blockId, UBufferCounter);
 
@@ -81,6 +86,22 @@ namespace graphics
             glBindBufferRange(GL_UNIFORM_BUFFER, UBufferCounter, glUBO->BindId, static_cast<GLintptr>(dataOffset), dataSize);
 
             ++UBufferCounter;
+         }
+
+         inline void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) override
+         {
+            auto& glSSBO = std::static_pointer_cast<ShaderBufferGL>(ssbo);
+
+            GLuint blockId = glGetProgramResourceIndex(ProgramId, GL_SHADER_STORAGE_BLOCK, &name[0]);
+            GASSERT(blockId >= 0, "Invalid SSBO id!");
+
+            glShaderStorageBlockBinding(ProgramId, blockId, SBufferCounter);
+            
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, glSSBO->BindId);
+            glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SBufferCounter, glSSBO->BindId);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+            ++SBufferCounter;
          }
 
          inline void Compile() override

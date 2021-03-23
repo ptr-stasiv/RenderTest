@@ -31,7 +31,7 @@ namespace graphics
 
       virtual std::shared_ptr<UniformBuffer> CreateUBO() = 0;
 
-      //virtual std::shared_ptr<ShaderBuffer> CreateSBO() = 0;
+      virtual std::shared_ptr<ShaderBuffer> CreateSBO() = 0;
       
       
       //Commands
