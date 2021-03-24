@@ -23,7 +23,7 @@ namespace graphics
 
       virtual std::shared_ptr<ShaderProgram> CreateShaderProgram() = 0;
 
-      //virtual std::shared_ptr<ComputeShader> CreateComputeShader() = 0;
+      virtual std::shared_ptr<ComputeShader> CreateComputeShader() = 0;
 
       virtual std::shared_ptr<Texture2D> CreateTexture2D() = 0;
 

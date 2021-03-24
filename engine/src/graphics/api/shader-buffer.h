@@ -1,4 +1,5 @@
 #pragma once
+#include <any>
 
 namespace graphics
 {
@@ -11,5 +12,7 @@ namespace graphics
       virtual void InitData(const size_t size, const void* data) = 0;
 
       virtual void UpdateData(const size_t size, const void* data, const size_t offset = 0) = 0;
+      
+      virtual std::any GetData(const size_t offset, const size_t size) = 0;
    };
 }

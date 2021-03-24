@@ -20,6 +20,10 @@ namespace graphics
 
       virtual void Use() const = 0;
 
+      virtual void Dispatch(uint32_t workGroupsX, uint32_t workGroupsY = 0, const uint32_t workGroupsZ = 0) = 0;
+
+      virtual void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) = 0;
+
       virtual void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Texture2D>& texture) const = 0;
 
       virtual void SetFloats(const std::string_view& name, const math::Matrix4& m) const = 0;

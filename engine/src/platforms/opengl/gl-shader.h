@@ -91,7 +91,7 @@ namespace graphics
          inline void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) override
          {
             auto& glSSBO = std::static_pointer_cast<ShaderBufferGL>(ssbo);
-
+               
             GLuint blockId = glGetProgramResourceIndex(ProgramId, GL_SHADER_STORAGE_BLOCK, &name[0]);
             GASSERT(blockId >= 0, "Invalid SSBO id!");
 

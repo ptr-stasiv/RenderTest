@@ -8,6 +8,7 @@
 #include "platforms/opengl/gl-vertex-buffer.h"
 #include "platforms/opengl/gl-uniform-buffer.h"
 #include "platforms/opengl/gl-shader-buffer.h"
+#include "platforms/opengl/gl-compute-shader.h"
 
 namespace graphics
 {
@@ -28,7 +29,10 @@ namespace graphics
          return std::make_shared<gl::ShaderProgramGL>();
       }
 
-      //std::shared_ptr<ComputeShader> CreateComputeShader() override;
+      inline std::shared_ptr<ComputeShader> CreateComputeShader() override
+      {
+         return std::make_shared<gl::ComputeShaderGL>();
+      }
 
       inline std::shared_ptr<Texture2D> CreateTexture2D() override
       {
