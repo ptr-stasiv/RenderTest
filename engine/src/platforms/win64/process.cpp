@@ -7,17 +7,17 @@ namespace utils
 {
    ProcessInfo CreateChildProcess(const std::string_view& execLocation, const std::string_view& workingDir)
    {
-      HANDLE jobH = CreateJobObject(NULL, NULL);
+      ProcessInfo info;
 
-      GASSERT(jobH, "Job couldn't created");
+      info.JobHandle = CreateJobObject(NULL, NULL);
+
+      GASSERT(info.JobHandle, "Job couldn't created");
 
       JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
 
       jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
 
-      SetInformationJobObject(jobH, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli));
-
-      ProcessInfo info;
+      SetInformationJobObject(info.JobHandle, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli));
 
       ZeroMemory(&info.StartupInfo, sizeof(info.StartupInfo));
       ZeroMemory(&info.ProcessInfo, sizeof(info.ProcessInfo));
@@ -36,16 +36,14 @@ namespace utils
              &info.ProcessInfo),
       "Error in process creation: %s, error code: %d", execLocation.data(), GetLastError());
 
-      AssignProcessToJobObject(jobH, info.ProcessInfo.hProcess);
+      AssignProcessToJobObject(info.JobHandle, info.ProcessInfo.hProcess);
 
       return info;
    }
 
    void DestroyProcess(const ProcessInfo& processInfo)
    {
-      TerminateProcess(processInfo.ProcessInfo.hProcess, 0);
-
-      WaitForSingleObject(processInfo.ProcessInfo.hProcess, INFINITE);
+      CloseHandle(processInfo.JobHandle);
 
       CloseHandle(processInfo.ProcessInfo.hProcess);
       CloseHandle(processInfo.ProcessInfo.hThread);
