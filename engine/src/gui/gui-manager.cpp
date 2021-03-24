@@ -1,5 +1,7 @@
 #include "gui-manager.h"
 
+#include "utils/read-from-file.h"
+
 namespace gui
 {
    GuiManager::GuiManager(const std::shared_ptr<app::Window>& window,
@@ -13,35 +15,9 @@ namespace gui
 
       GuiController->Setup(width, height);
 
-      const char* vertexShaderSrc = R"(
-            #version 460 core
-      
-            layout(location = 0) in vec2 pos;
-      
-            out vec2 Uv;
-         
-            void main()
-            {
-               //Mirror coordinates by x axis
-               Uv = vec2(pos.x, -pos.y) * 0.5f + 0.5f;
-               gl_Position = vec4(pos, 0.0f, 1.0f);
-            })";
+      const char* vertexShaderSrc = utils::ReadFromFile("res/shaders/gui-surface.vs").data();
 
-      const char* fragmentShaderSrc = R"(
-            #version 460 core
-
-            #extension GL_ARB_bindless_texture: enable
-         
-            out vec4 Color;
-         
-            in vec2 Uv;
-      
-            layout(bindless_sampler) uniform sampler2D Texture;
-      
-            void main()
-            {
-               Color = texture(Texture, Uv);
-            })";
+      const char* fragmentShaderSrc = utils::ReadFromFile("res/shaders/gui-surface.fs").data();
 
       SurfaceShader = GraphicsDevice->CreateShaderProgram();
 

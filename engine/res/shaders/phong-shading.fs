@@ -12,6 +12,8 @@ in VS_OUT
     vec3 FragPos;
     vec3 Normal;
     vec2 UV;
+    vec3 Tangent;
+	vec3 Bitangent;
 } vs_in;
 
 uniform vec3 CameraPosition;
@@ -80,7 +82,13 @@ void main()
 {
     vec3 lightSum;
 
-    vec3 normal = normalize(vs_in.Normal);
+    vec3 normalTexture = 2.0f * texture(NormalTexture, vs_in.UV).xyz - 1.0f;
+
+    mat3 tbn = mat3(normalize(vs_in.Tangent),
+                    normalize(vs_in.Bitangent),
+                    normalize(cross(vs_in.Tangent, vs_in.Bitangent)));
+
+    vec3 normal = tbn * normalTexture;
 
     vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 

@@ -70,7 +70,9 @@ int main()
    assets::AssetRef cubeAssetRef = AssetManager.RequireAsssetRef("res/meshes/cube.obj");
 
    assets::AssetRef pistolTextureRef = AssetManager.RequireAsssetRef("res/meshes/pistol/textures/handgun_C.jpg");
-   assets::AssetRef concreteTextureRef = AssetManager.RequireAsssetRef("res/textures/concrete.jpg");
+   assets::AssetRef pistolNormalTextureRef = AssetManager.RequireAsssetRef("res/meshes/pistol/textures/handgun_N.jpg");
+   assets::AssetRef concreteTextureRef = AssetManager.RequireAsssetRef("res/textures/brickwall.jpg");
+   assets::AssetRef concreteNormalTextureRef = AssetManager.RequireAsssetRef("res/textures/brickwall_normal.jpg");
 
    {
       utils::Timer assetTimer(true);
@@ -80,22 +82,33 @@ int main()
 
    MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
 
-   graphics::Mesh pistolMesh(pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, pistolAssetRef.GetData<assets::MeshAssetData>()->UVs);
-   graphics::Mesh cubeMesh(cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->Positions, cubeAssetRef.GetData<assets::MeshAssetData>()->UVs);
+   graphics::Mesh pistolMesh(pistolAssetRef.GetData<assets::MeshAssetData>()->Positions, 
+                             pistolAssetRef.GetData<assets::MeshAssetData>()->Normals, 
+                             pistolAssetRef.GetData<assets::MeshAssetData>()->UVs,
+                             pistolAssetRef.GetData<assets::MeshAssetData>()->Tangents,
+                             pistolAssetRef.GetData<assets::MeshAssetData>()->Bitangents);
+
+   graphics::Mesh cubeMesh(cubeAssetRef.GetData<assets::MeshAssetData>()->Positions,
+                           cubeAssetRef.GetData<assets::MeshAssetData>()->Normals, 
+                           cubeAssetRef.GetData<assets::MeshAssetData>()->UVs,
+                           cubeAssetRef.GetData<assets::MeshAssetData>()->Tangents,
+                           cubeAssetRef.GetData<assets::MeshAssetData>()->Bitangents);
    
    graphics::Material pistolM;
    pistolM.DiffuseColor = { 1.0f, 0.2f, 0.5f, 1.0f };
    pistolM.SpecularColor = math::Vector3(0.8f);
    pistolM.Glossiness = 8.0f;
-   pistolM.DiffuseTexture = *concreteTextureRef.GetData<assets::ImageAssetData>();;
+   pistolM.DiffuseTexture = *pistolTextureRef.GetData<assets::ImageAssetData>();
+   pistolM.NormalTexture = *pistolNormalTextureRef.GetData<assets::ImageAssetData>();
 
    graphics::Material cubeM;
    cubeM.DiffuseColor = { 0.3f, 0.3f, 0.3f, 1.0f };
    cubeM.SpecularColor = math::Vector3(1.0f);
    cubeM.Glossiness = 8.0f;
    cubeM.DiffuseTexture = *concreteTextureRef.GetData<assets::ImageAssetData>();
+   cubeM.NormalTexture = *concreteNormalTextureRef.GetData<assets::ImageAssetData>();
 
-   app::g_Renderer->AddRenderer({ cubeMesh, pistolM, math::CreateIdentityMatrix4() });
+   app::g_Renderer->AddRenderer({ pistolMesh, pistolM, math::CreateIdentityMatrix4() });
    app::g_Renderer->AddRenderer({ cubeMesh, cubeM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
                                    * math::CreateScaleMatrix({ 5.0f, 0.5f, 5.0f }) });
 

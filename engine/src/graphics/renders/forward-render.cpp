@@ -32,11 +32,18 @@ namespace graphics
       UVsVBO = GraphicsDevice->CreateVBO();
       UVsVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector2), nullptr);
 
+      TangentVBO = GraphicsDevice->CreateVBO();
+      TangentVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector3), nullptr);
+
+      BitangentVBO = GraphicsDevice->CreateVBO();
+      BitangentVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector3), nullptr);
+
       MainShader->AddInputBuffer(PositionsVBO, 3, PositionAttribLocation, sizeof(math::Vector3), Type::Float);
       MainShader->AddInputBuffer(NormalsVBO, 3, NormalAttribLocation, sizeof(math::Vector3), Type::Float);
       MainShader->AddInputBuffer(UVsVBO, 2, UvAttribLocation, sizeof(math::Vector2), Type::Float);
+      MainShader->AddInputBuffer(TangentVBO, 3, TangentAttribLocation, sizeof(math::Vector3), Type::Float);
+      MainShader->AddInputBuffer(BitangentVBO, 3, BitangentAttribLocation, sizeof(math::Vector3), Type::Float);
 
-   
       //UBO's setup
 
       LightUBO = GraphicsDevice->CreateUBO();
@@ -141,6 +148,8 @@ namespace graphics
          PositionsVBO->UpdateData(r.Mesh.Positions.size() * sizeof(math::Vector3), &r.Mesh.Positions[0]);
          NormalsVBO->UpdateData(r.Mesh.Normals.size() * sizeof(math::Vector3), &r.Mesh.Normals[0]);
          UVsVBO->UpdateData(r.Mesh.UVs.size() * sizeof(math::Vector2), &r.Mesh.UVs[0]);
+         TangentVBO->UpdateData(r.Mesh.Tangents.size() * sizeof(math::Vector3), &r.Mesh.Tangents[0]);
+         BitangentVBO->UpdateData(r.Mesh.Bitangents.size() * sizeof(math::Vector3), &r.Mesh.Bitangents[0]);
 
          GraphicsDevice->DrawTriangles(MainShader, r.Mesh.Positions.size() * 3);
       }

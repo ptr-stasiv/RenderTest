@@ -14,11 +14,14 @@ namespace assets
       std::vector<math::Vector3> Positions;
       std::vector<math::Vector3> Normals;
       std::vector<math::Vector2> UVs;
+      std::vector<math::Vector3> Tangents;
+      std::vector<math::Vector3> Bitangents;
 
       size_t FacesCount;
 
-      inline MeshAssetData(const std::vector<math::Vector3>& positions, const std::vector<math::Vector3>& normals, const std::vector<math::Vector2>& uvs, const size_t faces)
-         : Positions(positions), Normals(normals), UVs(uvs), FacesCount(faces) {}
+      inline MeshAssetData(const std::vector<math::Vector3>& positions, const std::vector<math::Vector3>& normals, const std::vector<math::Vector2>& uvs, 
+                           const std::vector<math::Vector3>& tangents, const std::vector<math::Vector3>& bitangents, const size_t faces)
+         : Positions(positions), Normals(normals), UVs(uvs), Tangents(tangents), Bitangents(bitangents), FacesCount(faces) {}
 
       inline MeshAssetData() = default;
 

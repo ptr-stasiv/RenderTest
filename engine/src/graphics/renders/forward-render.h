@@ -26,7 +26,8 @@ namespace graphics
    inline constexpr uint8_t PositionAttribLocation = 0;
    inline constexpr uint8_t NormalAttribLocation = 1;
    inline constexpr uint8_t UvAttribLocation = 2;
-
+   inline constexpr uint8_t TangentAttribLocation = 3;
+   inline constexpr uint8_t BitangentAttribLocation = 4;
 
    struct alignas(16) MaterialA
    {
@@ -74,6 +75,8 @@ namespace graphics
       std::shared_ptr<VertexBuffer> PositionsVBO;
       std::shared_ptr<VertexBuffer> NormalsVBO;
       std::shared_ptr<VertexBuffer> UVsVBO;
+      std::shared_ptr<VertexBuffer> TangentVBO;
+      std::shared_ptr<VertexBuffer> BitangentVBO;
 
       std::shared_ptr<UniformBuffer> LightUBO;
       std::shared_ptr<UniformBuffer> MaterialUBO;

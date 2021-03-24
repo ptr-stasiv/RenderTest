@@ -11,10 +11,15 @@ namespace graphics
       std::vector<math::Vector3> Positions;
       std::vector<math::Vector3> Normals;
       std::vector<math::Vector2> UVs;
+      std::vector<math::Vector3> Tangents;
+      std::vector<math::Vector3> Bitangents;
 
       inline Mesh(const std::vector<math::Vector3>& positions,
                   const std::vector<math::Vector3>& normals = { 0 },
-                  const std::vector<math::Vector2>& uvs = { 0 })
-               : Positions(positions), Normals(normals), UVs(uvs) {}
+                  const std::vector<math::Vector2>& uvs = { 0 },
+                  const std::vector<math::Vector3>& tangents = { 0 },
+                  const std::vector<math::Vector3>& bitangents = { 0 })
+               : Positions(positions), Normals(normals), UVs(uvs),
+                 Tangents(tangents), Bitangents(bitangents) {}
    };
 }
