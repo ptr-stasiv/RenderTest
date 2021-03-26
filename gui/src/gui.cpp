@@ -9,6 +9,8 @@
 
 #include "key-map.h"
 
+#include "utils/xml.h"
+
 namespace gui
 {
    constexpr auto ServerApplicationPath = "D:/Own/RenderTest/gui/extern/WebGui/server/server.exe";
@@ -88,6 +90,14 @@ namespace gui
       UlInfo->View->LoadURL("http://localhost:3333/");
 
       UlInfo->View->Focus();
+
+      utils::Xml xml;
+
+      xml.Add({ "log", { {"type", "warning"}, {"color", "red"} }, ""});
+
+      xml["log"] = { "log", { {"type", "warning"}, {"color", "red"} }, "Error" };
+
+      printf("%s\n", xml.ToString().data());
    }
 
    void GuiController::GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels)

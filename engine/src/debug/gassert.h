@@ -1,3 +1,7 @@
 #include "debug/log/log.h"
 
-#define GASSERT(condition, msg) if(!(condition)) { LOG_ERROR("%s", msg); /*abort();*/}
+#ifndef NDEBUG
+   #define GASSERT(condition, msg) if(!(condition)) { LOG_ERROR("%s", msg); abort(); }
+#else
+   #define GASSERT(condition, msg) (condition)
+#endif

@@ -128,8 +128,8 @@ namespace graphics
       UpdateLight();
 
       MainShader->SetFloats("CameraPosition", camera.Position);
-      MainShader->SetFloats("Projection", camera.GetCameraProjection());
-      MainShader->SetFloats("View", camera.GetCameraViewMatrix());
+      MainShader->SetFloats("ToProjection", camera.GetCameraProjection());
+      MainShader->SetFloats("ToCamera", camera.GetCameraViewMatrix());
 
       for(auto r : RendererList)
       { 
@@ -143,7 +143,7 @@ namespace graphics
 
          ResolveTextures(r.Material);
 
-         MainShader->SetFloats("Model", r.Transformation);
+         MainShader->SetFloats("ToWorld", r.Transformation);
 
          PositionsVBO->UpdateData(r.Mesh.Positions.size() * sizeof(math::Vector3), &r.Mesh.Positions[0]);
          NormalsVBO->UpdateData(r.Mesh.Normals.size() * sizeof(math::Vector3), &r.Mesh.Normals[0]);

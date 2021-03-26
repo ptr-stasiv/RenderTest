@@ -15,17 +15,17 @@ out VS_OUT
 	vec3 Bitangent;
 } vs_out;
 
-uniform mat4 Projection = mat4(1.0f);
-uniform mat4 View = mat4(1.0f);
-uniform mat4 Model = mat4(1.0f);
+uniform mat4 ToProjection = mat4(1.0f);
+uniform mat4 ToCamera = mat4(1.0f);
+uniform mat4 ToWorld = mat4(1.0f);
 
 void main()
 {
-	vs_out.FragPos = (Model * vec4(position, 1.0f)).xyz;
+	vs_out.FragPos = (ToWorld * vec4(position, 1.0f)).xyz;
 	vs_out.Normal = normal;
 	vs_out.UV = uv;
-	vs_out.Tangent = (Model * vec4(tangent, 1.0f)).xyz;
-	vs_out.Bitangent = (Model * vec4(bitangent, 1.0f)).xyz;
+	vs_out.Tangent = (ToWorld * vec4(tangent, 1.0f)).xyz;
+	vs_out.Bitangent = (ToWorld * vec4(bitangent, 1.0f)).xyz;
 
-	gl_Position = Projection * View * Model * vec4(position, 1.0f);
+	gl_Position = ToProjection * ToCamera * ToWorld * vec4(position, 1.0f);
 }

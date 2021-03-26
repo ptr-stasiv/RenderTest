@@ -86,7 +86,7 @@ void main()
 
     mat3 tbn = mat3(normalize(vs_in.Tangent),
                     normalize(vs_in.Bitangent),
-                    normalize(cross(vs_in.Tangent, vs_in.Bitangent)));
+                    normalize(vs_in.Normal));
 
     vec3 normal = tbn * normalTexture;
 
