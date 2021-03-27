@@ -93,9 +93,11 @@ namespace gui
 
       utils::Xml xml;
 
-      xml.Add({ "log", { {"type", "warning"}, {"color", "red"} }, ""});
+      xml.Add({ "log", { {"type", "warning"}, {"color", "red"} }, "" });
 
-      xml["log"] = { "log", { {"type", "warning"}, {"color", "red"} }, "Error" };
+      xml.Add({ "log", { {"type", "warning"}, {"color", "red"} }, "Error" }, "log");
+
+      xml.Add({ "button", {}, "Test" }, { "log", "log" });
 
       printf("%s\n", xml.ToString().data());
    }

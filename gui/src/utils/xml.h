@@ -8,6 +8,8 @@
 
 namespace utils
 {
+   //Simple XML generator don't have much functionality but as with JSON generator I don't need more for it purpose
+
    struct XmlTag
    {
       std::string Name;
@@ -78,7 +80,40 @@ namespace utils
    public:
       inline void Add(const XmlTag& tag, const std::string& root = "")
       {
-         TagMap.insert({ tag.Name, tag });
+         if(root == "")
+            TagMap.insert({ tag.Name, tag });
+         else
+         {
+            GASSERT(TagMap.find(root) != TagMap.end(), "Invalid root tag passed");
+            TagMap[root].NestedTags.insert({ tag.Name, tag });
+         }
+      }
+
+      inline void Add(const XmlTag& tag, const std::initializer_list<std::string> &rootH)
+      {
+         std::unordered_map<std::string, XmlTag>::iterator curTag;
+         size_t i = 0;
+         for(auto& l : rootH)
+         {
+            if(i == 0)
+            {
+               auto& f = TagMap.find(l);
+               GASSERT(f != TagMap.end(), "Invalid root tag passed");
+
+               curTag = f;
+
+               continue;
+            }
+            
+            auto& f = curTag->second.NestedTags.find(l);
+            GASSERT(f != curTag->second.NestedTags.end(), "Invalid tag path passed!");
+
+            curTag = f;
+
+            ++i;
+         }
+
+         curTag->second.NestedTags.insert({ tag.Name, tag });
       }
 
       inline XmlTag& operator [] (const std::string& rootTag)
