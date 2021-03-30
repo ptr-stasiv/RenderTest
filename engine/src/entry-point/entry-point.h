@@ -6,7 +6,7 @@
 #include "graphics/renders/forward-render.h"
 #include "window/window.h"
 #include "window/input/input-manager.h"
-#include "gui/gui-manager.h"
+#include "gui-manager.h"
 #include "jobs/job-system.h"
 #include "utils/timer.h"
 

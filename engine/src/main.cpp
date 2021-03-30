@@ -8,8 +8,6 @@
 #include "math/math_utils.h"
 #include "utils/timer.h"
 
-#include "gui.h"
-
 #include "jobs/job-system.h"
 
 #include "events/subject.h"

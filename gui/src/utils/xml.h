@@ -134,5 +134,15 @@ namespace utils
 
          return resString;
       }
+
+      inline void Clear()
+      {
+         TagMap.clear();
+      }
+
+      inline bool Empty()
+      {
+         return TagMap.empty();
+      }
    };
 }

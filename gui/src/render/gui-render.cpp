@@ -1,4 +1,4 @@
-#include "gui.h"
+#include "gui-render.h"
 
 #include <cstdio>
 #include <string>
@@ -68,17 +68,19 @@ namespace gui
    {
       ServerProcess = utils::CreateChildProcess(ServerApplicationPath, ServerWorkingDir);
 
-      utils::Json jsonReq;
-      jsonReq["event"] = "Expand";
-      jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
+      Sleep(1000);
 
-      net::HttpRequest req;
-      req.Method = "POST";
-      req.ContentType = "application/json";
-      req.ContentSize = jsonReq.ToString().length();
+      //utils::Json jsonReq;
+      //jsonReq["event"] = "Expand";
+      //jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
 
-      net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333, true);
-      net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
+      //net::HttpRequest req;
+      //req.Method = "POST";
+      //req.ContentType = "application/json";
+      //req.ContentSize = jsonReq.ToString().length();
+
+      //net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333, true);
+      //net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
 
       ultralight::Config config;
 

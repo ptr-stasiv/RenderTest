@@ -1,6 +1,31 @@
 #include "gui-manager.h"
 
 #include "utils/read-from-file.h"
+#include "platforms/win64/win64-dev.h"
+
+std::string GetTempDir()
+#ifdef WIN64
+   {
+      char buf[256];
+      GetTempPathA(sizeof(buf), buf);
+      return buf;
+   }
+#endif
+
+//On other platforms(other I mean not Windows) can be issues with slash direction
+const std::string XmlFilesDirs[3] = 
+{
+   GetTempDir() + "newFile.xml",
+   GetTempDir() + "modFile.xml",
+   GetTempDir() + "remFile.xml"
+};
+
+const char* ServerEvents[3] = 
+{
+   "Expand",
+   "Modify",
+   "Remove"
+};
 
 namespace gui
 {
@@ -54,6 +79,15 @@ namespace gui
       SurfaceShader->AddInputBuffer(SurfaceVBO, 2, 0, sizeof(float) * 2, graphics::Type::Float);
 
       SetupInput(window);
+
+      
+      ClientHandle = net::InitializeClientHTTP("127.0.0.1", 3333);
+
+      for(size_t i = 0; i < 3; ++i)
+         XmlFiles[i].open(XmlFilesDirs[i], std::ofstream::trunc);
+
+      utils::XmlTag tag("log", { { "id", "123"} }, "");
+      AddNewElementXML(tag);
    }
 
    void GuiManager::SetupInput(const std::shared_ptr<app::Window>& window)
@@ -89,8 +123,39 @@ namespace gui
       window->GetCanvas()->AddScrollCallback(scrollCallback);
    }
 
+   void GuiManager::UpdateXmlRequests()
+   {
+     for(size_t i = 0; i < 3; ++i)
+     {
+         if(XmlRequests[i].Empty())
+            continue;
+         
+         auto data = XmlRequests[i].ToString();
+
+         XmlFiles[i].write(data.c_str(), data.length());
+
+         utils::Json json;
+         json["event"] = ServerEvents[i];
+         json["params"] = XmlFilesDirs[i].c_str(); //TODO fix string assigment
+
+         auto jsonStr = json.ToString();
+
+
+         net::HttpRequest req;
+         req.Method = "POST";
+         req.ContentType = "application/json";
+         req.ContentSize = jsonStr.length();
+
+         net::SendRequestHTTP(ClientHandle, req, jsonStr);
+
+         XmlRequests[i].Clear();
+     }
+   }
+
    void GuiManager::Update()
    {
+      UpdateXmlRequests();
+
       SurfaceShader->Use();
 
       SurfaceShader->SetTexture2D("Texture", SurfaceTexture);
