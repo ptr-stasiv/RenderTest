@@ -29,7 +29,7 @@ namespace sharpmake
 
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/src");
 
-            config.LibraryFiles.AddRange(new Strings("AppCore", "Ultralight", "UltralightCore", "WebCore"));
+            config.LibraryFiles.AddRange(new Strings("AppCore", "Ultralight", "UltralightCore", "WebCore", "wsock32"));
 
             config.Output = Configuration.OutputType.Lib;
 

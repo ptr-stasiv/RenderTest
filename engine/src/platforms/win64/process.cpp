@@ -34,7 +34,7 @@ namespace utils
              const_cast<char*>(workingDir.data()),
              &info.StartupInfo,
              &info.ProcessInfo),
-      "Error in process creation: %s, error code: %d", execLocation.data(), GetLastError());
+      "Error in process creation!");
 
       AssignProcessToJobObject(info.JobHandle, info.ProcessInfo.hProcess);
 

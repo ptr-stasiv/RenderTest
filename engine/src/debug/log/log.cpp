@@ -2,8 +2,8 @@
 
 #include <cstdio>
 #include <cstdarg>
-#include <Windows.h>
 
+#include "platforms/win64/win64-dev.h"
 #include "utils/sync/spin-lock.h"
 
 const char* g_FontColorModes[] =

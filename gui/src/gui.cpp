@@ -1,5 +1,7 @@
 #include "gui.h"
 
+#include "utils/http-handle.h"
+
 #include <cstdio>
 #include <string>
 #include <bitset>
@@ -100,6 +102,17 @@ namespace gui
       xml.Add({ "button", {}, "Test" }, { "log", "log" });
 
       printf("%s\n", xml.ToString().data());
+
+
+      //constexpr auto ip = "http://127.0.0.1/";
+      //constexpr auto port = 80;
+
+      //HINTERNET internet = InternetOpenA("Test", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
+      //InternetConnectA(internet, ip, port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
+
+      //HINTERNET http = HttpOpenRequestA(internet, "POST", "", NULL, NULL, NULL, 0, 0);
+
+      //HttpSendRequestA(internet, NULL, 0, NULL, 0);
    }
 
    void GuiController::GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels)

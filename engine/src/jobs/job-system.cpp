@@ -1,7 +1,8 @@
 #include "job-system.h"
 
-#include <Windows.h>
 #include <string>
+
+#include "platforms/win64/win64-dev.h"
 
 namespace core
 {

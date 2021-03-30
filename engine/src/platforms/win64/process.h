@@ -1,6 +1,7 @@
 #pragma once
-#include <Windows.h>
 #include <string_view>
+
+#include "platforms/win64/win64-dev.h"
 
 namespace utils
 {
