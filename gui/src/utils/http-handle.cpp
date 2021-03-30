@@ -1,13 +1,14 @@
 #include "http-handle.h"
 
 #include <cstdint>
+#include <string>
 
 #include "debug/error.h"
 #include "debug/log/log.h"
 
 namespace net
 {
-   HttpHandle InitializeClientHTTP()
+   HttpHandle InitializeClientHTTP(const std::string_view& address, const uint16_t port)
    {
       WSAData wsaData;
 
@@ -31,9 +32,9 @@ namespace net
       //inet_pton(AF_INET, "127.0.0.1", netAddres);
 
       SOCKADDR_IN sockAddr;
-      sockAddr.sin_port = htons(3333);
+      sockAddr.sin_port = htons(port);
       sockAddr.sin_family = AF_INET;
-      sockAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+      sockAddr.sin_addr.S_un.S_addr = inet_addr(address.data());
 
       if(connect(handle.Socket, 
                  reinterpret_cast<SOCKADDR*>(&sockAddr),
@@ -63,7 +64,13 @@ namespace net
 
    void SendRequestHTTP(const HttpHandle& handle, const HttpRequest& requestInfo, const std::string_view& data)
    {
-     if(send(handle.Socket, NULL, 0, 0) == SOCKET_ERROR)
+     std::string request = "POST / HTTP/1.1\r\n"
+                           "Host: " + handle.Address
+                           + "\r\nContent-Type:" + requestInfo.ContentType
+                           + "\r\nContent-Length: " + std::to_string(requestInfo.ContentSize)
+                           + "\r\n\r\n";
+
+     if(send(handle.Socket, request.data(), request.length(), 0) == SOCKET_ERROR)
      {
         LOG_ERROR("Error sending http request! Winsock error: %d", WSAGetLastError());
         return;

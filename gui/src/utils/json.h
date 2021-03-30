@@ -36,7 +36,7 @@ namespace utils
       }
 
       inline ElementPair(const std::string_view& key,
-                         const std::string_view& value)
+                         const char* value)
          : Key(key), Value(value), ValueString(true) {}
 
       template<typename T>
@@ -44,7 +44,7 @@ namespace utils
                          const T& value)
          : Key(key), Value(std::to_string(value)) {}
 
-      inline void operator = (const std::string_view& value)
+      inline void operator = (const char* value)
       {
          Value = value;
          ValueString = true;

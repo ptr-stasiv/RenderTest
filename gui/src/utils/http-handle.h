@@ -14,12 +14,12 @@ namespace net
 
    struct HttpRequest
    {
-      std::string_view Method;
-      std::string_view ContentType;
+      std::string Method;
+      std::string ContentType;
       size_t ContentSize;
    };
 
-   HttpHandle InitializeClientHTTP();
+   HttpHandle InitializeClientHTTP(const std::string_view& address, const uint16_t port);
 
    void DestroyClientHTTP(const HttpHandle& handle);
 

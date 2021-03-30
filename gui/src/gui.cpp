@@ -1,7 +1,5 @@
 #include "gui.h"
 
-#include "utils/http-handle.h"
-
 #include <cstdio>
 #include <string>
 #include <bitset>
@@ -12,6 +10,9 @@
 #include "key-map.h"
 
 #include "utils/xml.h"
+#include "utils/json.h"
+
+#include "utils/http-handle.h"
 
 namespace gui
 {
@@ -93,26 +94,17 @@ namespace gui
 
       UlInfo->View->Focus();
 
-      utils::Xml xml;
+      utils::Json jsonReq;
+      jsonReq["event"] = "Expand";
+      jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
 
-      xml.Add({ "log", { {"type", "warning"}, {"color", "red"} }, "" });
+      net::HttpRequest req;
+      req.Method = "POST";
+      req.ContentType = "application/json";
+      req.ContentSize = jsonReq.ToString().length();
 
-      xml.Add({ "log", { {"type", "warning"}, {"color", "red"} }, "Error" }, "log");
-
-      xml.Add({ "button", {}, "Test" }, { "log", "log" });
-
-      printf("%s\n", xml.ToString().data());
-
-
-      //constexpr auto ip = "http://127.0.0.1/";
-      //constexpr auto port = 80;
-
-      //HINTERNET internet = InternetOpenA("Test", INTERNET_OPEN_TYPE_DIRECT, NULL, NULL, 0);
-      //InternetConnectA(internet, ip, port, NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);
-
-      //HINTERNET http = HttpOpenRequestA(internet, "POST", "", NULL, NULL, NULL, 0, 0);
-
-      //HttpSendRequestA(internet, NULL, 0, NULL, 0);
+      net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333);
+      net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
    }
 
    void GuiController::GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels)
