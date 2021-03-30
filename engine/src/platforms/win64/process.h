@@ -16,4 +16,9 @@ namespace utils
    ProcessInfo CreateChildProcess(const std::string_view& execLocation, const std::string_view& workingDir);
 
    void DestroyProcess(const ProcessInfo& processInfo);
+
+   inline bool IsProcessRunning(const ProcessInfo& info)
+   {
+      return WaitForSingleObject(info.ProcessInfo.hProcess, 0) == WAIT_TIMEOUT;
+   }
 }

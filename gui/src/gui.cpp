@@ -12,7 +12,7 @@
 #include "utils/xml.h"
 #include "utils/json.h"
 
-#include "utils/http-handle.h"
+#include "utils/net/http-handle.h"
 
 namespace gui
 {
@@ -68,6 +68,18 @@ namespace gui
    {
       ServerProcess = utils::CreateChildProcess(ServerApplicationPath, ServerWorkingDir);
 
+      utils::Json jsonReq;
+      jsonReq["event"] = "Expand";
+      jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
+
+      net::HttpRequest req;
+      req.Method = "POST";
+      req.ContentType = "application/json";
+      req.ContentSize = jsonReq.ToString().length();
+
+      net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333, true);
+      net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
+
       ultralight::Config config;
 
       config.resource_path = "./resources/";
@@ -93,18 +105,6 @@ namespace gui
       UlInfo->View->LoadURL("http://localhost:3333/");
 
       UlInfo->View->Focus();
-
-      utils::Json jsonReq;
-      jsonReq["event"] = "Expand";
-      jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
-
-      net::HttpRequest req;
-      req.Method = "POST";
-      req.ContentType = "application/json";
-      req.ContentSize = jsonReq.ToString().length();
-
-      net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333);
-      net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
    }
 
    void GuiController::GetRenderingInfo(uint32_t& resX, uint32_t& resY, void*& pixels)
