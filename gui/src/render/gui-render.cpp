@@ -66,21 +66,21 @@ namespace gui
 
    void GuiController::Setup(const uint32_t resX, const uint32_t resY)
    {
-      ServerProcess = utils::CreateChildProcess(ServerApplicationPath, ServerWorkingDir);
+      //ServerProcess = utils::CreateChildProcess(ServerApplicationPath, ServerWorkingDir);
+      //
+      //Sleep(1000);
 
-      Sleep(1000);
+      utils::Json jsonReq;
+      jsonReq["event"] = "Expand";
+      jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
 
-      //utils::Json jsonReq;
-      //jsonReq["event"] = "Expand";
-      //jsonReq["params"] = "D:/Own/RenderTest/gui/extern/WebGui/client/test.xml";
+      net::HttpRequest req;
+      req.Method = "POST";
+      req.ContentType = "application/json";
+      req.ContentSize = jsonReq.ToString().length();
 
-      //net::HttpRequest req;
-      //req.Method = "POST";
-      //req.ContentType = "application/json";
-      //req.ContentSize = jsonReq.ToString().length();
-
-      //net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333, true);
-      //net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
+      net::HttpHandle httpClient = net::InitializeClientHTTP("127.0.0.1", 3333, true);
+      net::SendRequestHTTP(httpClient, req, jsonReq.ToString());
 
       ultralight::Config config;
 

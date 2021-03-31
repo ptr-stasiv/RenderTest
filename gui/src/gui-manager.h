@@ -27,7 +27,6 @@ namespace gui
       net::HttpHandle ClientHandle;
 
       utils::Xml XmlRequests[3]; //0 - new elements, 1 - modified, 2 - deleted
-      std::ofstream XmlFiles[3];
    public:
       GuiManager(const std::shared_ptr<app::Window>& window,
                  const std::shared_ptr<graphics::GraphicsDevice>& gd);

@@ -1,5 +1,7 @@
 #include "gui-manager.h"
 
+#include <filesystem>
+
 #include "utils/read-from-file.h"
 #include "platforms/win64/win64-dev.h"
 
@@ -15,9 +17,9 @@ std::string GetTempDir()
 //On other platforms(other I mean not Windows) can be issues with slash direction
 const std::string XmlFilesDirs[3] = 
 {
-   GetTempDir() + "newFile.xml",
-   GetTempDir() + "modFile.xml",
-   GetTempDir() + "remFile.xml"
+   "D:/" "newFile.xml",
+   "D:/" "modFile.xml",
+   "D:/" "remFile.xml"
 };
 
 const char* ServerEvents[3] = 
@@ -83,8 +85,6 @@ namespace gui
       
       ClientHandle = net::InitializeClientHTTP("127.0.0.1", 3333);
 
-      for(size_t i = 0; i < 3; ++i)
-         XmlFiles[i].open(XmlFilesDirs[i], std::ofstream::trunc);
 
       utils::XmlTag tag("log", { { "id", "123"} }, "");
       AddNewElementXML(tag);
@@ -132,14 +132,11 @@ namespace gui
          
          auto data = XmlRequests[i].ToString();
 
-         XmlFiles[i].write(data.c_str(), data.length());
-
          utils::Json json;
          json["event"] = ServerEvents[i];
-         json["params"] = XmlFilesDirs[i].c_str(); //TODO fix string assigment
+         json["params"] = data.c_str(); //TODO fix string assigment
 
          auto jsonStr = json.ToString();
-
 
          net::HttpRequest req;
          req.Method = "POST";
