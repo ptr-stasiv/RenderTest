@@ -6,7 +6,6 @@
 #include "graphics/renders/forward-render.h"
 #include "window/window.h"
 #include "window/input/input-manager.h"
-#include "gui-manager.h"
 #include "jobs/job-system.h"
 #include "utils/timer.h"
 
@@ -19,8 +18,6 @@ namespace app
    std::shared_ptr<graphics::ForwardRender> g_Renderer;
 
    std::shared_ptr<input::InputManager> g_InputManager;
-
-   std::shared_ptr<gui::GuiManager> g_GuiManager;
 
    float g_DeltaTime;
    float g_FPS;
@@ -37,8 +34,6 @@ namespace app
 
       g_InputManager = std::make_shared<input::InputManager>(g_Window);
 
-      g_GuiManager = std::make_shared<gui::GuiManager>(g_Window, g_GraphicsDevice);
-      
 
       //Independent subsystems setup's
       
@@ -61,8 +56,6 @@ namespace app
 
         userTickFunc();
 
-
-        g_GuiManager->Update();
 
         g_Window->EndFrame();
 
