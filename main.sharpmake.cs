@@ -24,6 +24,21 @@ namespace sharpmake
 
             config.ProjectPath = @"[project.SharpmakeCsPath]/gui";
 
+
+            //Defines
+
+            config.Defines.Add("GLEW_STATIC");
+
+            if (target.Optimization == Optimization.Debug)
+                config.Defines.Add("DEBUG");
+            else
+                config.Defines.Add("RELEASE");
+
+
+            if (target.Platform == Platform.win64)
+                config.Defines.Add("WINDOWS");
+
+
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/gui/extern/ul/include");
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/gui/extern/ul/lib");
 
@@ -34,7 +49,7 @@ namespace sharpmake
 
             config.Output = Configuration.OutputType.Lib;
 
-            config.TargetPath       = @"[project.SharpmakeCsPath]/gui/binaries/[target.Optimization]";
+            config.TargetPath = @"[project.SharpmakeCsPath]/gui/binaries/[target.Optimization]";
             config.IntermediatePath = @"[project.SharpmakeCsPath]/gui/binaries/int/[target.Optimization]";
 
             if (target.Optimization == Optimization.Debug)
@@ -62,7 +77,22 @@ namespace sharpmake
 
             config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
 
+
+
+            //Defines
+
             config.Defines.Add("GLEW_STATIC");
+
+            if (target.Optimization == Optimization.Debug)
+                config.Defines.Add("DEBUG");
+            else
+                config.Defines.Add("RELEASE");
+
+
+            if (target.Platform == Platform.win64)
+                config.Defines.Add("WINDOWS");
+
+
 
             config.ProjectPath = @"[project.SharpmakeCsPath]/engine";
 
@@ -77,15 +107,20 @@ namespace sharpmake
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glfw/lib");
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glew/lib");
 
+
             config.LibraryFiles.AddRange(new Strings("opengl32", "glfw3", "glew32s", "msvcrt"));
+
 
             config.AddPrivateDependency<EngineGuiProject>(target);
 
+
             config.Output = Configuration.OutputType.Exe;
-            
+
             config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/[target.Optimization]";
             config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/[target.Optimization]";
 
+
+            //Related to my issues with vs
             if (target.Optimization == Optimization.Debug)
                 config.Options.Add(Options.Vc.Compiler.RuntimeLibrary.MultiThreaded);
         }

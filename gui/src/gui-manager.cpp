@@ -6,7 +6,7 @@
 #include "platforms/win64/win64-dev.h"
 
 std::string GetTempDir()
-#ifdef WIN64
+#ifdef WINDOWS
    {
       char buf[256];
       GetTempPathA(sizeof(buf), buf);

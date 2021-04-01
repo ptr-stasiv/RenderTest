@@ -1,5 +1,5 @@
 #pragma once
 
-#ifdef WIN64
+#ifdef WINDOWS
    #include "platforms/win64/process.h"
 #endif
