@@ -1,7 +1,7 @@
 #include "process.h"
 
-#include "debug/log/log.h"
-#include "debug/gassert.h"
+#include "debug/globals.h"
+#include "debug/globals.h"
 
 namespace utils
 {
@@ -11,7 +11,7 @@ namespace utils
 
       info.JobHandle = CreateJobObject(NULL, NULL);
 
-      GASSERT(info.JobHandle, "Job couldn't created");
+      ASSERT(info.JobHandle, "Job couldn't created");
 
       JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
 
@@ -24,7 +24,7 @@ namespace utils
 
       info.StartupInfo.cb = sizeof(info.StartupInfo);
 
-      GASSERT(CreateProcessA(NULL,
+      ASSERT(CreateProcessA(NULL,
              const_cast<char*>(execLocation.data()),
              NULL,
              NULL,

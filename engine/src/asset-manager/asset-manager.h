@@ -6,7 +6,7 @@
 #include <optional>
 #include <mutex>
 
-#include "debug/gassert.h"
+#include "debug/globals.h"
 #include "utils/sync/spin-lock.h"
 
 namespace assets
@@ -89,8 +89,8 @@ namespace assets
       template<typename T>
       inline std::shared_ptr<T> GetAssetData(const uint16_t id) const
       {
-         GASSERT(T::GetStaticType() == AssetDataLookup.at(id)->GetType(), "Wrong asset type is requested!");
-         GASSERT(AssetDataLookup.at(id)->Info.IsValid, "Invalid asset has been trying being used");
+         ASSERT(T::GetStaticType() == AssetDataLookup.at(id)->GetType(), "Wrong asset type is requested!");
+         ASSERT(AssetDataLookup.at(id)->Info.IsValid, "Invalid asset has been trying being used");
 
          return std::static_pointer_cast<T>(AssetDataLookup.at(id));
       }

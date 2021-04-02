@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "event.h"
-#include"debug/gassert.h"
+#include "debug/globals.h"
 
 namespace event
 {
@@ -44,7 +44,7 @@ namespace event
    template<typename T>
    T CastEvent(BaseEvent& e)
    {
-      GASSERT(e.GetType() == T::GetStaticType(), "Invalid event cast!");
+      ASSERT(e.GetType() == T::GetStaticType(), "Invalid event cast!");
       return static_cast<T&>(e);
    }
 }

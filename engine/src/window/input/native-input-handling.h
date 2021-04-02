@@ -6,7 +6,7 @@
 #include "events/subject.h"
 #include "events/input-events.h"
 #include "window/input/input-events.h"
-#include "debug/log/log.h"
+#include "debug/globals.h"
 #include "math/vectors/vector2.h"
 
 namespace input

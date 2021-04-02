@@ -4,7 +4,7 @@
 #include <string>
 
 #include "debug/error.h"
-#include "debug/log/log.h"
+#include "debug/globals.h"
 
 namespace net
 {

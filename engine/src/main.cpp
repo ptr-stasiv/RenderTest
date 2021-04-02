@@ -20,6 +20,8 @@
 
 #include "graphics/api/devices/gl-device.h"
 
+#include "debug/globals.h"
+
 int main()
 {
    app::CreateEngineApp();

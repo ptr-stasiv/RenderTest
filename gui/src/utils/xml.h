@@ -4,7 +4,7 @@
 #include <utility>
 #include <unordered_map>
 
-#include "debug/gassert.h"
+#include "debug/globals.h"
 
 namespace utils
 {
@@ -84,7 +84,7 @@ namespace utils
             TagMap.insert({ tag.Name, tag });
          else
          {
-            GASSERT(TagMap.find(root) != TagMap.end(), "Invalid root tag passed");
+            ASSERT(TagMap.find(root) != TagMap.end(), "Invalid root tag passed");
             TagMap[root].NestedTags.insert({ tag.Name, tag });
          }
       }
@@ -98,7 +98,7 @@ namespace utils
             if(i == 0)
             {
                auto& f = TagMap.find(l);
-               GASSERT(f != TagMap.end(), "Invalid root tag passed");
+               ASSERT(f != TagMap.end(), "Invalid root tag passed");
 
                curTag = f;
 
@@ -106,7 +106,7 @@ namespace utils
             }
             
             auto& f = curTag->second.NestedTags.find(l);
-            GASSERT(f != curTag->second.NestedTags.end(), "Invalid tag path passed!");
+            ASSERT(f != curTag->second.NestedTags.end(), "Invalid tag path passed!");
 
             curTag = f;
 
@@ -118,7 +118,7 @@ namespace utils
 
       inline XmlTag& operator [] (const std::string& rootTag)
       {
-         GASSERT(TagMap.find(rootTag) != TagMap.end(), "Invalid tag name passed");
+         ASSERT(TagMap.find(rootTag) != TagMap.end(), "Invalid tag name passed");
          return TagMap[rootTag];
       }
 

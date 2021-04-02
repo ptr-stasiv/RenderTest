@@ -1,6 +1,6 @@
 #include "gl-canvas.h"
 
-#include "debug/gassert.h"
+#include "debug/globals.h"
 #include "glfw/glfw-input-map.h"
 #include "events/input-events.h"
 
@@ -100,18 +100,18 @@ namespace graphics
       CanvasGL::CanvasGL(const uint16_t width, const uint16_t height, const std::string_view& title)
          : Width(width), Height(height)
       {
-         GASSERT(glfwInit(), "Error in window creation");
+         ASSERT(glfwInit(), "Error in window creation");
 
          glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
          glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
          GlfwWindow = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
-         GASSERT(GlfwWindow, "Error in window creation");
+         ASSERT(GlfwWindow, "Error in window creation");
 
          glfwMakeContextCurrent(GlfwWindow);
 
-         GASSERT(glewInit() == GLEW_OK, "Error in window creation");
+         ASSERT(glewInit() == GLEW_OK, "Error in window creation");
 
 
          //Setup input
