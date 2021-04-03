@@ -6,6 +6,8 @@
 #include <optional>
 #include <mutex>
 
+#include "math/vectors/vector.h"
+
 #include "debug/globals.h"
 #include "utils/sync/spin-lock.h"
 
@@ -24,54 +26,63 @@ namespace assets
    class AssetData
    {
    public:
-      struct LoadingInfo
-      {
-         std::string Name = "";
-         size_t HashedName = 0;
-         float LoadTime = 0.0f;
-         bool IsValid = false;
-      } Info;
+      std::string Name = "";//Later this with HasedName  should be replaced with one type that implement hash string
 
-      bool operator == (const AssetData& a)
-      {
-         return a.Info.HashedName == Info.HashedName;
-      }
+      size_t HashedName = -1;
+
+      float LoadTime = 0.0f;
+
+      bool IsValid = false;
 
       ASSET_TYPE(AssetType::None)
    };
 
-
-   class AssetManager;
-
-   class AssetRef
+   class TrigVertices : public AssetData
    {
    public:
-      uint16_t Id       = 0;
-      AssetManager* AM  = nullptr;
+      std::vector<math::Vector3> Positions;
 
-      AssetRef() = default;
+      std::vector<math::Vector3> Normals;
 
-      inline AssetRef(const uint16_t id, AssetManager* am)
-         : Id(id), AM(am) {}
+      std::vector<math::Vector2> UVs;
 
-      template<typename T> 
-      inline std::shared_ptr<T>GetData() const
-      {
-         return AM->GetAssetData<T>(Id);
-      }
+      std::vector<math::Vector3> Tangents;
+
+      std::vector<math::Vector3> Bitangents;
+
+      ASSET_TYPE(AssetType::Mesh);
    };
+
+   class PixelsData : public AssetData
+   {
+   public:
+      int32_t Width;
+
+      int32_t Height;
+
+      int32_t Channels;
+
+      void* Pixels;
+
+      ASSET_TYPE(AssetType::Image)
+   }; 
 
    class AssetManager
    {
    public:
-      std::unordered_map<uint16_t, const char*> AssetInfoLookup;
-      std::unordered_map<uint16_t, std::shared_ptr<AssetData>> AssetDataLookup;
-
-      uint16_t AssetInfoCounter = 1;
+      std::vector<std::pair<size_t, std::string>> AssetInfoLookup;
+      std::unordered_map<size_t, std::shared_ptr<AssetData>> AssetDataLookup;
 
       utils::sync::SpinLock LoadSL;
    public:
       void Load();
+
+      inline size_t LoadAsset(const std::string_view& filepath)
+      {
+         AssetInfoLookup.size();
+         AssetInfoLookup[AssetInfoCounter] = filepath;
+         return AssetInfoCounter++;
+      }
 
       inline uint16_t RequireAsssetId(const char* filepath)
       {
