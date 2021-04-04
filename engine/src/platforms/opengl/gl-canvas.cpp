@@ -100,18 +100,21 @@ namespace graphics
       CanvasGL::CanvasGL(const uint16_t width, const uint16_t height, const std::string_view& title)
          : Width(width), Height(height)
       {
-         ASSERT(glfwInit(), "Error in window creation");
+         if (!glfwInit())
+            PRINT_AND_TERMINATE("Error in OpengGL initialization!");
 
          glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
          glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
          GlfwWindow = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 
-         ASSERT(GlfwWindow, "Error in window creation");
+         if (!GlfwWindow)
+            PRINT_AND_TERMINATE("Error in OpenGL window creation!");
 
          glfwMakeContextCurrent(GlfwWindow);
 
-         ASSERT(glewInit() == GLEW_OK, "Error in window creation");
+         if(glewInit() != GLEW_OK)
+            PRINT_AND_TERMINATE("Error in OpengGL initialization!");
 
 
          //Setup input
