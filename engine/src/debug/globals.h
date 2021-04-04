@@ -34,7 +34,7 @@
 #ifdef DEBUG
    #define ASSERT(condition, format, ...) if(!(condition)) \
                                           { \
-                                            LOG_ERROR(format, "Assert!"); \
+                                            LOG_ERROR("Assert!"); \
                                             WD_LOG_ERROR("\t" format, __VA_ARGS__); \
                                             DEBUG_BREAK; \
                                           }

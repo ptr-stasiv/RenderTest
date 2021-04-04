@@ -15,7 +15,7 @@ namespace graphics
             auto f = GlfwKeyMap.find(key);
             if (f == GlfwKeyMap.end())
             {
-               LOG_ERROR("Unhandling key is pressed!");
+               LOG_ERROR("Unprocessed key is pressed!");
                return;
             }
 
@@ -27,7 +27,7 @@ namespace graphics
             auto f = GlfwMouseButtonMap.find(button);
             if (f == GlfwMouseButtonMap.end())
             {
-               LOG_ERROR("Unhandling mouse button is pressed!");
+               LOG_ERROR("Unprocessed mouse button is pressed!");
                return;
             }
 

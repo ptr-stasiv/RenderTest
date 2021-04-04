@@ -11,8 +11,6 @@
 #include "graphics/api/vertex-buffer.h"
 #include "graphics/api/uniform-buffer.h"
 
-#include "asset-manager/image-loader.h"
-
 namespace graphics
 {
    inline constexpr size_t MaxVerticesPerDraw = 500'000;

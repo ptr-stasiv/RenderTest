@@ -13,6 +13,14 @@
 
 namespace assets
 {
+   typedef size_t Hash;
+
+   static Hash GetHash(const std::string_view& str)
+   {
+      return std::hash<std::string_view>{}(str);
+   }
+
+
    enum class AssetType
    {
       None,
@@ -28,7 +36,7 @@ namespace assets
    public:
       std::string Name = "";//Later this with HasedName  should be replaced with one type that implement hash string
 
-      size_t HashedName = -1;
+      Hash HashedName = -1;
 
       float LoadTime = 0.0f;
 
@@ -50,6 +58,8 @@ namespace assets
 
       std::vector<math::Vector3> Bitangents;
 
+      Hash FacesCount;
+
       ASSET_TYPE(AssetType::Mesh);
    };
 
@@ -67,43 +77,42 @@ namespace assets
       ASSET_TYPE(AssetType::Image)
    }; 
 
+
    class AssetManager
    {
-   public:
-      std::vector<std::pair<size_t, std::string>> AssetInfoLookup;
-      std::unordered_map<size_t, std::shared_ptr<AssetData>> AssetDataLookup;
+   private:
+      std::vector<std::pair<Hash, std::string>> LoadQueue;
+      std::unordered_map<Hash, std::shared_ptr<AssetData>> AssetDataLookup;
 
       utils::sync::SpinLock LoadSL;
+
+      template<typename T>
+      inline std::shared_ptr<T> GetData(const Hash hash) const
+      {
+         auto asset = AssetDataLookup.find(hash);
+
+         if (asset == AssetDataLookup.end()
+            || T::GetStaticType() != asset->second->GetType()
+            || !asset->second->IsValid)
+         {
+            PRINT_AND_TERMINATE("Invalid asset was trying to being used: %s", asset->second->Name.c_str());
+         }
+
+         return std::static_pointer_cast<T>(AssetDataLookup.at(hash));
+      }
    public:
       void Load();
 
-      inline size_t LoadAsset(const std::string_view& filepath)
+      inline void ToLoad(const std::string_view& filepath)
       {
-         AssetInfoLookup.size();
-         AssetInfoLookup[AssetInfoCounter] = filepath;
-         return AssetInfoCounter++;
-      }
-
-      inline uint16_t RequireAsssetId(const char* filepath)
-      {
-         AssetInfoLookup.size();
-         AssetInfoLookup[AssetInfoCounter] = filepath;
-         return AssetInfoCounter++;
-      }
-
-      inline AssetRef RequireAsssetRef(const char* filepath)
-      {
-         AssetInfoLookup[AssetInfoCounter] = filepath;
-         return AssetRef(AssetInfoCounter++, this);
+         LoadQueue.emplace_back(GetHash(filepath), filepath);
       }
 
       template<typename T>
-      inline std::shared_ptr<T> GetAssetData(const uint16_t id) const
+      inline std::shared_ptr<T> GetData(const std::string_view& filepath) const
       {
-         ASSERT(T::GetStaticType() == AssetDataLookup.at(id)->GetType(), "Wrong asset type is requested!");
-         ASSERT(AssetDataLookup.at(id)->Info.IsValid, "Invalid asset has been trying being used");
-
-         return std::static_pointer_cast<T>(AssetDataLookup.at(id));
+         const Hash hash = GetHash(filepath);
+         return GetData<T>(hash);
       }
    };
 }

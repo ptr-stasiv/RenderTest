@@ -7,6 +7,8 @@
 #include "platforms/opengl/gl-shader.h"
 #include "platforms/opengl/gl-texture2d.h"
 
+#include "asset-manager/asset-manager.h"
+
 namespace graphics
 {
    constexpr std::string_view VertexShaderLocation = "res/shaders/phong-shading.vs";
@@ -82,7 +84,7 @@ namespace graphics
          "GlossinessTexture",
       };
 
-      std::array<assets::ImageAssetData, 5> textureArray =
+      std::array<assets::PixelsData, 5> textureArray =
       {
         material.DiffuseTexture,
         material.SpecularTexture,
@@ -94,10 +96,10 @@ namespace graphics
       for (size_t i = 0; i < textureArray.size(); ++i)
       {
          auto t = textureArray[i];
-         if (!t.Info.IsValid)
+         if (!t.IsValid)
             continue;
 
-         auto foundTexture = TextureLookup.find(t.Info.HashedName);
+         auto foundTexture = TextureLookup.find(t.HashedName);
          if (foundTexture == TextureLookup.end())
          {
             auto texture = GraphicsDevice->CreateTexture2D();
@@ -114,10 +116,10 @@ namespace graphics
                               graphics::Type::Ubyte, params);
             texture->UpdateData(t.Width, t.Height, t.Pixels);
 
-            TextureLookup[t.Info.HashedName] = texture;
+            TextureLookup[t.HashedName] = texture;
          }
 
-         MainShader->SetTexture2D(textureUniformLookup[i], TextureLookup.at(t.Info.HashedName));
+         MainShader->SetTexture2D(textureUniformLookup[i], TextureLookup.at(t.HashedName));
       }
    }
 
