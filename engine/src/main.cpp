@@ -63,7 +63,6 @@ int main()
       }, callbackArgs };
    app::g_Window->GetCanvas()->AddCursorCallback(cameraCallback);
 
-
    constexpr auto pistolPath = "res/meshes/pistol/pistol.obj";
    constexpr auto cubePath = "res/meshes/cube.obj";
    constexpr auto pistolDifPath = "res/meshes/pistol/textures/handgun_C.jpg";

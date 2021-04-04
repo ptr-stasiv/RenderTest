@@ -4,7 +4,7 @@
 #include <typeindex>
 #include <memory>
 #include <optional>
-#include <mutex>
+#include <type_traits>
 
 #include "math/vectors/vector.h"
 
@@ -106,6 +106,14 @@ namespace assets
       inline void ToLoad(const std::string_view& filepath)
       {
          LoadQueue.emplace_back(GetHash(filepath), filepath);
+      }
+
+      template<typename T>
+      inline void Register(const std::string_view& assetName, const T& assetData)
+      {
+         static_assert(std::is_base_of_v<AssetData, T>, "Class must be derived from the AssetData");
+         
+         AssetDataLookup[GetHash(assetName)] = std::shared_ptr<T>(&const_cast<T&>(assetData)); 
       }
 
       template<typename T>
