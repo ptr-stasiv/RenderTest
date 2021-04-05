@@ -8,7 +8,7 @@ namespace utils
    {
       FILE* file = fopen(filepath.data(), "rb");
       if (!file)
-         return NULL;
+         return "";
 
       fseek(file, 0, SEEK_END);
       uint64_t count = ftell(file);
@@ -16,7 +16,7 @@ namespace utils
 
       char* buffer = (char*)malloc(count + 1);
       if (!buffer)
-         return NULL;
+         return "";
 
       fread(buffer, 1, count, file);
       buffer[count] = '\0';
