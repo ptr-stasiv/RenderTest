@@ -11,6 +11,13 @@
 
 #include "debug/globals.h"
 
+//This can be useful to avoid crash because of uniform optimization
+#if 1
+   #define UNIFORM_ASSERT(condtion, ...) ASSERT(condtion, __VA_ARGS__)
+#else
+   #define UNIFORM_ASSERT(condition, ...)
+#endif
+
 namespace graphics
 {
    inline std::unordered_map<ShaderType, GLenum> ShaderTypeLookupMap = 
@@ -132,7 +139,7 @@ namespace graphics
          inline void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Texture2D>& texture) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
-            ASSERT(loc >= 0, "Invalid shader uniform!");
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform!");
 
             auto& glTexture = std::static_pointer_cast<gl::Texture2dGL>(texture);
 
@@ -142,7 +149,7 @@ namespace graphics
          inline void SetFloats(const std::string_view& name, const math::Matrix4& m) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
-            ASSERT(loc >= 0, "Invalid shader uniform!");
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform!");
 
             glUniformMatrix4fv(loc, 1, GL_FALSE, m.Data);
          }
@@ -150,7 +157,7 @@ namespace graphics
          inline void SetFloats(const std::string_view& name, const math::Vector4& v) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
-            ASSERT(loc >= 0, "Invalid shader uniform!");
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform!");
 
             glUniform4f(loc, v.x, v.y, v.z, v.w);
          }
@@ -158,7 +165,7 @@ namespace graphics
          inline void SetFloats(const std::string_view& name, const math::Vector3& v) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
-            ASSERT(loc >= 0, "Invalid shader uniform!");
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform!");
 
             glUniform3f(loc, v.x, v.y, v.z);
          }
@@ -166,7 +173,7 @@ namespace graphics
          inline void SetFloat(const std::string_view& name, const float s) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
-            ASSERT(loc >= 0, "Invalid shader uniform!");
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform!");
 
             glUniform1f(loc, s);
          }
@@ -174,7 +181,7 @@ namespace graphics
          inline void SetInt(const std::string_view& name, const int32_t s) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
-            ASSERT(loc >= 0, "Invalid shader uniform!");
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform!");
 
             glUniform1i(loc, s);
          }

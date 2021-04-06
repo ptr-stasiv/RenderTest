@@ -63,6 +63,12 @@ layout(bindless_sampler) uniform sampler2D NormalTexture;
 layout(bindless_sampler) uniform sampler2D EmissiveTexture;
 layout(bindless_sampler) uniform sampler2D GlossinessTexture;
 
+uniform bool DiffuseTextureSupplied;
+uniform bool SpecularTextureSupplied;
+uniform bool NormalTextureSupplied;
+uniform bool EmissiveTextureSupplied;
+uniform bool GlossinesTextureSupplied;
+
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
                     in vec3 lightDir, in vec3 normal, in vec3 viewDir)
 {
@@ -82,7 +88,7 @@ void main()
 {
     vec3 lightSum;
 
-    vec3 normalTexture = 2.0f * texture(NormalTexture, vs_in.UV).xyz - 1.0f;
+    vec3 normalTexture = 2.0f * (texture(NormalTexture, vs_in.UV).xyz - 0.5f);
 
     mat3 tbn = mat3(normalize(vs_in.Tangent),
                     normalize(vs_in.Bitangent),

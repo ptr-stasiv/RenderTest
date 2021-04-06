@@ -31,11 +31,15 @@ namespace graphics
    protected:
       std::string VertexShaderPath = "";
       std::string FragmentShaderPath = "";
-   private: 
-      std::shared_ptr<ShaderProgram> ShaderProgram;      
+
+      std::shared_ptr<ShaderProgram> ShaderProgram;    
+
+      size_t InstanceId = -1;
    public:
       inline BaseMaterial(const std::shared_ptr<graphics::GraphicsDevice>& gd)
       {
+         ++InstanceId;
+
          std::string_view vertexShaderSrc;
          std::string_view fragmentShaderSrc;
 
@@ -54,7 +58,56 @@ namespace graphics
 
       virtual ~BaseMaterial() = default;
 
+      inline void Bind() const
+      {
+         ShaderProgram->Use();
+      }
+
+      inline const size_t GetId() const
+      {
+         return InstanceId;
+      }
+
+      //You shouldn't bind shader in this function
       virtual void ResolveUniforms() {}
+
+
+      //Through this functions render supply global information to shader
+      
+      virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) {} 
+      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) {}
+      virtual void SetViewToClipMatrix(const math::Matrix4& mat) {}
+      virtual void SetCameraPosition(const math::Vector3& position) {}
+      virtual void SetSpotlightsCount(const size_t count) {}
+      virtual void SetPointLightsCount(const size_t count) {}
+
+
+      //This functions are used by the render to get infomation about shader
+   
+      virtual size_t GetPositionAttrib() const 
+      {
+         return -1;
+      }
+
+      virtual size_t GetNormalAttrib() const
+      {
+         return -1;
+      }
+
+      virtual size_t GetUvAttrib() const
+      {
+         return -1;
+      }
+
+      virtual size_t GetTangentAttrib() const
+      {
+         return -1;
+      }
+
+      virtual std::string_view GetLightUBO() const
+      {
+         return "";
+      }
    };
 
    class PhongMaterial : public BaseMaterial
@@ -74,16 +127,114 @@ namespace graphics
 
       float Glossiness;
 
-      assets::PixelsData DiffuseTexture;
-      assets::PixelsData SpecularTexture;
-      assets::PixelsData NormalTexture;
-      assets::PixelsData EmissiveTexture;
-      assets::PixelsData GlossinessTexture;
+      std::shared_ptr<Texture2D>  DiffuseTexture;
+      std::shared_ptr<Texture2D>  SpecularTexture;
+      std::shared_ptr<Texture2D>  NormalTexture;
+      std::shared_ptr<Texture2D>  EmissiveTexture;
+      std::shared_ptr<Texture2D>  GlossinessTexture;
 
 
       virtual void ResolveUniforms() override
       {
+         ShaderProgram->SetFloats("Diffuse", Diffuse);
 
+         ShaderProgram->SetFloats("Specular", Specular);
+
+         ShaderProgram->SetFloats("Emissive", Emissive);
+
+         ShaderProgram->SetFloat("Glossiness", Glossiness);
+
+ 
+
+         //TODO rewrite this
+         
+         if(DiffuseTexture)
+         { 
+            ShaderProgram->SetInt("DiffuseTextureSupplied", 1);
+            ShaderProgram->SetTexture2D("DiffuseTexture", DiffuseTexture);
+         }
+
+         if(SpecularTexture)
+         {
+            ShaderProgram->SetInt("SpecularTextureSupplied", 1);
+            ShaderProgram->SetTexture2D("SpecularTexture", SpecularTexture);
+         }
+
+         if(NormalTexture)
+         {
+            ShaderProgram->SetInt("NormalTextureSupplied", 1);
+            ShaderProgram->SetTexture2D("NormalTexture", NormalTexture);
+         }
+
+         if(EmissiveTexture)
+         {
+            ShaderProgram->SetInt("EmissiveTextureSupplied", 1);
+            ShaderProgram->SetTexture2D("EmissiveTexture", EmissiveTexture);
+         }
+
+         if(GlossinessTexture)
+         {
+            ShaderProgram->SetInt("GlossinessTextureSupplied", 1);
+            ShaderProgram->SetTexture2D("GlossinessTexture", GlossinessTexture);
+         }
+      }
+
+      virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) override 
+      {
+         ShaderProgram->SetFloats("ToWorld", mat);
+      } 
+
+      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) override 
+      {
+         ShaderProgram->SetFloats("ToCamera", mat);
+      }
+
+      virtual void SetViewToClipMatrix(const math::Matrix4& mat) override
+      {
+         ShaderProgram->SetFloats("ToClip", mat);
+      }
+
+      virtual void SetCameraPosition(const math::Vector3& position) override
+      { 
+         ShaderProgram->SetFloats("CameraPosition", position);
+      }
+
+      virtual void SetSpotlightsCount(const size_t count) override
+      {
+         ShaderProgram->SetInt("SpotlightsCount", count);
+      }
+
+      virtual void SetPointLightsCount(const size_t count) override
+      {
+         ShaderProgram->SetInt("PointLightsCount", count);
+      }
+
+
+      //This functions are used by the render to get infomation about shader
+   
+      virtual size_t GetPositionAttrib() const override
+      {
+         return 0;
+      }
+
+      virtual size_t GetNormalAttrib() const override
+      {
+         return 1;
+      }
+
+      virtual size_t GetUvAttrib() const override
+      {
+         return 2;
+      }
+
+      virtual size_t GetTangentAttrib() const override
+      {
+         return 3;
+      }
+
+      virtual std::string_view GetLightUBO() const override
+      {
+         return "LightBlock";
       }
    }; 
 }
