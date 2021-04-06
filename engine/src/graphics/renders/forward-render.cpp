@@ -17,10 +17,10 @@ namespace graphics
    ForwardRender::ForwardRender(const std::shared_ptr<graphics::GraphicsDevice>& device)
          : GraphicsDevice(device)
    {  
-      MainShader = GraphicsDevice->CreateShaderProgram();
-      MainShader->AddShader(ShaderType::Vertex, utils::ReadFromFile(VertexShaderLocation));
-      MainShader->AddShader(ShaderType::Fragment, utils::ReadFromFile(FragmentShaderLocation));
-      MainShader->Compile();
+      //MainShader = GraphicsDevice->CreateShaderProgram();
+      //MainShader->AddShader(ShaderType::Vertex, utils::ReadFromFile(VertexShaderLocation));
+      //MainShader->AddShader(ShaderType::Fragment, utils::ReadFromFile(FragmentShaderLocation));
+      //MainShader->Compile();
 
       
       //VBO's setup 
@@ -53,107 +53,95 @@ namespace graphics
       LightUBO->InitData((sizeof(PointLightA) + sizeof(SpotlightA)) * (MaxPointLights + MaxSpotlights), nullptr);
 
       MainShader->AddInputBuffer(LightUBO, "LightBlock", sizeof(PointLightA) * MaxPointLights);
-
-
-      MaterialUBO = GraphicsDevice->CreateUBO();
-
-      MaterialUBO->InitData(sizeof(MaterialA), nullptr);
-
-      MainShader->AddInputBuffer(MaterialUBO, "MaterialBlock", sizeof(MaterialA));
    }
 
    void ForwardRender::UpdateLight()
    {
-      MainShader->SetInt("PointLightsCount", PointLightCounter);
-      MainShader->SetInt("SpotlightsCount", SpotlightCounter);
+      /*MainShader->SetInt("PointLightsCount", PointLightCounter);
+      MainShader->SetInt("SpotlightsCount", SpotlightCounter);*/
       
       LightUBO->UpdateData(sizeof(PointLightA) * PointLightCounter, PointLightList);
       LightUBO->UpdateData(sizeof(SpotlightA) * SpotlightCounter, SpotlightList, sizeof(PointLightA) * MaxPointLights); 
    }
 
-   void ForwardRender::ResolveTextures(const Material& material)
+   void ForwardRender::ResolveTextures(const BaseMaterial& material)
    {
       //The element organization of two next arrays shouldn't be changed aparat of each other
 
-      static std::string_view  textureUniformLookup[] =
-      {
-         "DiffuseTexture",
-         "SpecularTexture",
-         "NormalTexture",
-         "EmissiveTexture",
-         "GlossinessTexture",
-      };
+      //static std::string_view  textureUniformLookup[] =
+      //{
+      //   "DiffuseTexture",
+      //   "SpecularTexture",
+      //   "NormalTexture",
+      //   "EmissiveTexture",
+      //   "GlossinessTexture",
+      //};
 
-      std::array<assets::PixelsData, 5> textureArray =
-      {
-        material.DiffuseTexture,
-        material.SpecularTexture,
-        material.NormalTexture,
-        material.EmissiveTexture,
-        material.GlossinessTexture
-      };
+      //std::array<assets::PixelsData, 5> textureArray =
+      //{
+      //  material.DiffuseTexture,
+      //  material.SpecularTexture,
+      //  material.NormalTexture,
+      //  material.EmissiveTexture,
+      //  material.GlossinessTexture
+      //};
 
-      for (size_t i = 0; i < textureArray.size(); ++i)
-      {
-         auto t = textureArray[i];
-         if (!t.IsValid)
-            continue;
+      //for (size_t i = 0; i < textureArray.size(); ++i)
+      //{
+      //   auto t = textureArray[i];
+      //   if (!t.IsValid)
+      //      continue;
 
-         auto foundTexture = TextureLookup.find(t.HashedName);
-         if (foundTexture == TextureLookup.end())
-         {
-            auto texture = GraphicsDevice->CreateTexture2D();
+      //   auto foundTexture = TextureLookup.find(t.HashedName);
+      //   if (foundTexture == TextureLookup.end())
+      //   {
+      //      auto texture = GraphicsDevice->CreateTexture2D();
 
-            graphics::TextureParams params;
-            params.MagFilter = graphics::TextureFilter::Linear;
-            params.MinFilter = graphics::TextureFilter::Nearest;
-            params.WrapS = graphics::TextureWrap::ClampToEdge;
-            params.WrapT = graphics::TextureWrap::ClampToEdge;
+      //      graphics::TextureParams params;
+      //      params.MagFilter = graphics::TextureFilter::Linear;
+      //      params.MinFilter = graphics::TextureFilter::Nearest;
+      //      params.WrapS = graphics::TextureWrap::ClampToEdge;
+      //      params.WrapT = graphics::TextureWrap::ClampToEdge;
 
-            //This information shoould be later obtained from the assets manager
-            texture->InitData(t.Width, t.Height,
-                              graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                              graphics::Type::Ubyte, params);
-            texture->UpdateData(t.Width, t.Height, t.Pixels);
+      //      //This information shoould be later obtained from the assets manager
+      //      texture->InitData(t.Width, t.Height,
+      //                        graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      //                        graphics::Type::Ubyte, params);
+      //      texture->UpdateData(t.Width, t.Height, t.Pixels);
 
-            TextureLookup[t.HashedName] = texture;
-         }
+      //      TextureLookup[t.HashedName] = texture;
+      //   }
 
-         MainShader->SetTexture2D(textureUniformLookup[i], TextureLookup.at(t.HashedName));
-      }
+      //   MainShader->SetTexture2D(textureUniformLookup[i], TextureLookup.at(t.HashedName));
+      //}
    }
 
    void ForwardRender::Render(const Camera& camera)
    {
-      MainShader->Use();
-
       UpdateLight();
 
-      MainShader->SetFloats("CameraPosition", camera.Position);
-      MainShader->SetFloats("ToProjection", camera.GetCameraProjection());
-      MainShader->SetFloats("ToCamera", camera.GetCameraViewMatrix());
-
-      for(auto r : RendererList)
+      for(auto& mesh : MeshList)
       { 
-         MaterialA material;
-         material.DiffuseColor = r.Material.DiffuseColor;
-         material.SpecularColor = r.Material.SpecularColor;
-         material.Emissive = r.Material.Emissive;
-         material.Glossiness = r.Material.Glossiness;
+         auto& transformmatrix = math::CreateScaleMatrix(mesh.Scale)
+                                 * math::CreateScaleMatrix(mesh.Rotation)
+                                 * math::CreateTranslateMatrix(mesh.Translate);
 
-         MaterialUBO->UpdateData(sizeof(MaterialA), &material);
+         auto& material = mesh.Material;
+         material->Bind();
 
-         ResolveTextures(r.Material);
+         material->SetCameraPosition(camera.Position);
+         material->SetObjectToWorldMatrix(transformmatrix);
+         material->SetWorldToCameraMatrix(camera.GetCameraViewMatrix());
+         material->SetCameraToClipMatrix(camera.GetCameraProjection());
 
-         MainShader->SetFloats("ToWorld", r.Transformation);
+         material->ResolveUniforms();
 
-         PositionsVBO->UpdateData(r.Mesh.Positions.size() * sizeof(math::Vector3), &r.Mesh.Positions[0]);
-         NormalsVBO->UpdateData(r.Mesh.Normals.size() * sizeof(math::Vector3), &r.Mesh.Normals[0]);
-         UVsVBO->UpdateData(r.Mesh.UVs.size() * sizeof(math::Vector2), &r.Mesh.UVs[0]);
-         TangentVBO->UpdateData(r.Mesh.Tangents.size() * sizeof(math::Vector3), &r.Mesh.Tangents[0]);
-         BitangentVBO->UpdateData(r.Mesh.Bitangents.size() * sizeof(math::Vector3), &r.Mesh.Bitangents[0]);
+         PositionsVBO->UpdateData(mesh.Vertices.Positions.size() * sizeof(math::Vector3), &mesh.Vertices.Positions[0]);
+         NormalsVBO->UpdateData(mesh.Vertices.Normals.size() * sizeof(math::Vector3), &mesh.Vertices.Normals[0]);
+         UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(math::Vector2), &mesh.Vertices.UVs[0]);
+         TangentVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(math::Vector3), &mesh.Vertices.Tangents[0]);
 
-         GraphicsDevice->DrawTriangles(MainShader, r.Mesh.Positions.size() * 3);
+         GraphicsDevice->DrawTriangles(MainShader, mesh.Vertices.Positions.size() * 3);
       }
    }
 }

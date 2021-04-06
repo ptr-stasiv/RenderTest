@@ -19,6 +19,8 @@
 
 #include "debug/globals.h"
 
+#include "graphics/mesh-render.h"
+
 int main()
 {
    app::CreateEngineApp();
@@ -87,38 +89,71 @@ int main()
    auto pistolData = AssetManager.GetData<assets::TrigVertices>(pistolPath);
    auto cubeData = AssetManager.GetData<assets::TrigVertices>(cubePath);
 
+   auto pistolDifData = AssetManager.GetData<assets::PixelsData>(pistolDifPath);
+   auto pistolNormData = AssetManager.GetData<assets::PixelsData>(pistolNormPath);
+
+   auto brickDifData = AssetManager.GetData<assets::PixelsData>(brickDifPath);
+   auto brickNormData = AssetManager.GetData<assets::PixelsData>(brickNormPath);
+
+   graphics::TextureParams universalTextureParams;
+   universalTextureParams.MagFilter = graphics::TextureFilter::Linear;
+   universalTextureParams.MinFilter = graphics::TextureFilter::Nearest;
+   universalTextureParams.WrapS = graphics::TextureWrap::ClampToEdge;
+   universalTextureParams.WrapT = graphics::TextureWrap::ClampToEdge;
+
+   auto& pistolDiffuse = app::g_GraphicsDevice->CreateTexture2D();
+   pistolDiffuse->InitData(pistolDifData->Width, pistolDifData->Height,
+                           graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                           graphics::Type::Ubyte, universalTextureParams);
+   pistolDiffuse->UpdateData(pistolDifData->Width, pistolDifData->Height, pistolDifData->Pixels);
+
+   auto& pistolNorm = app::g_GraphicsDevice->CreateTexture2D();
+   pistolNorm->InitData(pistolNormData->Width, pistolNormData->Height,
+                        graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                        graphics::Type::Ubyte, universalTextureParams);
+   pistolNorm->UpdateData(pistolNormData->Width, pistolNormData->Height, pistolNormData->Pixels);
+
+   auto& brickDiffuse = app::g_GraphicsDevice->CreateTexture2D();
+   brickDiffuse->InitData(brickDifData->Width, brickDifData->Height,
+                          graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                          graphics::Type::Ubyte, universalTextureParams);
+   brickDiffuse->UpdateData(brickDifData->Width, brickDifData->Height, brickDifData->Pixels);
+
+   auto& brickNorm = app::g_GraphicsDevice->CreateTexture2D();
+   brickNorm->InitData(brickNormData->Width, brickNormData->Height,
+                          graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                          graphics::Type::Ubyte, universalTextureParams);
+   brickNorm->UpdateData(brickNormData->Width, brickNormData->Height, brickNormData->Pixels);
+
+   graphics::PhongMaterial pistolM(app::g_GraphicsDevice);
+   pistolM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
+   pistolM.Specular = math::Vector3(0.8f);
+   pistolM.Glossiness = 8.0f;
+   pistolM.DiffuseTexture = pistolDiffuse;
+   pistolM.NormalTexture = pistolNorm;
+
+   graphics::PhongMaterial cubeM(app::g_GraphicsDevice);
+   cubeM.Diffuse = { 0.3f, 0.3f, 0.3f, 1.0f };
+   cubeM.Specular = math::Vector3(1.0f);
+   cubeM.Glossiness = 8.0f;
+   cubeM.DiffuseTexture = brickDiffuse;
+   cubeM.NormalTexture = brickNorm;
+
    MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
 
-   graphics::Mesh pistolMesh(pistolData->Positions, 
-                             pistolData->Normals, 
-                             pistolData->UVs,
-                             pistolData->Tangents,
-                             pistolData->Bitangents);
+   graphics::Mesh pistolMesh;
+   pistolMesh.Vertices = *pistolData;
+   pistolMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&pistolM);
 
-   graphics::Mesh cubeMesh(cubeData->Positions,
-                           cubeData->Normals, 
-                           cubeData->UVs,
-                           cubeData->Tangents,
-                           cubeData->Bitangents);
-   
-   graphics::Material pistolM;
-   pistolM.DiffuseColor = { 1.0f, 0.2f, 0.5f, 1.0f };
-   pistolM.SpecularColor = math::Vector3(0.8f);
-   pistolM.Glossiness = 8.0f;
-   pistolM.DiffuseTexture = *AssetManager.GetData<assets::PixelsData>(pistolDifPath);
-   pistolM.NormalTexture = *AssetManager.GetData<assets::PixelsData>(pistolNormPath);
-
-   graphics::Material cubeM;
-   cubeM.DiffuseColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-   cubeM.SpecularColor = math::Vector3(1.0f);
-   cubeM.Glossiness = 8.0f;
-   cubeM.DiffuseTexture = *AssetManager.GetData<assets::PixelsData>(brickDifPath);
-   cubeM.NormalTexture = *AssetManager.GetData<assets::PixelsData>(brickNormPath);
+   graphics::Mesh cubeMesh;
+   cubeMesh.Vertices = *cubeData;
+   cubeMesh.Scale = { 5.0f, 0.5f, 5.0f };
+   cubeMesh.Translate = { 0.0f, -3.0f, 0.0f };
+   cubeMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&cubeM);
 
 
-   app::g_Renderer->AddRenderer({ pistolMesh, pistolM, math::CreateIdentityMatrix4() });
-   app::g_Renderer->AddRenderer({ cubeMesh, cubeM, math::CreateTranslateMatrix({ 0.0f, -3.0f, 0.0f })
-                                   * math::CreateScaleMatrix({ 5.0f, 0.5f, 5.0f }) });
+   app::g_Renderer->AddRenderer(pistolMesh);
+   app::g_Renderer->AddRenderer(cubeMesh);
 
    app::g_Renderer->AddLight(graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
    //app::g_Renderer->AddLight(graphics::Spotlight({ 0.0f, 3.0f, 10.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f }, math::Pi / 2.0f, math::Pi / 3.0f));

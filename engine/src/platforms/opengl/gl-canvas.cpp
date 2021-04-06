@@ -88,10 +88,10 @@ namespace graphics
          {
             WD_LOG_WARNING("[%s][%s] %s", messageSource, messageType, message);
          }break;
-         //case GL_DEBUG_SEVERITY_NOTIFICATION:
-         //{
-         //   WD_LOG_MESSAGE("[%s][%s] %s", messageSource, messageType, message);
-         //}break;
+         case GL_DEBUG_SEVERITY_NOTIFICATION:
+         {
+            WD_LOG_MESSAGE("[%s][%s] %s", messageSource, messageType, message);
+         }break;
          default:
             break;
          }

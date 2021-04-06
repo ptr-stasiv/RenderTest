@@ -37,17 +37,6 @@ struct Spotlight
     float OuterAngle;
 };
 
-layout(std140) uniform MaterialBlock
-{
-    vec4 DiffuseColor;
-    
-    vec4 SpecularColor;
-    
-    vec4 Emissive;
-
-    float Glossiness;
-} materialBlock;
-
 layout(std140) uniform LightBlock
 {
     PointLight PointLightArray[MAX_POINT_LIGHTS];
@@ -56,6 +45,14 @@ layout(std140) uniform LightBlock
 
 uniform int PointLightsCount;
 uniform int SpotlightsCount;
+
+uniform vec4 Diffuse;
+        
+uniform vec3 Specular;
+        
+uniform vec3 Emissive;
+        
+uniform float Glossiness;
 
 layout(bindless_sampler) uniform sampler2D DiffuseTexture;
 layout(bindless_sampler) uniform sampler2D SpecularTexture;
@@ -107,7 +104,7 @@ void main()
         float stretch = lightBlock.PointLightArray[i].Stretch;
         float offset = lightBlock.PointLightArray[i].Offset;
         
-        vec3 phong = CalculatePhong(lightColor, materialBlock.SpecularColor.xyz, materialBlock.Glossiness, materialBlock.Emissive.xyz, 
+        vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
                                     lightDir, normal, viewDir);
         float lightDist = abs(length(lightPos - vs_in.FragPos));
         float attentuation = (1 / pow(offset + lightDist, 2) * lightDist) * stretch;
@@ -125,7 +122,7 @@ void main()
         float innerAngle = lightBlock.SpotlightArray[i].InnnerAngle;
         float outerAngle = lightBlock.SpotlightArray[i].OuterAngle;
 
-        vec3 phong = CalculatePhong(lightColor, materialBlock.SpecularColor.xyz, materialBlock.Glossiness, materialBlock.Emissive.xyz, 
+        vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
                                     lightDir, normal, viewDir);
 
         vec3 halfwayVector = normalize(viewDir + lightDir);

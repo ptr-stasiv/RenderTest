@@ -19,34 +19,37 @@ namespace graphics
    {
       assets::TrigVertices Vertices;
 
-      std::unique_ptr<BaseMaterial> Material;
+      std::shared_ptr<BaseMaterial> Material;
 
       math::Vector3 Scale;
       math::Vector3 Rotation; //This later will be replaced
       math::Vector3 Translate;
    };
 
+   inline size_t GenerateMaterialId()
+   {
+      static size_t instanceId = -1;
+      return ++instanceId;
+   }
+
    class BaseMaterial
    {
    protected:
-      std::string VertexShaderPath = "";
-      std::string FragmentShaderPath = "";
-
       std::shared_ptr<ShaderProgram> ShaderProgram;    
 
       size_t InstanceId = -1;
    public:
-      inline BaseMaterial(const std::shared_ptr<graphics::GraphicsDevice>& gd)
+      inline BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath, 
+                          const std::shared_ptr<graphics::GraphicsDevice>& gd)
+         : InstanceId(GenerateMaterialId())
       {
-         ++InstanceId;
-
          std::string_view vertexShaderSrc;
          std::string_view fragmentShaderSrc;
 
-         if((vertexShaderSrc = utils::ReadFromFile(VertexShaderPath)) == "")
-            PRINT_AND_TERMINATE("Couldn't read vertex shader file: %s", VertexShaderPath.c_str());
-         if((fragmentShaderSrc = utils::ReadFromFile(FragmentShaderPath)) == "")
-            PRINT_AND_TERMINATE("Couldn't read fragment shader file: %s", FragmentShaderPath.c_str());
+         if((vertexShaderSrc = utils::ReadFromFile(vertexShaderPath)) == "")
+            PRINT_AND_TERMINATE("Couldn't read vertex shader file: %s", &vertexShaderPath[0]);
+         if((fragmentShaderSrc = utils::ReadFromFile(fragmentShaderPath)) == "")
+            PRINT_AND_TERMINATE("Couldn't read fragment shader file: %s", &fragmentShaderPath[0]);
 
          ShaderProgram = gd->CreateShaderProgram();
 
@@ -57,6 +60,24 @@ namespace graphics
       }
 
       virtual ~BaseMaterial() = default;
+
+      inline BaseMaterial(const BaseMaterial& baseMaterial)
+         : InstanceId(GenerateMaterialId())
+      {
+         ShaderProgram = baseMaterial.ShaderProgram;
+         LOG_WARNING("Copy constructor");
+      }
+
+      inline BaseMaterial& operator = (const BaseMaterial& baseMaterial)
+      {
+         InstanceId = GenerateMaterialId();
+
+         ShaderProgram = baseMaterial.ShaderProgram;
+         LOG_WARNING("Copy operator");
+      }
+
+      BaseMaterial(BaseMaterial&&) = default;
+      BaseMaterial& operator = (BaseMaterial&&) = default;
 
       inline void Bind() const
       {
@@ -76,7 +97,7 @@ namespace graphics
       
       virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) {} 
       virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) {}
-      virtual void SetViewToClipMatrix(const math::Matrix4& mat) {}
+      virtual void SetCameraToClipMatrix(const math::Matrix4& mat) {}
       virtual void SetCameraPosition(const math::Vector3& position) {}
       virtual void SetSpotlightsCount(const size_t count) {}
       virtual void SetPointLightsCount(const size_t count) {}
@@ -112,13 +133,10 @@ namespace graphics
 
    class PhongMaterial : public BaseMaterial
    {
-   protected:
-      std::string VertexShaderPath = "res/shaders/phong-shading.vs";
-      std::string FragmentShaderPath = "res/shaders/phong-shading.vs";
    public:
       inline PhongMaterial(const std::shared_ptr<GraphicsDevice>& gd)
-         : BaseMaterial(gd) {}
-   public:
+         : BaseMaterial("res/shaders/phong-shading.vs", 
+                        "res/shaders/phong-shading.fs", gd) {}
       math::Vector4 Diffuse;
 
       math::Vector3 Specular;
@@ -189,7 +207,7 @@ namespace graphics
          ShaderProgram->SetFloats("ToCamera", mat);
       }
 
-      virtual void SetViewToClipMatrix(const math::Matrix4& mat) override
+      virtual void SetCameraToClipMatrix(const math::Matrix4& mat) override
       {
          ShaderProgram->SetFloats("ToClip", mat);
       }

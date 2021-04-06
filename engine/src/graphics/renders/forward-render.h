@@ -2,7 +2,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "graphics/renderer.h"
+#include "../mesh-render.h"
 
 #include "graphics/camera/camera.h"
 #include "graphics/light/lights.h"
@@ -26,17 +26,6 @@ namespace graphics
    inline constexpr uint8_t UvAttribLocation = 2;
    inline constexpr uint8_t TangentAttribLocation = 3;
    inline constexpr uint8_t BitangentAttribLocation = 4;
-
-   struct alignas(16) MaterialA
-   {
-      math::Vector4 DiffuseColor;
-
-      math::Vector4 SpecularColor;
-
-      math::Vector4 Emissive;
-
-      float Glossiness;
-   };
 
    struct alignas(16) PointLightA
    {
@@ -62,7 +51,7 @@ namespace graphics
    private:
       std::shared_ptr<ShaderProgram> MainShader;
 
-      std::vector<Renderer> RendererList;
+      std::vector<Mesh> MeshList;
       
       PointLightA PointLightList[MaxPointLights];
       SpotlightA SpotlightList[MaxSpotlights]; 
@@ -77,7 +66,6 @@ namespace graphics
       std::shared_ptr<VertexBuffer> BitangentVBO;
 
       std::shared_ptr<UniformBuffer> LightUBO;
-      std::shared_ptr<UniformBuffer> MaterialUBO;
 
       std::unordered_map<size_t, std::shared_ptr<graphics::Texture2D>> TextureLookup;
 
@@ -87,9 +75,9 @@ namespace graphics
 
       void Render(const Camera& camera); //This is temporary solution for camera
 
-      inline void AddRenderer(const Renderer& r)
+      inline void AddRenderer(const Mesh& r)
       {
-         RendererList.push_back(r);
+         MeshList.push_back(r);
       }
 
       inline void AddLight(const PointLight& pl)
@@ -116,6 +104,6 @@ namespace graphics
       }
    private:
       void UpdateLight();
-      void ResolveTextures(const Material& material);
+      void ResolveTextures(const BaseMaterial& material);
    };
 }
