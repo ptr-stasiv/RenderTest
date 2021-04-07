@@ -12,7 +12,7 @@
 #include "debug/globals.h"
 
 //This can be useful to avoid crash because of uniform optimization
-#if 1
+#if 0
    #define UNIFORM_ASSERT(condtion, ...) ASSERT(condtion, __VA_ARGS__)
 #else
    #define UNIFORM_ASSERT(condition, ...)

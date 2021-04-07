@@ -13,10 +13,23 @@ in VS_OUT
     vec3 Normal;
     vec2 UV;
     vec3 Tangent;
-	vec3 Bitangent;
 } vs_in;
 
 uniform vec3 CameraPosition;
+
+uniform int PointLightsCount;
+uniform int SpotlightsCount;
+
+uniform vec4 Diffuse;
+        
+uniform vec3 Specular;
+        
+uniform vec3 Emissive;
+        
+uniform float Glossiness;
+
+layout(bindless_sampler) uniform sampler2D DiffuseTexture;
+layout(bindless_sampler) uniform sampler2D NormalTexture;
 
 struct PointLight
 {
@@ -43,29 +56,6 @@ layout(std140) uniform LightBlock
     Spotlight SpotlightArray[MAX_SPOTLIGHTS];
 } lightBlock;
 
-uniform int PointLightsCount;
-uniform int SpotlightsCount;
-
-uniform vec4 Diffuse;
-        
-uniform vec3 Specular;
-        
-uniform vec3 Emissive;
-        
-uniform float Glossiness;
-
-layout(bindless_sampler) uniform sampler2D DiffuseTexture;
-layout(bindless_sampler) uniform sampler2D SpecularTexture;
-layout(bindless_sampler) uniform sampler2D NormalTexture;
-layout(bindless_sampler) uniform sampler2D EmissiveTexture;
-layout(bindless_sampler) uniform sampler2D GlossinessTexture;
-
-uniform bool DiffuseTextureSupplied;
-uniform bool SpecularTextureSupplied;
-uniform bool NormalTextureSupplied;
-uniform bool EmissiveTextureSupplied;
-uniform bool GlossinesTextureSupplied;
-
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
                     in vec3 lightDir, in vec3 normal, in vec3 viewDir)
 {
@@ -88,10 +78,10 @@ void main()
     vec3 normalTexture = 2.0f * (texture(NormalTexture, vs_in.UV).xyz - 0.5f);
 
     mat3 tbn = mat3(normalize(vs_in.Tangent),
-                    normalize(vs_in.Bitangent),
+                    normalize(cross(vs_in.Tangent, vs_in.Normal)),
                     normalize(vs_in.Normal));
 
-    vec3 normal = tbn * normalTexture;
+    vec3 normal = vs_in.Normal;
 
     vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 

@@ -13,43 +13,44 @@
 
 #include "entry-point/entry-point.h"
 
-#include "graphics/renders/forward-render.h"
-
 #include "graphics/api/devices/gl-device.h"
 
 #include "debug/globals.h"
 
 #include "graphics/mesh-render.h"
 
+#include "graphics/camera/camera.h"
+
 int main()
 {
    app::CreateEngineApp();
 
    graphics::Camera MainCamera;
+   MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
 
    assets::AssetManager AssetManager;
 
    uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(&MainCamera);
 
-   app::g_InputManager->AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
+   g_InputManager->AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
                                             { input::InputEvent::S, -1.0f } });
-   app::g_InputManager->AddAxisMapping("MoveRight", { { input::InputEvent::D, 1.0f },
+   g_InputManager->AddAxisMapping("MoveRight", { { input::InputEvent::D, 1.0f },
                                               { input::InputEvent::A, -1.0f} });
-   app::g_InputManager->AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
+   g_InputManager->AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                            { input::InputEvent::Q, -1.0f } });
 
-   app::g_InputManager->BindAxis("MoveForward", [](const float value, const uintptr_t args)
+   g_InputManager->BindAxis("MoveForward", [](const float value, const uintptr_t args)
       {
          graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
          camera->Move(graphics::CameraMoveType::MoveForward, value, app::g_DeltaTime);
       }, callbackArgs);
 
-   app::g_InputManager->BindAxis("MoveRight", [](const float value, const uintptr_t args)
+   g_InputManager->BindAxis("MoveRight", [](const float value, const uintptr_t args)
       {
          graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
          camera->Move(graphics::CameraMoveType::MoveRight, value, app::g_DeltaTime);
       }, callbackArgs);
-   app::g_InputManager->BindAxis("MoveUp", [](const float value, const uintptr_t args)
+   g_InputManager->BindAxis("MoveUp", [](const float value, const uintptr_t args)
       {
          graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
          camera->Move(graphics::CameraMoveType::MoveUp, value, app::g_DeltaTime);
@@ -63,7 +64,7 @@ int main()
          graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
          camera->Rotate(mouseE.PosX, mouseE.PosY, app::g_DeltaTime);
       }, callbackArgs };
-   app::g_Window->GetCanvas()->AddCursorCallback(cameraCallback);
+   g_Window->GetCanvas()->AddCursorCallback(cameraCallback);
 
    constexpr auto pistolPath = "res/meshes/pistol/pistol.obj";
    constexpr auto cubePath = "res/meshes/cube.obj";
@@ -95,72 +96,43 @@ int main()
    auto brickDifData = AssetManager.GetData<assets::PixelsData>(brickDifPath);
    auto brickNormData = AssetManager.GetData<assets::PixelsData>(brickNormPath);
 
-   graphics::TextureParams universalTextureParams;
-   universalTextureParams.MagFilter = graphics::TextureFilter::Linear;
-   universalTextureParams.MinFilter = graphics::TextureFilter::Nearest;
-   universalTextureParams.WrapS = graphics::TextureWrap::ClampToEdge;
-   universalTextureParams.WrapT = graphics::TextureWrap::ClampToEdge;
+   graphics::TextureParams params;
+   params.MagFilter = graphics::TextureFilter::Nearest;
+   params.MinFilter = graphics::TextureFilter::Nearest;
+   params.WrapS = graphics::TextureWrap::ClampToEdge;
+   params.WrapT = graphics::TextureWrap::ClampToEdge;
 
-   auto& pistolDiffuse = app::g_GraphicsDevice->CreateTexture2D();
+   auto& pistolDiffuse = g_GraphicsDevice->CreateTexture2D();
    pistolDiffuse->InitData(pistolDifData->Width, pistolDifData->Height,
                            graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                           graphics::Type::Ubyte, universalTextureParams);
+                           graphics::Type::Ubyte, params);
    pistolDiffuse->UpdateData(pistolDifData->Width, pistolDifData->Height, pistolDifData->Pixels);
 
-   auto& pistolNorm = app::g_GraphicsDevice->CreateTexture2D();
+   auto& pistolNorm = g_GraphicsDevice->CreateTexture2D();
    pistolNorm->InitData(pistolNormData->Width, pistolNormData->Height,
-                        graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                        graphics::Type::Ubyte, universalTextureParams);
+                           graphics::InternalFormat::RGB8, graphics::Format::RGB,
+                           graphics::Type::Ubyte, params);
    pistolNorm->UpdateData(pistolNormData->Width, pistolNormData->Height, pistolNormData->Pixels);
 
-   auto& brickDiffuse = app::g_GraphicsDevice->CreateTexture2D();
-   brickDiffuse->InitData(brickDifData->Width, brickDifData->Height,
-                          graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                          graphics::Type::Ubyte, universalTextureParams);
-   brickDiffuse->UpdateData(brickDifData->Width, brickDifData->Height, brickDifData->Pixels);
-
-   auto& brickNorm = app::g_GraphicsDevice->CreateTexture2D();
-   brickNorm->InitData(brickNormData->Width, brickNormData->Height,
-                          graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                          graphics::Type::Ubyte, universalTextureParams);
-   brickNorm->UpdateData(brickNormData->Width, brickNormData->Height, brickNormData->Pixels);
-
-   graphics::PhongMaterial pistolM(app::g_GraphicsDevice);
+   graphics::PhongMaterial pistolM;
    pistolM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
    pistolM.Specular = math::Vector3(0.8f);
    pistolM.Glossiness = 8.0f;
    pistolM.DiffuseTexture = pistolDiffuse;
    pistolM.NormalTexture = pistolNorm;
 
-   graphics::PhongMaterial cubeM(app::g_GraphicsDevice);
-   cubeM.Diffuse = { 0.3f, 0.3f, 0.3f, 1.0f };
-   cubeM.Specular = math::Vector3(1.0f);
-   cubeM.Glossiness = 8.0f;
-   cubeM.DiffuseTexture = brickDiffuse;
-   cubeM.NormalTexture = brickNorm;
-
-   MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
-
    graphics::Mesh pistolMesh;
    pistolMesh.Vertices = *pistolData;
    pistolMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&pistolM);
+   pistolMesh.Scale = 3.0f;
 
-   graphics::Mesh cubeMesh;
-   cubeMesh.Vertices = *cubeData;
-   cubeMesh.Scale = { 5.0f, 0.5f, 5.0f };
-   cubeMesh.Translate = { 0.0f, -3.0f, 0.0f };
-   cubeMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&cubeM);
+   g_RenderManager->AddMesh(pistolMesh);
 
-
-   app::g_Renderer->AddRenderer(pistolMesh);
-   app::g_Renderer->AddRenderer(cubeMesh);
-
-   app::g_Renderer->AddLight(graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
-   //app::g_Renderer->AddLight(graphics::Spotlight({ 0.0f, 3.0f, 10.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f }, math::Pi / 2.0f, math::Pi / 3.0f));
+   g_RenderManager->AddLight(graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
 
    app::RunEngineApp([&]()
       {
-         app::g_Renderer->Render(MainCamera);
+         g_RenderManager->Update(MainCamera);
       });
 
    return 0;

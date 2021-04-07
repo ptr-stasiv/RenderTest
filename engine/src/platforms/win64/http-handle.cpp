@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <string>
 
-#include "debug/error.h"
 #include "debug/globals.h"
 
 namespace net
@@ -14,7 +13,6 @@ namespace net
 
       if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
       {
-         err::CreateMBAndTerminate("Couldn't startup Winsock!");
          return {};
       }
 
@@ -24,7 +22,6 @@ namespace net
       handle.Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
       if(handle.Socket == INVALID_SOCKET)
       {
-         err::CreateMBAndTerminate("Socket couldn't be created!");
          return {};
       }
 
@@ -50,7 +47,6 @@ namespace net
             reinterpret_cast<SOCKADDR*>(&sockAddr),
             sizeof(sockAddr)) == SOCKET_ERROR)
          {
-            err::CreateMBAndTerminate("Couldn't connect to the server!");
             return {};
          }
       }
@@ -62,13 +58,11 @@ namespace net
    {
       if(closesocket(handle.Socket) == SOCKET_ERROR)
       {
-         err::CreateMBAndTerminate("Couldn't close socket!");
          return;
       }
 
       if(WSACleanup() == SOCKET_ERROR)
       {
-         err::CreateMBAndTerminate("Couldn't shutdown winsock!");
          return;
       };
    }

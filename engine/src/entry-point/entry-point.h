@@ -3,22 +3,13 @@
 #include <functional>
 
 #include "graphics/api/devices/gl-device.h"
-#include "graphics/renders/forward-render.h"
-#include "window/window.h"
-#include "window/input/input-manager.h"
 #include "jobs/job-system.h"
 #include "utils/timer.h"
 
+#include "global_systems.h"
+
 namespace app
 {
-   std::shared_ptr<graphics::GraphicsDevice> g_GraphicsDevice;
-
-   std::shared_ptr<app::Window> g_Window;
-
-   std::shared_ptr<graphics::ForwardRender> g_Renderer;
-
-   std::shared_ptr<input::InputManager> g_InputManager;
-
    float g_DeltaTime;
    float g_FPS;
 
@@ -30,7 +21,7 @@ namespace app
 
       g_Window = std::make_shared<app::Window>(g_GraphicsDevice);
 
-      g_Renderer = std::make_shared<graphics::ForwardRender>(g_GraphicsDevice);
+      g_RenderManager = std::make_shared<graphics::RenderManager>(g_GraphicsDevice);
 
       g_InputManager = std::make_shared<input::InputManager>(g_Window);
 

@@ -2,7 +2,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "../mesh-render.h"
+#include "mesh-render.h"
 
 #include "graphics/camera/camera.h"
 #include "graphics/light/lights.h"
@@ -13,25 +13,11 @@
 
 namespace graphics
 {
-   inline constexpr size_t MaxVerticesPerDraw = 500'000;
-
-   inline constexpr size_t MaxPointLights = 32;
-   inline constexpr size_t MaxSpotlights = 32;
-
-
-   //Shader values
-
-   inline constexpr uint8_t PositionAttribLocation = 0;
-   inline constexpr uint8_t NormalAttribLocation = 1;
-   inline constexpr uint8_t UvAttribLocation = 2;
-   inline constexpr uint8_t TangentAttribLocation = 3;
-   inline constexpr uint8_t BitangentAttribLocation = 4;
-
    struct alignas(16) PointLightA
    {
       math::Vector4 Position;
       math::Vector4 Color;
-                              
+
       float Stretch;
       float Offset;
    };
@@ -41,43 +27,43 @@ namespace graphics
       math::Vector4 Position;
       math::Vector4 Direction;
       math::Vector4 Color;
-                              
+
       float InnerAngle;
       float OuterAngle;
    };
 
-   class ForwardRender
+   inline constexpr size_t MaxVerticesPerDraw = 500'000;
+
+   inline constexpr size_t MaxPointLights = 32;
+   inline constexpr size_t MaxSpotlights = 32;
+
+   class RenderManager
    {
    private:
-      std::shared_ptr<ShaderProgram> MainShader;
-
       std::vector<Mesh> MeshList;
-      
+
       PointLightA PointLightList[MaxPointLights];
-      SpotlightA SpotlightList[MaxSpotlights]; 
+      SpotlightA SpotlightList[MaxSpotlights];
 
       size_t PointLightCounter = 0;
       size_t SpotlightCounter = 0;
 
+      std::shared_ptr<GraphicsDevice> GD;
+   public:
       std::shared_ptr<VertexBuffer> PositionsVBO;
       std::shared_ptr<VertexBuffer> NormalsVBO;
       std::shared_ptr<VertexBuffer> UVsVBO;
-      std::shared_ptr<VertexBuffer> TangentVBO;
-      std::shared_ptr<VertexBuffer> BitangentVBO;
+      std::shared_ptr<VertexBuffer> TangentsVBO;
 
-      std::shared_ptr<UniformBuffer> LightUBO;
+      std::shared_ptr<UniformBuffer> LightsUBO;
 
-      std::unordered_map<size_t, std::shared_ptr<graphics::Texture2D>> TextureLookup;
+      RenderManager(const std::shared_ptr<GraphicsDevice>& gd);
 
-      std::shared_ptr<graphics::GraphicsDevice> GraphicsDevice;
-   public:
-      ForwardRender(const std::shared_ptr<graphics::GraphicsDevice>& device);
+      void Update(const Camera& camera);
 
-      void Render(const Camera& camera); //This is temporary solution for camera
-
-      inline void AddRenderer(const Mesh& r)
+      void AddMesh(const Mesh& mesh)
       {
-         MeshList.push_back(r);
+         MeshList.push_back(mesh);
       }
 
       inline void AddLight(const PointLight& pl)
@@ -102,8 +88,5 @@ namespace graphics
 
          SpotlightList[SpotlightCounter++] = uboSL;
       }
-   private:
-      void UpdateLight();
-      void ResolveTextures(const BaseMaterial& material);
    };
 }
