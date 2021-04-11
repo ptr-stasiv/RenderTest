@@ -32,7 +32,7 @@ namespace graphics
       ShaderProgram->AddInputBuffer(g_RenderManager->UVsVBO, 2, 2, sizeof(math::Vector2), Type::Float);
       ShaderProgram->AddInputBuffer(g_RenderManager->TangentsVBO, 3, 3, sizeof(math::Vector3), Type::Float);
 
-      ShaderProgram->AddInputBuffer(g_RenderManager->LightsUBO, "LightBlock", sizeof(PointLightA) * MaxPointLights);
+      ShaderProgram->AddInputBuffer(g_RenderManager->LightsUBO, "LightBlock", sizeof(PointLightAligned16) * MaxPointLights);
    }
 
    void PhongMaterial::ResolveUniforms()

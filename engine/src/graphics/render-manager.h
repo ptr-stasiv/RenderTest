@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <unordered_map>
+#include <functional>
 
 #include "mesh-render.h"
 
@@ -13,7 +14,35 @@
 
 namespace graphics
 {
-   struct alignas(16) PointLightA
+   union RenderKey
+   {
+      uint64_t KeyId;
+
+      struct
+      {
+         uint32_t Depth : 32;
+         uint32_t MaterialId : 16;
+         uint32_t Opaque : 1;
+         uint32_t Layer : 15;
+      };
+
+      inline bool operator > (const RenderKey& rk) const
+      {
+         return KeyId > rk.KeyId;
+      }
+   };
+
+   struct Layer
+   {
+      enum : uint32_t
+      {
+        Normal,
+        Debug,
+        Hud
+      };
+   };
+
+   struct alignas(16) PointLightAligned16
    {
       math::Vector4 Position;
       math::Vector4 Color;
@@ -22,7 +51,7 @@ namespace graphics
       float Offset;
    };
 
-   struct alignas(16) SpotlightA
+   struct alignas(16) SpotlightAligned16
    {
       math::Vector4 Position;
       math::Vector4 Direction;
@@ -41,9 +70,10 @@ namespace graphics
    {
    private:
       std::vector<Mesh> MeshList;
+      std::vector<std::pair<RenderKey, Mesh>> CurrentRenderQueue;
 
-      PointLightA PointLightList[MaxPointLights];
-      SpotlightA SpotlightList[MaxSpotlights];
+      PointLightAligned16 PointLightList[MaxPointLights];
+      SpotlightAligned16 SpotlightList[MaxSpotlights];
 
       size_t PointLightCounter = 0;
       size_t SpotlightCounter = 0;
@@ -61,14 +91,14 @@ namespace graphics
 
       void Update(const Camera& camera);
 
-      void AddMesh(const Mesh& mesh)
+      inline void PushRenderRequest(const RenderKey& key, const Mesh& mesh)
       {
-         MeshList.push_back(mesh);
+         CurrentRenderQueue.emplace_back(key, mesh);
       }
 
       inline void AddLight(const PointLight& pl)
       {
-         PointLightA uboPL;
+         PointLightAligned16 uboPL;
          uboPL.Position = pl.Position;
          uboPL.Color = pl.Color;
          uboPL.Stretch = pl.Stretch;
@@ -79,7 +109,7 @@ namespace graphics
 
       inline void AddLight(const Spotlight& sl)
       {
-         SpotlightA uboSL;
+         SpotlightAligned16 uboSL;
          uboSL.Position = sl.Position;
          uboSL.Direction = sl.Direction;
          uboSL.Color = sl.Color;

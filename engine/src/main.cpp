@@ -126,7 +126,7 @@ int main()
    pistolMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&pistolM);
    pistolMesh.Scale = 3.0f;
 
-   g_RenderManager->AddMesh(pistolMesh);
+   g_RenderManager->PushRenderRequest(graphics::RenderKey(), pistolMesh);
 
    g_RenderManager->AddLight(graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
 
