@@ -16,7 +16,7 @@ namespace math
 
       ~Vector3() = default;
 
-      inline Vector3 operator + (const Vector3& b)
+      inline Vector3 operator + (const Vector3& b) const
       {
          Vector3 res;
 
@@ -27,7 +27,7 @@ namespace math
          return res;
       }
 
-      inline Vector3 operator - (const Vector3& b)
+      inline Vector3 operator - (const Vector3& b) const
       {
          Vector3 res;
 
@@ -38,7 +38,7 @@ namespace math
          return res;
       }
 
-      inline Vector3 operator * (const float s)
+      inline Vector3 operator * (const float s) const
       {
          Vector3 res;
 

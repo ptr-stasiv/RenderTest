@@ -96,7 +96,9 @@ namespace graphics
          CurrentRenderQueue.emplace_back(key, mesh);
       }
 
-      inline void AddLight(const PointLight& pl)
+      //TODO move structure's reassigning to the scene setup
+      
+      inline void PushLight(const PointLight& pl)
       {
          PointLightAligned16 uboPL;
          uboPL.Position = pl.Position;
@@ -107,7 +109,7 @@ namespace graphics
          PointLightList[PointLightCounter++] = uboPL;
       }
 
-      inline void AddLight(const Spotlight& sl)
+      inline void PushLight(const Spotlight& sl)
       {
          SpotlightAligned16 uboSL;
          uboSL.Position = sl.Position;
@@ -119,4 +121,38 @@ namespace graphics
          SpotlightList[SpotlightCounter++] = uboSL;
       }
    };
+}
+
+namespace scene
+{
+   struct Scene
+   {
+      std::vector<graphics::Mesh*> RegisteredMeshes;
+      std::vector<graphics::PointLight*> RegisteredPointLights;
+      std::vector<graphics::Spotlight*> RegisteredSpotlights;
+
+      graphics::Camera* SceneCamera;
+   }; 
+
+   inline void UpdateAndRender(const Scene& scene, std::shared_ptr<graphics::RenderManager>& rm)
+   {
+      for(auto& mesh : scene.RegisteredMeshes)
+      {
+         graphics::RenderKey rk;
+         rk.Depth = math::Length(scene.SceneCamera->Position - mesh->Translate);
+         rk.MaterialId = mesh->Material->GetId();
+         rk.Opaque = 1;
+         rk.Layer = graphics::Layer::Normal;
+
+         rm->PushRenderRequest(rk, *mesh); 
+      }
+
+      for(auto& pl : scene.RegisteredPointLights)
+         rm->PushLight(*pl);
+
+      for(auto& sl : scene.RegisteredSpotlights)
+         rm->PushLight(*sl);
+
+      rm->Update(*scene.SceneCamera);
+   }
 }

@@ -74,29 +74,9 @@ namespace graphics
          GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size() * 3);
       }
 
-      //for (auto& mesh : MeshList)
-      //{
-      //   auto& transformmatrix = math::CreateScaleMatrix(mesh.Scale);
+      CurrentRenderQueue.clear();
 
-      //   auto& material = mesh.Material;
-      //   material->ShaderProgram->Use();
-
-      //   material->SetCameraPosition(camera.Position);
-      //   material->SetObjectToWorldMatrix(transformmatrix);
-      //   material->SetWorldToCameraMatrix(camera.GetCameraViewMatrix());
-      //   material->SetCameraToClipMatrix(camera.GetCameraProjection());
-
-      //   material->SetPointLightsCount(PointLightCounter);
-      //   material->SetSpotlightsCount(SpotlightCounter);
-
-      //   material->ResolveUniforms();
-
-      //   PositionsVBO->UpdateData(mesh.Vertices.Positions.size() * sizeof(math::Vector3), &mesh.Vertices.Positions[0]);
-      //   NormalsVBO->UpdateData(mesh.Vertices.Normals.size() * sizeof(math::Vector3), &mesh.Vertices.Normals[0]);
-      //   UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(math::Vector2), &mesh.Vertices.UVs[0]);
-      //   TangentsVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(math::Vector3), &mesh.Vertices.Tangents[0]);
-
-      //   GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size() * 3);
-      //}
+      PointLightCounter = 0;
+      SpotlightCounter = 0;
    }
 }

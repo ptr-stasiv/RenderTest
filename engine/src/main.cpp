@@ -126,13 +126,14 @@ int main()
    pistolMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&pistolM);
    pistolMesh.Scale = 3.0f;
 
-   g_RenderManager->PushRenderRequest(graphics::RenderKey(), pistolMesh);
-
-   g_RenderManager->AddLight(graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
+   scene::Scene scene;
+   scene.RegisteredMeshes.push_back(&pistolMesh);
+   scene.RegisteredPointLights.push_back(new graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
+   scene.SceneCamera = &MainCamera;
 
    app::RunEngineApp([&]()
       {
-         g_RenderManager->Update(MainCamera);
+         scene::UpdateAndRender(scene, g_RenderManager);
       });
 
    return 0;
