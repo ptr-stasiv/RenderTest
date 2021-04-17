@@ -19,7 +19,7 @@ namespace graphics
    {
       assets::TrigVertices Vertices;
 
-      std::shared_ptr<BaseMaterial> Material;
+      BaseMaterial* Material;
 
       math::Vector3 Scale;
       math::Vector4 Rotation; //This later will be replaced

@@ -122,37 +122,3 @@ namespace graphics
       }
    };
 }
-
-namespace scene
-{
-   struct Scene
-   {
-      std::vector<graphics::Mesh*> RegisteredMeshes;
-      std::vector<graphics::PointLight*> RegisteredPointLights;
-      std::vector<graphics::Spotlight*> RegisteredSpotlights;
-
-      graphics::Camera* SceneCamera;
-   }; 
-
-   inline void UpdateAndRender(const Scene& scene, std::shared_ptr<graphics::RenderManager>& rm)
-   {
-      for(auto& mesh : scene.RegisteredMeshes)
-      {
-         graphics::RenderKey rk;
-         rk.Depth = math::Length(scene.SceneCamera->Position - mesh->Translate);
-         rk.MaterialId = mesh->Material->GetId();
-         rk.Opaque = 1;
-         rk.Layer = graphics::Layer::Normal;
-
-         rm->PushRenderRequest(rk, *mesh); 
-      }
-
-      for(auto& pl : scene.RegisteredPointLights)
-         rm->PushLight(*pl);
-
-      for(auto& sl : scene.RegisteredSpotlights)
-         rm->PushLight(*sl);
-
-      rm->Update(*scene.SceneCamera);
-   }
-}

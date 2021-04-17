@@ -44,7 +44,9 @@ namespace graphics
 
          auto& mesh = renderer.second;
 
-         auto& transformmatrix = math::CreateScaleMatrix(mesh.Scale);
+         auto& transformmatrix = math::CreateScaleMatrix(mesh.Scale)
+                                 * math::CreateRotationMatrix(mesh.Rotation.w, { mesh.Rotation.x, mesh.Rotation.y, mesh.Rotation.x })
+                                 * math::CreateTranslateMatrix(mesh.Translate);
 
          auto& material = mesh.Material;
 

@@ -21,6 +21,10 @@
 
 #include "graphics/camera/camera.h"
 
+#include "graphics/scene.h"
+
+#include "math/many-math/vectors.h"
+
 int main()
 {
    app::CreateEngineApp();
@@ -114,6 +118,18 @@ int main()
                            graphics::Type::Ubyte, params);
    pistolNorm->UpdateData(pistolNormData->Width, pistolNormData->Height, pistolNormData->Pixels);
 
+   auto& cubeDiffuse = g_GraphicsDevice->CreateTexture2D();
+   cubeDiffuse->InitData(brickDifData->Width, brickDifData->Height,
+      graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      graphics::Type::Ubyte, params);
+   cubeDiffuse->UpdateData(brickDifData->Width, brickDifData->Height, brickDifData->Pixels);
+
+   auto& cubeNorm = g_GraphicsDevice->CreateTexture2D();
+   cubeNorm->InitData(brickNormData->Width, brickNormData->Height,
+      graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      graphics::Type::Ubyte, params);
+   cubeNorm->UpdateData(brickNormData->Width, brickNormData->Height, brickNormData->Pixels);
+   
    graphics::PhongMaterial pistolM;
    pistolM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
    pistolM.Specular = math::Vector3(0.8f);
@@ -121,19 +137,33 @@ int main()
    pistolM.DiffuseTexture = pistolDiffuse;
    pistolM.NormalTexture = pistolNorm;
 
+   graphics::PhongMaterial cubeM;
+   cubeM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
+   cubeM.Specular = math::Vector3(0.8f);
+   cubeM.Glossiness = 8.0f;
+   cubeM.DiffuseTexture = cubeDiffuse;
+   cubeM.NormalTexture = pistolNorm;
+
    graphics::Mesh pistolMesh;
    pistolMesh.Vertices = *pistolData;
-   pistolMesh.Material = std::shared_ptr<graphics::PhongMaterial>(&pistolM);
+   pistolMesh.Material = &pistolM;
    pistolMesh.Scale = 3.0f;
 
+   graphics::Mesh cubeMesh;
+   cubeMesh.Vertices = *cubeData;
+   cubeMesh.Material = &cubeM;
+   cubeMesh.Scale = { 5.0f, 0.5f, 5.0f };
+   cubeMesh.Translate = { 0.0f, -3.0f, -5.0f };
+
    scene::Scene scene;
-   scene.RegisteredMeshes.push_back(&pistolMesh);
-   scene.RegisteredPointLights.push_back(new graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
-   scene.SceneCamera = &MainCamera;
+   scene::Register(scene, &pistolMesh);
+   scene::Register(scene, &cubeMesh);
+   scene::Register(scene, new graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
+   scene::Register(scene, &MainCamera);
 
    app::RunEngineApp([&]()
       {
-         scene::UpdateAndRender(scene, g_RenderManager);
+         scene::UpdateAndRender(scene);
       });
 
    return 0;
