@@ -35,8 +35,7 @@ namespace mm
       {
          T Data[2];
 
-         float x;
-         float y;
+         float x, y;
 
          n_swizzle<T, 2, 2, 0, 1> xy;
          n_swizzle<T, 2, 2, 1, 0> yx;
@@ -50,9 +49,7 @@ namespace mm
       {
          T Data[3];
 
-         float x;
-         float y;
-         float z;
+         float x, y, z;
 
          n_swizzle<T, 3, 2, 0, 1> xy;
          n_swizzle<T, 3, 2, 1, 0> yx;
@@ -76,8 +73,84 @@ namespace mm
       union
       {
          T Data[4];
+
+         float x, y, z, w;
+
+         n_swizzle<T, 4, 2, 0, 1> xy;
+         n_swizzle<T, 4, 2, 1, 0> yx;
+         n_swizzle<T, 4, 2, 0, 2> xz;
+         n_swizzle<T, 4, 2, 2, 0> zx;
+         n_swizzle<T, 4, 2, 0, 3> xw;
+         n_swizzle<T, 4, 2, 3, 0> wx;
+         n_swizzle<T, 4, 2, 1, 2> yz;
+         n_swizzle<T, 4, 2, 2, 1> zy;
+         n_swizzle<T, 4, 2, 1, 3> yw;
+         n_swizzle<T, 4, 2, 3, 1> wy;
+         n_swizzle<T, 4, 2, 2, 3> zw;
+         n_swizzle<T, 4, 2, 3, 2> wz;
+
+         n_swizzle<T, 4, 3, 0, 1, 2> xyz;
+         n_swizzle<T, 4, 3, 0, 2, 1> xzy;
+         n_swizzle<T, 4, 3, 0, 1, 3> xyw;
+         n_swizzle<T, 4, 3, 0, 3, 1> xwy;
+         n_swizzle<T, 4, 3, 0, 2, 3> xzw;
+         n_swizzle<T, 4, 3, 0, 3, 2> xwz;
+         n_swizzle<T, 4, 3, 1, 0, 2> yxz;
+         n_swizzle<T, 4, 3, 1, 2, 0> yzx;
+         n_swizzle<T, 4, 3, 1, 0, 3> yxw;
+         n_swizzle<T, 4, 3, 1, 3, 0> ywx;
+         n_swizzle<T, 4, 3, 1, 2, 3> yzw;
+         n_swizzle<T, 4, 3, 1, 3, 2> ywz;
+         n_swizzle<T, 4, 3, 2, 0, 1> zxy;
+         n_swizzle<T, 4, 3, 2, 1, 0> zyx;
+         n_swizzle<T, 4, 3, 2, 0, 3> zxw;
+         n_swizzle<T, 4, 3, 2, 3, 0> zwx;
+         n_swizzle<T, 4, 3, 2, 1, 3> zyw;
+         n_swizzle<T, 4, 3, 2, 3, 1> zwy;
+         n_swizzle<T, 4, 3, 3, 0, 1> wxy;
+         n_swizzle<T, 4, 3, 3, 1, 0> wyx;
+         n_swizzle<T, 4, 3, 3, 0, 2> wxz;
+         n_swizzle<T, 4, 3, 3, 2, 0> wzx;
+         n_swizzle<T, 4, 3, 3, 1, 2> wyz;
+         n_swizzle<T, 4, 3, 3, 2, 1> wzy;
+
+         n_swizzle<T, 4, 4, 0, 1, 2, 3> xyzw;
+         n_swizzle<T, 4, 4, 0, 1, 3, 2> xywz;
+         n_swizzle<T, 4, 4, 0, 2, 1, 3> xzyw;
+         n_swizzle<T, 4, 4, 0, 2, 3, 1> xzwy;
+         n_swizzle<T, 4, 4, 0, 3, 1, 2> xwyz;
+         n_swizzle<T, 4, 4, 0, 3, 2, 1> xwzy;
+         n_swizzle<T, 4, 4, 1, 0, 2, 3> yxzw;
+         n_swizzle<T, 4, 4, 1, 0, 3, 2> yxwz;
+         n_swizzle<T, 4, 4, 1, 2, 0, 3> yzxw;
+         n_swizzle<T, 4, 4, 1, 2, 3, 0> yzwx;
+         n_swizzle<T, 4, 4, 1, 3, 0, 2> ywxz;
+         n_swizzle<T, 4, 4, 1, 3, 2, 0> ywzx;
+         n_swizzle<T, 4, 4, 2, 0, 1, 3> zxyw;
+         n_swizzle<T, 4, 4, 2, 0, 3, 1> zxwy;
+         n_swizzle<T, 4, 4, 2, 1, 0, 3> zyxw;
+         n_swizzle<T, 4, 4, 2, 1, 3, 0> zywx;
+         n_swizzle<T, 4, 4, 2, 3, 0, 1> zwxy;
+         n_swizzle<T, 4, 4, 2, 3, 1, 0> zwyx;
+         n_swizzle<T, 4, 4, 3, 0, 1, 2> wxyz;
+         n_swizzle<T, 4, 4, 3, 0, 2, 1> wxzy;
+         n_swizzle<T, 4, 4, 3, 1, 0, 2> wyxz;
+         n_swizzle<T, 4, 4, 3, 1, 2, 0> wyzx;
+         n_swizzle<T, 4, 4, 3, 2, 0, 1> wzxy;
+         n_swizzle<T, 4, 4, 3, 2, 1, 0> wzyx;
       };
    };
+
+   template<typename T, size_t Components>
+   n_vector<T, Components> operator + (const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v1.Data[i] + v2.Data[i];
+
+      return result;
+   }
 
 
    using vec2 = n_vector<float, 2>;
