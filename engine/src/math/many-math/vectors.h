@@ -1,14 +1,12 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
+#include <algorithm>
 
 namespace mm
 {
    template<typename T, size_t Components>
-   struct n_vector
-   {
-      T Data[Components];
-   };
+   struct n_vector;
 
    template<typename T, size_t Components, size_t ResultComponents, size_t ...ComponentsPermutation>
    struct n_swizzle
@@ -28,6 +26,26 @@ namespace mm
       }
    };
 
+#define VECTOR_CONSTRUCTORS(components) \
+      inline n_vector() \
+         : n_vector(0.0f) {} \
+      inline n_vector(const T& scalar) \
+      { \
+         memset(Data, scalar, sizeof(T) * components); \
+      } \
+      template<typename T, size_t Components2> \
+      inline n_vector(const n_vector<T, Components2>& v2) \
+         : n_vector() \
+      { \
+         memcpy_s(Data, sizeof(T) * components, v2.Data, sizeof(T) * min(components, Components2)); \
+      } \
+      template<size_t Components2> \
+      inline n_vector<T, components>& operator = (const n_vector<T, Components2>& v2) \
+      { \
+         memcpy_s(Data, sizeof(T) * components, v2.Data, sizeof(T) * min(components, Components2)); \
+         return *this; \
+      }
+
    template<typename T>
    struct n_vector<T, 2>
    {
@@ -40,6 +58,8 @@ namespace mm
          n_swizzle<T, 2, 2, 0, 1> xy;
          n_swizzle<T, 2, 2, 1, 0> yx;
       };
+
+      VECTOR_CONSTRUCTORS(2)
    };
 
    template<typename T>
@@ -65,6 +85,8 @@ namespace mm
          n_swizzle<T, 3, 3, 2, 1, 0> zyx;
          n_swizzle<T, 3, 3, 2, 0, 1> zxy;
       };
+
+      VECTOR_CONSTRUCTORS(3)
    };
 
    template<typename T>
@@ -139,6 +161,8 @@ namespace mm
          n_swizzle<T, 4, 4, 3, 2, 0, 1> wzxy;
          n_swizzle<T, 4, 4, 3, 2, 1, 0> wzyx;
       };
+
+      VECTOR_CONSTRUCTORS(4)
    };
 
    template<typename T, size_t Components>
@@ -302,12 +326,12 @@ namespace mm
    template<typename T>
    inline n_vector<T, 3> cross(const n_vector<T, 3>& v1, const n_vector<T, 3>& v2)
    {
-      return
-         {
-            v1.y* v2.z - v1.z * v2.y,
-            v1.z* v2.x - v1.x * v2.z,
-            v1.x* v2.y - v1.y * v2.x
-         };
+      n_vector<T, 3> res;
+      res.x = v1.y * v2.z - v1.z * v2.y;
+      res.y = v1.z * v2.x - v1.x * v2.z;
+      res.z = v1.x * v2.y - v1.y * v2.x;
+
+      return res;
    }
 
    using vec2 = n_vector<float, 2>;
