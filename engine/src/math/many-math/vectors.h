@@ -15,7 +15,7 @@ namespace mm
    {
       T AliasedData[Components];
 
-      operator n_vector<T, ResultComponents> ()
+      inline operator n_vector<T, ResultComponents> ()
       {
          T resData[ResultComponents] = { AliasedData[ComponentsPermutation]... };
 
@@ -35,7 +35,7 @@ namespace mm
       {
          T Data[2];
 
-         float x, y;
+         struct { T x, y; };
 
          n_swizzle<T, 2, 2, 0, 1> xy;
          n_swizzle<T, 2, 2, 1, 0> yx;
@@ -45,11 +45,11 @@ namespace mm
    template<typename T>
    struct n_vector<T, 3>
    {
-      union 
+      union
       {
          T Data[3];
 
-         float x, y, z;
+         struct { T x, y, z; };
 
          n_swizzle<T, 3, 2, 0, 1> xy;
          n_swizzle<T, 3, 2, 1, 0> yx;
@@ -74,7 +74,7 @@ namespace mm
       {
          T Data[4];
 
-         float x, y, z, w;
+         struct { T x, y, z, w; };
 
          n_swizzle<T, 4, 2, 0, 1> xy;
          n_swizzle<T, 4, 2, 1, 0> yx;
@@ -142,7 +142,7 @@ namespace mm
    };
 
    template<typename T, size_t Components>
-   n_vector<T, Components> operator + (const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
+   inline n_vector<T, Components> operator + (const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
    {
       n_vector<T, Components> result;
 
@@ -152,6 +152,163 @@ namespace mm
       return result;
    }
 
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator - (const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v1.Data[i] - v2.Data[i];
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator * (const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v1.Data[i] * v2.Data[i];
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator / (const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v1.Data[i] / v2.Data[i];
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator + (const n_vector<T, Components>& v, const float scalar)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v.Data[i] + scalar;
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator - (const n_vector<T, Components>& v, const float scalar)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v.Data[i] - scalar;
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator * (const n_vector<T, Components>& v, const float scalar)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v.Data[i] * scalar;
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator / (const n_vector<T, Components>& v, const float scalar)
+   {
+      n_vector<T, Components> result;
+
+      for(size_t i = 0; i < Components; ++i)
+         result.Data[i] = v.Data[i] / scalar;
+
+      return result;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator += (n_vector<T, Components>& destV, const n_vector<T, Components>& srcV)
+   {
+      return destV = destV + srcV;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator -= (n_vector<T, Components>& destV, const n_vector<T, Components>& srcV)
+   {
+      return destV = destV - srcV;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator *= (n_vector<T, Components>& destV, const n_vector<T, Components>& srcV)
+   {
+      return destV = destV * srcV;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator /= (n_vector<T, Components>& destV, const n_vector<T, Components>& srcV)
+   {
+      return destV = destV / srcV;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator += (n_vector<T, Components>& destV, const float srcS)
+   {
+      return destV = destV + srcS;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator -= (n_vector<T, Components>& destV, const float srcS)
+   {
+      return destV = destV - srcS;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator *= (n_vector<T, Components>& destV, const float srcS)
+   {
+      return destV = destV * srcS;
+   }
+
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> operator /= (n_vector<T, Components>& destV, const float srcS)
+   {
+      return destV = destV / srcS;
+   }
+
+   template<typename T, size_t Components>
+   inline float dot(const n_vector<T, Components>& v1, const n_vector<T, Components>& v2)
+   {
+      float res = 0.0f;
+      for(size_t i = 0; i < Components; ++i)
+         res += v1.Data[i] * v2.Data[i];
+
+      return res;
+   }
+
+   template<typename T, size_t Components>
+   inline float length(const n_vector<T, Components>& v)
+   {
+      return sqrt(dot(v, v));
+   }
+ 
+   template<typename T, size_t Components>
+   inline n_vector<T, Components> normalize(const n_vector<T, Components>& v)
+   {
+      return v / length(v);
+   }
+
+   template<typename T>
+   inline n_vector<T, 3> cross(const n_vector<T, 3>& v1, const n_vector<T, 3>& v2)
+   {
+      return
+         {
+            v1.y* v2.z - v1.z * v2.y,
+            v1.z* v2.x - v1.x * v2.z,
+            v1.x* v2.y - v1.y * v2.x
+         };
+   }
 
    using vec2 = n_vector<float, 2>;
    using ivec2 = n_vector<int32_t, 2>;

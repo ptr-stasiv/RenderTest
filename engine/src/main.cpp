@@ -27,6 +27,18 @@
 
 int main()
 {
+   mm::vec3 v1;
+   v1.x = 0.0f;
+   v1.y = 3.0f;
+   v1.z = 0.0f;
+
+   mm::vec3 v2;
+   v2.x = 1.0f;
+   v2.y = 0.0f;
+   v2.z = 5.0f;
+
+   mm::vec3 r = mm::cross(v1, v2);
+
    app::CreateEngineApp();
 
    graphics::Camera MainCamera;
