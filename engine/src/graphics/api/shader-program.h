@@ -44,9 +44,9 @@ namespace graphics
 
       virtual void SetFloats(const std::string_view& name, const math::Matrix4& m) const = 0;
 
-      virtual void SetFloats(const std::string_view& name, const math::Vector4& v) const = 0;
+      virtual void SetFloats(const std::string_view& name, const mm::vec4& v) const = 0;
 
-      virtual void SetFloats(const std::string_view& name, const math::Vector3& v) const = 0;
+      virtual void SetFloats(const std::string_view& name, const mm::vec3& v) const = 0;
 
       virtual void SetFloat(const std::string_view& name, const float s) const = 0;
 

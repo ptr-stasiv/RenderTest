@@ -72,7 +72,7 @@ namespace net
      std::string request = "POST / HTTP/1.1\r\n"
                            "Host: " + handle.Address
                            + "\r\nContent-Type:" + requestInfo.ContentType
-                           + "\r\nContent-Length: " + std::to_string(requestInfo.ContentSize)
+                           + "\r\nContent-mm::length: " + std::to_string(requestInfo.ContentSize)
                            + "\r\n\r\n";
 
      if(send(handle.Socket, request.data(), request.length(), 0) == SOCKET_ERROR)

@@ -10,16 +10,16 @@ namespace graphics
       //Setup VBO's
 
       PositionsVBO = GD->CreateVBO();
-      PositionsVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector3), nullptr);
+      PositionsVBO->InitData(MaxVerticesPerDraw * sizeof(mm::vec3), nullptr);
 
       NormalsVBO = GD->CreateVBO();
-      NormalsVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector3), nullptr);
+      NormalsVBO->InitData(MaxVerticesPerDraw * sizeof(mm::vec3), nullptr);
 
       UVsVBO = GD->CreateVBO();
-      UVsVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector2), nullptr);
+      UVsVBO->InitData(MaxVerticesPerDraw * sizeof(mm::vec2), nullptr);
 
       TangentsVBO = GD->CreateVBO();
-      TangentsVBO->InitData(MaxVerticesPerDraw * sizeof(math::Vector3), nullptr);
+      TangentsVBO->InitData(MaxVerticesPerDraw * sizeof(mm::vec3), nullptr);
 
       
       //UBO's setup
@@ -68,10 +68,10 @@ namespace graphics
          material->SetObjectToWorldMatrix(transformmatrix);
          material->ResolveUniforms();
 
-         PositionsVBO->UpdateData(mesh.Vertices.Positions.size() * sizeof(math::Vector3), &mesh.Vertices.Positions[0]);
-         NormalsVBO->UpdateData(mesh.Vertices.Normals.size() * sizeof(math::Vector3), &mesh.Vertices.Normals[0]);
-         UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(math::Vector2), &mesh.Vertices.UVs[0]);
-         TangentsVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(math::Vector3), &mesh.Vertices.Tangents[0]);
+         PositionsVBO->UpdateData(mesh.Vertices.Positions.size() * sizeof(mm::vec3), &mesh.Vertices.Positions[0]);
+         NormalsVBO->UpdateData(mesh.Vertices.Normals.size() * sizeof(mm::vec3), &mesh.Vertices.Normals[0]);
+         UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(mm::vec2), &mesh.Vertices.UVs[0]);
+         TangentsVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(mm::vec3), &mesh.Vertices.Tangents[0]);
 
          GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size() * 3);
       }

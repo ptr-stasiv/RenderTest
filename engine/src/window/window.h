@@ -2,7 +2,7 @@
 #include <string_view>
 #include <memory>
 
-#include "math/vectors/vector2.h"
+#include "math/math.h"
 #include "graphics/api/devices/graphics-device.h"
 
 namespace app

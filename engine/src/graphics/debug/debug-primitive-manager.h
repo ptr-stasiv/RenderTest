@@ -16,13 +16,13 @@ namespace graphics
       DebugPrimiteManager(const std::shared_ptr<RenderManager>& rm)
          : RM(rm) {}
 
-      void AddAACube(const math::Vector3& center, const math::Vector3& size)
+      void AddAACube(const mm::vec3& center, const mm::vec3& size)
       {
          Mesh mesh;
          
       }
 
-      void AddAASphere(const math::Vector3& center, const float radius)
+      void AddAASphere(const mm::vec3& center, const float radius)
       {
 
       }

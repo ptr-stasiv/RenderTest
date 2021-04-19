@@ -30,7 +30,7 @@ int main()
    app::CreateEngineApp();
 
    graphics::Camera MainCamera;
-   MainCamera = graphics::Camera(math::Vector3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
+   MainCamera = graphics::Camera(mm::vec3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
 
    assets::AssetManager AssetManager;
 
@@ -132,14 +132,14 @@ int main()
    
    graphics::PhongMaterial pistolM;
    pistolM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
-   pistolM.Specular = math::Vector3(0.8f);
+   pistolM.Specular = mm::vec3(0.8f);
    pistolM.Glossiness = 8.0f;
    pistolM.DiffuseTexture = pistolDiffuse;
    pistolM.NormalTexture = pistolNorm;
 
    graphics::PhongMaterial cubeM;
    cubeM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
-   cubeM.Specular = math::Vector3(0.8f);
+   cubeM.Specular = mm::vec3(0.8f);
    cubeM.Glossiness = 8.0f;
    cubeM.DiffuseTexture = cubeDiffuse;
    cubeM.NormalTexture = pistolNorm;
@@ -147,7 +147,7 @@ int main()
    graphics::Mesh pistolMesh;
    pistolMesh.Vertices = *pistolData;
    pistolMesh.Material = &pistolM;
-   pistolMesh.Scale = 3.0f;
+   pistolMesh.Scale = { 3.0f, 3.0f, 3.0f };
 
    graphics::Mesh cubeMesh;
    cubeMesh.Vertices = *cubeData;
@@ -158,7 +158,7 @@ int main()
    scene::Scene scene;
    scene::Register(scene, &pistolMesh);
    scene::Register(scene, &cubeMesh);
-   scene::Register(scene, new graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f }, 10.0f, 3.0f));
+   scene::Register(scene, new graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 10.0f, 3.0f));
    scene::Register(scene, &MainCamera);
 
    app::RunEngineApp([&]()

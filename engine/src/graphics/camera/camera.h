@@ -1,6 +1,5 @@
 #pragma once
-#include "../math/vectors/vector3.h"
-#include "../math/matrices/matrix4x4.h"
+#include "math/math.h"
 
 namespace graphics
 {
@@ -16,11 +15,11 @@ namespace graphics
 
    struct Camera
    {
-      math::Vector3 Position;
+      mm::vec3 Position;
 
-      math::Vector3 ForwardAxis;
-      math::Vector3 RightAxis;
-      math::Vector3 UpAxis;
+      mm::vec3 ForwardAxis;
+      mm::vec3 RightAxis;
+      mm::vec3 UpAxis;
 
       float Fov;
       float Aspect;
@@ -29,7 +28,7 @@ namespace graphics
       float Yaw;
       float Pitch;
 
-      Camera(const math::Vector3 position, const float fov, const float aspect, const float speed);
+      Camera(const mm::vec3 position, const float fov, const float aspect, const float speed);
 
       Camera()  = default;
       ~Camera() = default;

@@ -2,8 +2,7 @@
 #include <memory>
 
 #include "asset-manager/asset-manager.h"
-#include "math/vectors/vector.h"
-#include "math/matrices/matrix4x4.h"
+#include "math/math.h"
 
 #include "graphics/api/shader-program.h"
 #include "graphics/api/texture2d.h"
@@ -21,9 +20,9 @@ namespace graphics
 
       BaseMaterial* Material;
 
-      math::Vector3 Scale;
-      math::Vector4 Rotation; //This later will be replaced
-      math::Vector3 Translate;
+      mm::vec3 Scale;
+      mm::vec4 Rotation; //This later will be replaced
+      mm::vec3 Translate;
    };
 
    inline size_t GenerateMaterialId()
@@ -75,7 +74,7 @@ namespace graphics
       virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) {} 
       virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) {}
       virtual void SetCameraToClipMatrix(const math::Matrix4& mat) {}
-      virtual void SetCameraPosition(const math::Vector3& position) {}
+      virtual void SetCameraPosition(const mm::vec3& position) {}
       virtual void SetSpotlightsCount(const size_t count) {}
       virtual void SetPointLightsCount(const size_t count) {}
    };
@@ -85,11 +84,11 @@ namespace graphics
    public:
       PhongMaterial();
 
-      math::Vector4 Diffuse;
+      mm::vec4 Diffuse;
 
-      math::Vector3 Specular;
+      mm::vec3 Specular;
 
-      math::Vector3 Emissive;
+      mm::vec3 Emissive;
 
       float Glossiness;
 
@@ -117,7 +116,7 @@ namespace graphics
          ShaderProgram->SetFloats("ToClip", mat);
       }
 
-      virtual void SetCameraPosition(const math::Vector3& position) override
+      virtual void SetCameraPosition(const mm::vec3& position) override
       { 
          ShaderProgram->SetFloats("CameraPosition", position);
       }

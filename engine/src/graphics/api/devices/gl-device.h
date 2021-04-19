@@ -87,7 +87,7 @@ namespace graphics
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
      }
 
-     inline void SetClearColor(const math::Vector4& color) const override
+     inline void SetClearColor(const mm::vec4& color) const override
      {
          glClearColor(color.x, color.y, color.z, color.w);
      } 

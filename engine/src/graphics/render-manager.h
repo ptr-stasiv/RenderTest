@@ -44,8 +44,8 @@ namespace graphics
 
    struct alignas(16) PointLightAligned16
    {
-      math::Vector4 Position;
-      math::Vector4 Color;
+      mm::vec4 Position;
+      mm::vec4 Color;
 
       float Stretch;
       float Offset;
@@ -53,9 +53,9 @@ namespace graphics
 
    struct alignas(16) SpotlightAligned16
    {
-      math::Vector4 Position;
-      math::Vector4 Direction;
-      math::Vector4 Color;
+      mm::vec4 Position;
+      mm::vec4 Direction;
+      mm::vec4 Color;
 
       float InnerAngle;
       float OuterAngle;

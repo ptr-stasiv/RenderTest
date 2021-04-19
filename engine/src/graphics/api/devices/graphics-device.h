@@ -44,7 +44,7 @@ namespace graphics
 
       virtual void Clear() = 0;
 
-      virtual void SetClearColor(const math::Vector4& color) const = 0;
+      virtual void SetClearColor(const mm::vec4& color) const = 0;
 
       virtual void SetBlendSettings(const BlendFunc func, const BlendValue src, const BlendValue dst) const = 0;
 

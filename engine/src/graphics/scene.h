@@ -39,7 +39,7 @@ namespace scene
       for(auto& mesh : scene.RegisteredMeshes)
       {
          graphics::RenderKey rk;
-         rk.Depth = ceilf(-math::Length(scene.SceneCamera->Position - mesh->Translate));
+         rk.Depth = ceilf(-mm::length(scene.SceneCamera->Position - mesh->Translate));
          rk.MaterialId = 0;
          rk.Opaque = 1;
          rk.Layer = graphics::Layer::Normal;

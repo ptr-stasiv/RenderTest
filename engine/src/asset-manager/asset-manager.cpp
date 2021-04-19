@@ -26,9 +26,9 @@ namespace assets
             return resData;
          }
 
-         std::vector<math::Vector3> positionArray;
-         std::vector<math::Vector3> normalArray;
-         std::vector<math::Vector2> uvArray;
+         std::vector<mm::vec3> positionArray;
+         std::vector<mm::vec3> normalArray;
+         std::vector<mm::vec2> uvArray;
 
          std::vector<uint32_t> positionIndicesArray;
          std::vector<uint32_t> normalIndicesArray;
@@ -42,21 +42,21 @@ namespace assets
 
             if (!strcmp(header, "v"))
             {
-               math::Vector3 v;
+               mm::vec3 v;
                fscanf(file, "%f %f %f", &v.x, &v.y, &v.z);
 
                positionArray.emplace_back(v);
             }
             else if (!strcmp(header, "vn"))
             {
-               math::Vector3 v;
+               mm::vec3 v;
                fscanf(file, "%f %f %f", &v.x, &v.y, &v.z);
 
                normalArray.emplace_back(v);
             }
             else if (!strcmp(header, "vt"))
             {
-               math::Vector2 v;
+               mm::vec2 v;
                fscanf(file, "%f %f", &v.x, &v.y);
 
                uvArray.emplace_back(v);
@@ -83,9 +83,9 @@ namespace assets
             }
          }
 
-         std::vector<math::Vector3> resultPositionArray;
-         std::vector<math::Vector3> resultNormalArray;
-         std::vector<math::Vector2> resultUvArray;
+         std::vector<mm::vec3> resultPositionArray;
+         std::vector<mm::vec3> resultNormalArray;
+         std::vector<mm::vec2> resultUvArray;
 
          for (size_t i = 0; i < positionIndicesArray.size(); ++i)
          {
@@ -95,24 +95,24 @@ namespace assets
          }
 
 
-         std::vector<math::Vector3> tangentArray;
-         std::vector<math::Vector3> bitangentArray;
+         std::vector<mm::vec3> tangentArray;
+         std::vector<mm::vec3> bitangentArray;
 
          for (size_t i = 0; i < resultPositionArray.size(); i += 3)
          {
-            math::Vector3 p0 = resultPositionArray[i];
-            math::Vector3 p1 = resultPositionArray[i + 1];
-            math::Vector3 p2 = resultPositionArray[i + 2];
+            mm::vec3 p0 = resultPositionArray[i];
+            mm::vec3 p1 = resultPositionArray[i + 1];
+            mm::vec3 p2 = resultPositionArray[i + 2];
 
-            math::Vector2 uv0 = resultUvArray[i];
-            math::Vector2 uv1 = resultUvArray[i + 1];
-            math::Vector2 uv2 = resultUvArray[i + 2];
+            mm::vec2 uv0 = resultUvArray[i];
+            mm::vec2 uv1 = resultUvArray[i + 1];
+            mm::vec2 uv2 = resultUvArray[i + 2];
 
-            math::Vector3 edge1 = p1 - p0;
-            math::Vector3 edge2 = p2 - p0;
+            mm::vec3 edge1 = p1 - p0;
+            mm::vec3 edge2 = p2 - p0;
 
-            math::Vector2 uvEdge1 = uv1 - uv0;
-            math::Vector2 uvEdge2 = uv2 - uv0;
+            mm::vec2 uvEdge1 = uv1 - uv0;
+            mm::vec2 uvEdge2 = uv2 - uv0;
 
 
             //Find matrix inverse
@@ -125,17 +125,17 @@ namespace assets
             float m11 = uvEdge1.x * inverseD;
 
 
-            math::Vector3 tangent;
+            mm::vec3 tangent;
             tangent.x = m00 * edge1.x + m01 * edge2.x;
             tangent.y = m00 * edge1.y + m01 * edge2.y;
             tangent.z = m00 * edge1.z + m01 * edge2.z;
-            tangent = math::Normalize(tangent);
+            tangent = mm::normalize(tangent);
 
-            math::Vector3 bitangent;
+            mm::vec3 bitangent;
             bitangent.x = m10 * edge1.x + m11 * edge2.x;
             bitangent.y = m10 * edge1.y + m11 * edge2.y;
             bitangent.z = m10 * edge1.z + m11 * edge2.z;
-            bitangent = math::Normalize(bitangent);
+            bitangent = mm::normalize(bitangent);
 
 
             tangentArray.push_back(tangent);

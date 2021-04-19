@@ -14,13 +14,13 @@ namespace graphics
       camera.ForwardAxis.y = sin(math::ToRad(camera.Pitch));
       camera.ForwardAxis.z = sin(math::ToRad(camera.Yaw)) * cos(math::ToRad(camera.Pitch));
 
-      camera.ForwardAxis = math::Normalize(camera.ForwardAxis);
+      camera.ForwardAxis = mm::normalize(camera.ForwardAxis);
 
-      camera.RightAxis = math::Normalize(math::Cross({ 0.0f, 1.0f, 0.0f }, camera.ForwardAxis));
-      camera.UpAxis = math::Cross(camera.ForwardAxis, camera.RightAxis);
+      camera.RightAxis = mm::normalize(mm::cross({ 0.0f, 1.0f, 0.0f }, camera.ForwardAxis));
+      camera.UpAxis = mm::cross(camera.ForwardAxis, camera.RightAxis);
    }
 
-   Camera::Camera(const math::Vector3 position, const float fov, const float aspect, const float speed)
+   Camera::Camera(const mm::vec3 position, const float fov, const float aspect, const float speed)
    {
       Position = position;
 

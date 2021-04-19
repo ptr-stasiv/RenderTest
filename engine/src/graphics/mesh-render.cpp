@@ -27,10 +27,10 @@ namespace graphics
       : BaseMaterial("res/shaders/phong-shading.vs",
                      "res/shaders/phong-shading.fs")
    {
-      ShaderProgram->AddInputBuffer(g_RenderManager->PositionsVBO, 3, 0, sizeof(math::Vector3), Type::Float);
-      ShaderProgram->AddInputBuffer(g_RenderManager->NormalsVBO, 3, 1, sizeof(math::Vector3), Type::Float);
-      ShaderProgram->AddInputBuffer(g_RenderManager->UVsVBO, 2, 2, sizeof(math::Vector2), Type::Float);
-      ShaderProgram->AddInputBuffer(g_RenderManager->TangentsVBO, 3, 3, sizeof(math::Vector3), Type::Float);
+      ShaderProgram->AddInputBuffer(g_RenderManager->PositionsVBO, 3, 0, sizeof(mm::vec3), Type::Float);
+      ShaderProgram->AddInputBuffer(g_RenderManager->NormalsVBO, 3, 1, sizeof(mm::vec3), Type::Float);
+      ShaderProgram->AddInputBuffer(g_RenderManager->UVsVBO, 2, 2, sizeof(mm::vec2), Type::Float);
+      ShaderProgram->AddInputBuffer(g_RenderManager->TangentsVBO, 3, 3, sizeof(mm::vec3), Type::Float);
 
       ShaderProgram->AddInputBuffer(g_RenderManager->LightsUBO, "LightBlock", sizeof(PointLightAligned16) * MaxPointLights);
    }

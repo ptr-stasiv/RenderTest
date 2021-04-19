@@ -2,9 +2,7 @@
 #include <string_view>
 #include <memory>
 
-#include "math/vectors/vector3.h"
-#include "math/vectors/vector4.h"
-#include "math/matrices/matrix4x4.h"
+#include "math/math.h"
 #include "texture2d.h"
 #include "shader-buffer.h"
 
@@ -28,9 +26,9 @@ namespace graphics
 
       virtual void SetFloats(const std::string_view& name, const math::Matrix4& m) const = 0;
 
-      virtual void SetFloats(const std::string_view& name, const math::Vector4& v) const = 0;
+      virtual void SetFloats(const std::string_view& name, const mm::vec4& v) const = 0;
 
-      virtual void SetFloats(const std::string_view& name, const math::Vector3& v) const = 0;
+      virtual void SetFloats(const std::string_view& name, const mm::vec3& v) const = 0;
 
       virtual void SetFloat(const std::string_view& name, const float s) const = 0;
 

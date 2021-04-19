@@ -1,21 +1,20 @@
 #pragma once
-#include "math/vectors/vector3.h"
-#include "math/vectors/vector4.h"
+#include "math/math.h"
 
 namespace graphics
 {
    struct PointLight
    {
-      math::Vector3 Position;
-      math::Vector3 Color;
+      mm::vec3 Position;
+      mm::vec3 Color;
 
       float Stretch;
       float Offset;
 
       PointLight() = default;
 
-      inline PointLight(const math::Vector3 position,
-                        const math::Vector3 color,
+      inline PointLight(const mm::vec3 position,
+                        const mm::vec3 color,
                         const float stretch,
                         const float offset)
          : Position(position),
@@ -26,18 +25,18 @@ namespace graphics
 
    struct Spotlight
    {
-      math::Vector3 Position;
-      math::Vector3 Direction;
-      math::Vector3 Color;
+      mm::vec3 Position;
+      mm::vec3 Direction;
+      mm::vec3 Color;
 
       float InnerAngle;
       float OuterAngle;
 
       Spotlight() = default;
 
-      inline Spotlight(const math::Vector3& position,
-                       const math::Vector3& direction,
-                       const math::Vector3& color,
+      inline Spotlight(const mm::vec3& position,
+                       const mm::vec3& direction,
+                       const mm::vec3& color,
                        const float outerAngle,
                        const float innerAngle)
          : Position(position),

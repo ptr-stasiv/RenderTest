@@ -6,7 +6,7 @@
 #include <optional>
 #include <type_traits>
 
-#include "math/vectors/vector.h"
+#include "math/math.h"
 
 #include "debug/globals.h"
 #include "utils/sync/spin-lock.h"
@@ -48,15 +48,15 @@ namespace assets
    class TrigVertices : public AssetData
    {
    public:
-      std::vector<math::Vector3> Positions;
+      std::vector<mm::vec3> Positions;
 
-      std::vector<math::Vector3> Normals;
+      std::vector<mm::vec3> Normals;
 
-      std::vector<math::Vector2> UVs;
+      std::vector<mm::vec2> UVs;
 
-      std::vector<math::Vector3> Tangents;
+      std::vector<mm::vec3> Tangents;
 
-      std::vector<math::Vector3> Bitangents;
+      std::vector<mm::vec3> Bitangents;
 
       Hash FacesCount;
 

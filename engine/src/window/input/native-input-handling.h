@@ -7,7 +7,7 @@
 #include "events/input-events.h"
 #include "window/input/input-events.h"
 #include "debug/globals.h"
-#include "math/vectors/vector2.h"
+#include "math/math.h"
 
 namespace input
 {
@@ -20,7 +20,7 @@ namespace input
       public:
          struct
          {
-            math::Vector2 CursorPosition;
+            mm::vec2 CursorPosition;
             float ScrollValue;
          } MouseInfo = { 0 };
 

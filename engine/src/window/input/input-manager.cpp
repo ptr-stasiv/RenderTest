@@ -9,10 +9,10 @@ namespace input
 {
    struct GesturesInfo
    {
-      static inline  math::Vector2 LastFrameCursorPosition;
+      static inline  mm::vec2 LastFrameCursorPosition;
       static inline float LastFrameScrollValue;
 
-      static inline math::Vector2 CursorPositionDiff;
+      static inline mm::vec2 CursorPositionDiff;
       static inline float ScrollValueDiff;
    };
 

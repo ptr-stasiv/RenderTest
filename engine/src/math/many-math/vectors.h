@@ -1,8 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include <cmath>
-#include <varargs.h>
+#include <algorithm>
 
 namespace mm
 {
@@ -32,18 +31,19 @@ namespace mm
          : n_vector(0) {} \
       inline n_vector(const T& scalar) \
       { \
-         memset(Data, scalar, sizeof(T) * components); \
+         for(size_t i = 0; i < components; ++i) \
+            Data[i] = scalar; \
       } \
       template<typename T, size_t Components2> \
       inline n_vector(const n_vector<T, Components2>& v2) \
          : n_vector() \
       { \
-         memcpy_s(Data, sizeof(T) * components, v2.Data, sizeof(T) * min(components, Components2)); \
+         memcpy_s(Data, sizeof(T) * components, v2.Data, sizeof(T) * (components > Components2 ? Components2 : components)); \
       } \
       template<size_t Components2> \
       inline n_vector<T, components>& operator = (const n_vector<T, Components2>& v2) \
       { \
-         memcpy_s(Data, sizeof(T) * components, v2.Data, sizeof(T) * min(components, Components2)); \
+         memcpy_s(Data, sizeof(T) * components, v2.Data, sizeof(T) * (components > Components2 ? Components2 : components)); \
          return *this; \
       }
 
