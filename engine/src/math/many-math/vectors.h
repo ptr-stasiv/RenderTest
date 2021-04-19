@@ -1,7 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <cstring>
-#include <algorithm>
+#include <cmath>
+#include <varargs.h>
 
 namespace mm
 {
@@ -28,7 +29,7 @@ namespace mm
 
 #define VECTOR_CONSTRUCTORS(components) \
       inline n_vector() \
-         : n_vector(0.0f) {} \
+         : n_vector(0) {} \
       inline n_vector(const T& scalar) \
       { \
          memset(Data, scalar, sizeof(T) * components); \
@@ -60,6 +61,9 @@ namespace mm
       };
 
       VECTOR_CONSTRUCTORS(2)
+
+      n_vector(const T _x, const T _y)
+         : x(_x), y(_y) {}
    };
 
    template<typename T>
@@ -87,6 +91,9 @@ namespace mm
       };
 
       VECTOR_CONSTRUCTORS(3)
+
+      n_vector(const T _x, const T _y, const T _z)
+         : x(_x), y(_y), z(_z) {}
    };
 
    template<typename T>
@@ -163,6 +170,9 @@ namespace mm
       };
 
       VECTOR_CONSTRUCTORS(4)
+
+      n_vector(const T _x, const T _y, const T _z, const T _w)
+         : x(_x), y(_y), z(_z), w(_w) {}
    };
 
    template<typename T, size_t Components>

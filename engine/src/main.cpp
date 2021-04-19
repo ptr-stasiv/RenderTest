@@ -23,6 +23,8 @@
 
 #include "graphics/scene.h"
 
+#include "math/math.h"
+
 int main()
 {
    app::CreateEngineApp();
