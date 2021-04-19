@@ -148,6 +148,7 @@ namespace sharpmake
 
 
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/tests/extern/googletest/include");
+            config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/src");
 
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/tests/extern/googletest/lib");
 

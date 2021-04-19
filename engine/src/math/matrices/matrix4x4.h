@@ -1,6 +1,5 @@
 #pragma once
-#include "../vectors/vector4.h"
-#include "../vectors/vector3.h"
+#include "math/math.h"
 
 namespace math
 {
@@ -8,7 +7,7 @@ namespace math
    {
       float Data[16];
 
-      math::Vector4 operator * (const math::Vector4 v);
+      mm::vec4 operator * (const mm::vec4& v);
 
       Matrix4 operator * (const Matrix4& m);
 
@@ -20,8 +19,8 @@ namespace math
 
    Matrix4 CreateIdentityMatrix4();
    Matrix4 CreatePerspectiveMatrix(const float aspect, const float fov, const float near, const float far);
-   Matrix4 CreateTranslateMatrix(const Vector3 offset);
-   Matrix4 CreateScaleMatrix(const Vector3 scale);
-   Matrix4 CreateRotationMatrix(const float a, const Vector3 axis);
-   Matrix4 CreateLookAtMatrix(const Vector3 axisX, const Vector3 axisY, const Vector3 axisZ, const Vector3 offset);
+   Matrix4 CreateTranslateMatrix(const mm::vec3& offset);
+   Matrix4 CreateScaleMatrix(const mm::vec3& scale);
+   Matrix4 CreateRotationMatrix(const float a, const mm::vec3& axis);
+   Matrix4 CreateLookAtMatrix(const mm::vec3& axisX, const mm::vec3& axisY, const mm::vec3& axisZ, const mm::vec3& offset);
 }

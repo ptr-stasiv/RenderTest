@@ -30,7 +30,7 @@ namespace math
       return res;
    }
 
-   Matrix4 CreateTranslateMatrix(const Vector3 offset)
+   Matrix4 CreateTranslateMatrix(const mm::vec3& offset)
    {
       Matrix4 res = CreateIdentityMatrix4();
 
@@ -41,7 +41,7 @@ namespace math
       return res;
    }
 
-   Matrix4 CreateScaleMatrix(const Vector3 scale)
+   Matrix4 CreateScaleMatrix(const mm::vec3& scale)
    {
       Matrix4 res = { 0 };
 
@@ -53,7 +53,7 @@ namespace math
       return res;
    }
 
-   Matrix4 CreateRotationMatrix(const float a, const Vector3 axis)
+   Matrix4 CreateRotationMatrix(const float a, const mm::vec3& axis)
    {
       float c = cos(a);
       float s = sin(a);
@@ -80,13 +80,13 @@ namespace math
       return res;
    }
 
-   Matrix4 CreateLookAtMatrix(const Vector3 axisX, const Vector3 axisY, const Vector3 axisZ, const Vector3 offset)
+   Matrix4 CreateLookAtMatrix(const mm::vec3& axisX, const mm::vec3& axisY, const mm::vec3& axisZ, const mm::vec3& offset)
    {
       Matrix4 res = CreateIdentityMatrix4();
 
-      res.Data[12] = -Dot(axisX, offset);
-      res.Data[13] = -Dot(axisY, offset);
-      res.Data[14] = -Dot(axisZ, offset);
+      res.Data[12] = -mm::dot(axisX, offset);
+      res.Data[13] = -mm::dot(axisY, offset);
+      res.Data[14] = -mm::dot(axisZ, offset);
 
       //X axis
       res.Data[0] = axisX.x;
@@ -106,14 +106,14 @@ namespace math
       return res;
    }
 
-   Vector4 Matrix4::operator * (const Vector4 v)
+   mm::vec4 Matrix4::operator * (const mm::vec4& v)
    {
-      Vector4 res;
+      mm::vec4 res;
 
-      res.x = Dot(v, { Data[0],  Data[1],  Data[2],  Data[3] });
-      res.y = Dot(v, { Data[4],  Data[5],  Data[6],  Data[7] });
-      res.z = Dot(v, { Data[8],  Data[9],  Data[10], Data[11] });
-      res.w = Dot(v, { Data[12], Data[13], Data[14], Data[15] });
+      res.x = mm::dot(v, { Data[0],  Data[1],  Data[2],  Data[3] });
+      res.y = mm::dot(v, { Data[4],  Data[5],  Data[6],  Data[7] });
+      res.z = mm::dot(v, { Data[8],  Data[9],  Data[10], Data[11] });
+      res.w = mm::dot(v, { Data[12], Data[13], Data[14], Data[15] });
 
       return res;
    }
@@ -124,13 +124,13 @@ namespace math
 
       for (int row = 0; row < 16; row += 4)
       {
-         Vector4 rowVector = { Data[row], Data[row + 1], Data[row + 2], Data[row + 3] };
+         mm::vec4 rowVector = { Data[row], Data[row + 1], Data[row + 2], Data[row + 3] };
 
          for (int column = 0; column < 4; ++column)
          {
-            Vector4 columnVector = { m.Data[column], m.Data[column + 4], m.Data[column + 8], m.Data[column + 12] };
+            mm::vec4 columnVector = { m.Data[column], m.Data[column + 4], m.Data[column + 8], m.Data[column + 12] };
 
-            float elem = Dot(rowVector, columnVector);
+            float elem = mm::dot(rowVector, columnVector);
             res.Data[row + column] = elem;
          }
       }
