@@ -127,6 +127,44 @@ namespace sharpmake
     }
 
     [Generate]
+    public class TestsProject : Project
+    {
+        public TestsProject()
+        {
+            Name = "Tests";
+
+            SourceRootPath = @"[project.SharpmakeCsPath]/tests/";
+
+            AddTargets(new Target(Platform.win64, DevEnv.vs2019, Optimization.Debug | Optimization.Release | Optimization.Retail));
+        }
+
+        [Configure]
+        public void ConfigureAll(Project.Configuration config, Target target)
+        {
+            config.Options.Add(Options.Vc.General.WindowsTargetPlatformVersion.Latest);
+            config.Options.Add(Options.Vc.General.WarningLevel.EnableAllWarnings);
+
+            config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
+
+
+            config.IncludePaths.Add(@"[project.SharpmakeCsPath]/tests/extern/googletest/include");
+
+            config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/tests/extern/googletest/lib");
+
+            config.LibraryFiles.Add("googletestlib");
+
+
+            config.AddPrivateDependency<RenderTestProject>(target);
+
+
+            config.Output = Configuration.OutputType.Exe;
+
+            config.TargetPath = @"[project.SharpmakeCsPath]/engine/binaries/[target.Optimization]";
+            config.IntermediatePath = @"[project.SharpmakeCsPath]/engine/binaries/int/[target.Optimization]";
+        }
+    }
+
+    [Generate]
     public class MainSolution : Solution
     {
         public MainSolution()
@@ -143,6 +181,7 @@ namespace sharpmake
 
             config.AddProject<EngineGuiProject>(target);
             config.AddProject<RenderTestProject>(target);
+            config.AddProject<TestsProject>(target);
 
             config.SetStartupProject<RenderTestProject>();
         }
