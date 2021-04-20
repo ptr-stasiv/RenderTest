@@ -46,10 +46,7 @@ namespace app
 
         g_InputManager->Poll();
 
-        g_DebugManager->Update();
-
         userTickFunc();
-
 
         g_Window->EndFrame();
 

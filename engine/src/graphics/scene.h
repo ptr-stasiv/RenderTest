@@ -53,6 +53,7 @@ namespace scene
       for(auto& sl : scene.RegisteredSpotlights)
          g_RenderManager->PushLight(*sl);
 
-      g_RenderManager->Update(*scene.SceneCamera);
+      if(scene.SceneCamera)
+         g_RenderManager->Update(*scene.SceneCamera);
    }
 }

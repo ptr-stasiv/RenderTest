@@ -53,7 +53,7 @@ namespace graphics
          if (renderer.first.MaterialId != lastKey.MaterialId)
          {
             material->ShaderProgram->Use();
-
+           
             material->SetCameraPosition(camera.Position);
             material->SetWorldToCameraMatrix(camera.GetCameraViewMatrix());
             material->SetCameraToClipMatrix(camera.GetCameraProjection());
@@ -73,7 +73,7 @@ namespace graphics
          UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(mm::vec2), &mesh.Vertices.UVs[0]);
          TangentsVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(mm::vec3), &mesh.Vertices.Tangents[0]);
 
-         GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size() * 3);
+         GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size());
       }
 
       CurrentRenderQueue.clear();

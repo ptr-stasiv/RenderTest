@@ -165,7 +165,7 @@ int main()
 
    app::RunEngineApp([&]()
       {
-         //g_DebugManager->AddAACube({}, {});
+         g_DebugManager->AddAACube({}, {});
 
          scene::UpdateAndRender(scene);
       });

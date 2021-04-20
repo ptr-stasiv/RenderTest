@@ -69,7 +69,6 @@ namespace graphics
    class RenderManager
    {
    private:
-      std::vector<Mesh> MeshList;
       std::vector<std::pair<RenderKey, Mesh>> CurrentRenderQueue;
 
       PointLightAligned16 PointLightList[MaxPointLights];
