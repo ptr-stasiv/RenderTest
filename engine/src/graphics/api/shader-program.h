@@ -15,6 +15,7 @@ namespace graphics
    {
       Vertex,
       Fragment,
+      Geometry,
 
       LAST_ENUM_ELEMENT
    };

@@ -4,21 +4,31 @@
 
 namespace graphics
 {
-   BaseMaterial::BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath)
+   BaseMaterial::BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath,
+                              const std::string_view& geomShaderPath)
       : InstanceId(GenerateMaterialId())
    {
+      ShaderProgram = g_GraphicsDevice->CreateShaderProgram();
+
       std::string_view vertexShaderSrc;
       std::string_view fragmentShaderSrc;
 
       if ((vertexShaderSrc = utils::ReadFromFile(vertexShaderPath)) == "")
-         PRINT_AND_TERMINATE("Couldn't read vertex shader file: %s", &vertexShaderPath[0]);
+         PRINT_AND_TERMINATE("Couldn't read vertex shader file: %s", &vertexShaderPath[0]);  
       if ((fragmentShaderSrc = utils::ReadFromFile(fragmentShaderPath)) == "")
          PRINT_AND_TERMINATE("Couldn't read fragment shader file: %s", &fragmentShaderPath[0]);
 
-      ShaderProgram = g_GraphicsDevice->CreateShaderProgram();
-
       ShaderProgram->AddShader(ShaderType::Vertex, vertexShaderSrc);
       ShaderProgram->AddShader(ShaderType::Fragment, fragmentShaderSrc);
+
+      if (!geomShaderPath.empty())
+      {
+         std::string_view geomShaderSrc;
+         if ((geomShaderSrc = utils::ReadFromFile(geomShaderPath)) == "")
+            PRINT_AND_TERMINATE("Couldn't read geometry shader file: %s", &geomShaderPath[0]);
+
+         ShaderProgram->AddShader(ShaderType::Geometry, geomShaderSrc);
+      }
 
       ShaderProgram->Compile();
    }
@@ -48,5 +58,12 @@ namespace graphics
 
       ShaderProgram->SetTexture2D("DiffuseTexture", DiffuseTexture);
       ShaderProgram->SetTexture2D("NormalTexture", NormalTexture);
+   }
+
+   DebugPrimitiveMaterial::DebugPrimitiveMaterial()
+      : BaseMaterial("res/shaders/debug-primitive.vs",
+                     "res/shaders/debug-primitive.fs")
+   {
+      ShaderProgram->AddInputBuffer(g_RenderManager->PositionsVBO, 3, 0, sizeof(mm::vec3), Type::Float);
    }
 }

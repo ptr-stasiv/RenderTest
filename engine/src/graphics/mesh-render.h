@@ -18,7 +18,7 @@ namespace graphics
    {
       assets::TrigVertices Vertices;
 
-      BaseMaterial* Material;
+      std::shared_ptr<BaseMaterial> Material;
 
       mm::vec3 Scale;
       mm::vec4 Rotation; //This later will be replaced
@@ -38,7 +38,8 @@ namespace graphics
    public:
       std::shared_ptr<ShaderProgram> ShaderProgram;
 
-      BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath);
+      BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath,
+                   const std::string_view& geomShaderPath = "");
 
       virtual ~BaseMaterial() = default;
 
@@ -131,4 +132,25 @@ namespace graphics
          ShaderProgram->SetInt("PointLightsCount", count);
       }
    }; 
+
+   class DebugPrimitiveMaterial : public BaseMaterial
+   {
+   public:
+      DebugPrimitiveMaterial();
+
+      virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) override
+      {
+         ShaderProgram->SetFloats("ToWorld", mat);
+      }
+
+      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) override
+      {
+         ShaderProgram->SetFloats("ToCamera", mat);
+      }
+
+      virtual void SetCameraToClipMatrix(const math::Matrix4& mat) override
+      {
+         ShaderProgram->SetFloats("ToClip", mat);
+      }
+   };
 }

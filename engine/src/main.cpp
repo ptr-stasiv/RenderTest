@@ -2,7 +2,7 @@
 
 #include "asset-manager/asset-manager.h"
 
-#include "math/math_utils.h"
+#include "math/math.h"
 #include "utils/timer.h"
 
 #include "jobs/job-system.h"
@@ -29,12 +29,11 @@ int main()
 {
    app::CreateEngineApp();
 
-   graphics::Camera MainCamera;
-   MainCamera = graphics::Camera(mm::vec3(0.0f, 0.0f, 10.0f), math::Pi / 4, 1.7f, 5.0f);
+   auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), mm::PI / 4, 1.7f, 5.0f);
 
    assets::AssetManager AssetManager;
 
-   uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(&MainCamera);
+   uintptr_t callbackArgs = reinterpret_cast<uintptr_t>(&*MainCamera);
 
    g_InputManager->AddAxisMapping("MoveForward", { { input::InputEvent::W, 1.0f },
                                             { input::InputEvent::S, -1.0f } });
@@ -108,14 +107,14 @@ int main()
 
    auto& pistolDiffuse = g_GraphicsDevice->CreateTexture2D();
    pistolDiffuse->InitData(pistolDifData->Width, pistolDifData->Height,
-                           graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                           graphics::Type::Ubyte, params);
+      graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      graphics::Type::Ubyte, params);
    pistolDiffuse->UpdateData(pistolDifData->Width, pistolDifData->Height, pistolDifData->Pixels);
 
    auto& pistolNorm = g_GraphicsDevice->CreateTexture2D();
    pistolNorm->InitData(pistolNormData->Width, pistolNormData->Height,
-                           graphics::InternalFormat::RGB8, graphics::Format::RGB,
-                           graphics::Type::Ubyte, params);
+      graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      graphics::Type::Ubyte, params);
    pistolNorm->UpdateData(pistolNormData->Width, pistolNormData->Height, pistolNormData->Pixels);
 
    auto& cubeDiffuse = g_GraphicsDevice->CreateTexture2D();
@@ -129,40 +128,45 @@ int main()
       graphics::InternalFormat::RGB8, graphics::Format::RGB,
       graphics::Type::Ubyte, params);
    cubeNorm->UpdateData(brickNormData->Width, brickNormData->Height, brickNormData->Pixels);
-   
-   graphics::PhongMaterial pistolM;
-   pistolM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
-   pistolM.Specular = mm::vec3(0.8f);
-   pistolM.Glossiness = 8.0f;
-   pistolM.DiffuseTexture = pistolDiffuse;
-   pistolM.NormalTexture = pistolNorm;
 
-   graphics::PhongMaterial cubeM;
-   cubeM.Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
-   cubeM.Specular = mm::vec3(0.8f);
-   cubeM.Glossiness = 8.0f;
-   cubeM.DiffuseTexture = cubeDiffuse;
-   cubeM.NormalTexture = pistolNorm;
+   auto pistolM = std::make_shared<graphics::PhongMaterial>();
+   pistolM->Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
+   pistolM->Specular = mm::vec3(0.8f);
+   pistolM->Glossiness = 8.0f;
+   pistolM->DiffuseTexture = pistolDiffuse;
+   pistolM->NormalTexture = pistolNorm;
 
-   graphics::Mesh pistolMesh;
-   pistolMesh.Vertices = *pistolData;
-   pistolMesh.Material = &pistolM;
-   pistolMesh.Scale = { 3.0f, 3.0f, 3.0f };
+   auto cubeM = std::make_shared<graphics::PhongMaterial>();
+   cubeM->Diffuse = { 1.0f, 0.2f, 0.5f, 1.0f };
+   cubeM->Specular = mm::vec3(0.8f);
+   cubeM->Glossiness = 8.0f;
+   cubeM->DiffuseTexture = cubeDiffuse;
+   cubeM->NormalTexture = pistolNorm;
 
-   graphics::Mesh cubeMesh;
-   cubeMesh.Vertices = *cubeData;
-   cubeMesh.Material = &cubeM;
-   cubeMesh.Scale = { 5.0f, 0.5f, 5.0f };
-   cubeMesh.Translate = { 0.0f, -3.0f, -5.0f };
+   auto pistolMesh = std::make_shared<graphics::Mesh>();
+   pistolMesh->Vertices = *pistolData;
+   pistolMesh->Material = pistolM;
+   pistolMesh->Scale = { 3.0f, 3.0f, 3.0f };
+
+   auto cubeMesh = std::make_shared<graphics::Mesh>();;
+   cubeMesh->Vertices = *cubeData;
+   cubeMesh->Material = cubeM;
+   cubeMesh->Scale = { 5.0f, 0.5f, 5.0f };
+   cubeMesh->Translate = { 0.0f, -3.0f, -5.0f };
 
    scene::Scene scene;
-   scene::Register(scene, &pistolMesh);
-   scene::Register(scene, &cubeMesh);
-   scene::Register(scene, new graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 10.0f, 3.0f));
-   scene::Register(scene, &MainCamera);
+   scene::Register(scene, pistolMesh);
+   scene::Register(scene, cubeMesh);
+
+   scene::Register(scene, std::make_shared<graphics::PointLight>(
+                                           graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 10.0f, 3.0f)));
+
+   scene::Register(scene, MainCamera);
 
    app::RunEngineApp([&]()
       {
+         //g_DebugManager->AddAACube({}, {});
+
          scene::UpdateAndRender(scene);
       });
 

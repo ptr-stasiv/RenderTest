@@ -4,15 +4,15 @@
 #include <cstdlib>
 #include <cmath>
 
-#include "math/math_utils.h"
+#include "math/math.h"
 
 namespace graphics
 {
    void CameraComputeBasis(Camera& camera)
    {
-      camera.ForwardAxis.x = cos(math::ToRad(camera.Yaw)) * cos(math::ToRad(camera.Pitch));
-      camera.ForwardAxis.y = sin(math::ToRad(camera.Pitch));
-      camera.ForwardAxis.z = sin(math::ToRad(camera.Yaw)) * cos(math::ToRad(camera.Pitch));
+      camera.ForwardAxis.x = cos(mm::ToRad(camera.Yaw)) * cos(mm::ToRad(camera.Pitch));
+      camera.ForwardAxis.y = sin(mm::ToRad(camera.Pitch));
+      camera.ForwardAxis.z = sin(mm::ToRad(camera.Yaw)) * cos(mm::ToRad(camera.Pitch));
 
       camera.ForwardAxis = mm::normalize(camera.ForwardAxis);
 
