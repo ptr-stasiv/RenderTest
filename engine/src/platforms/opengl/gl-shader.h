@@ -23,7 +23,8 @@ namespace graphics
    inline std::unordered_map<ShaderType, GLenum> ShaderTypeLookupMap = 
    {
       { ShaderType::Vertex, GL_VERTEX_SHADER },
-      { ShaderType::Fragment, GL_FRAGMENT_SHADER }
+      { ShaderType::Fragment, GL_FRAGMENT_SHADER },
+      { ShaderType::Geometry, GL_GEOMETRY_SHADER }
    };
 
 #define OGL_SHADER_TYPE(t) ShaderTypeLookupMap.at(t)
@@ -56,11 +57,7 @@ namespace graphics
 
          inline void AddShader(const ShaderType& type, const std::string_view& src) override
          {
-            if (static_cast<uint8_t>(type) >= ShadersTypeCount)
-            {
-               LOG_ERROR("Shader pipeline error!");
-               return;
-            }
+            ASSERT(static_cast<uint8_t>(type) < ShaderTypeLookupMap.size(), "Not implemented shader type is passed!");
 
             ShaderArr[static_cast<uint8_t>(type)] = src;
          }

@@ -62,8 +62,14 @@ namespace graphics
 
    DebugPrimitiveMaterial::DebugPrimitiveMaterial()
       : BaseMaterial("res/shaders/debug-primitive.vs",
-                     "res/shaders/debug-primitive.fs")
+                     "res/shaders/debug-primitive.fs",
+                     "res/shaders/debug-primitive.gs")
    {
       ShaderProgram->AddInputBuffer(g_RenderManager->PositionsVBO, 3, 0, sizeof(mm::vec3), Type::Float);
+   }
+
+   void DebugPrimitiveMaterial::ResolveUniforms()
+   {
+      ShaderProgram->SetFloats("LinesColor", Color);
    }
 }

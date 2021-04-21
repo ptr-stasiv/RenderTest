@@ -16,21 +16,50 @@ namespace graphics
       DebugPrimiteManager(const std::shared_ptr<RenderManager>& rm)
          : RM(rm) {}
 
-      void AddAACube(const mm::vec3& center, const mm::vec3& size)
+      void AddAACube(const mm::vec4& color,
+                     const mm::vec3& center, const mm::vec3& size)
       {
          Mesh mesh;
          
-         mesh.Material = std::make_shared<DebugPrimitiveMaterial>();
-         
-         mesh.Vertices.Positions.push_back({ -1.0f, 0.0f, -1.0f });
-         mesh.Vertices.Positions.push_back({ -1.0f, 0.0f, 1.0f });
-         mesh.Vertices.Positions.push_back({ 1.0f, 0.0f, 1.0f });
+         mesh.Vertices.Positions.emplace_back(center);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center);
+                                 
+         mesh.Vertices.Positions.emplace_back(center.x, center.y + size.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y + size.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center + size);
+         mesh.Vertices.Positions.emplace_back(center + size);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y + size.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y + size.y, center.z);
+                                 
+         mesh.Vertices.Positions.emplace_back(center.x, center.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y + size.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y + size.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y + size.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y, center.z);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y, center.z);
+                                 
+         mesh.Vertices.Positions.emplace_back(center.x, center.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y + size.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center + size);
+         mesh.Vertices.Positions.emplace_back(center + size);
+         mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y, center.z + size.z);
+         mesh.Vertices.Positions.emplace_back(center.x, center.y, center.z + size.z);
+
+         auto material = std::make_shared<DebugPrimitiveMaterial>();
+
+         material->Color = color;
 
          RenderKey key;
          key.Depth = 0;
-         key.MaterialId = mesh.Material->GetId();
+         key.MaterialId = material->GetId();
          key.Opaque = 1;
          key.Layer = graphics::Layer::Debug;
+
+         mesh.Material = material;
 
          RM->PushRenderRequest(key, mesh);
       }

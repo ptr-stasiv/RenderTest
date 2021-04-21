@@ -165,7 +165,7 @@ int main()
 
    app::RunEngineApp([&]()
       {
-         g_DebugManager->AddAACube({}, {});
+         g_DebugManager->AddAACube({ 0.3f, 1.0f, 0.4f, 1.0f }, { -1.0f, 5.0f, 0.0f }, { 2.0f, 6.0f, 1.0f });
 
          scene::UpdateAndRender(scene);
       });

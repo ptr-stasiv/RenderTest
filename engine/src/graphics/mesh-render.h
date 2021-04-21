@@ -138,6 +138,10 @@ namespace graphics
    public:
       DebugPrimitiveMaterial();
 
+      mm::vec4 Color;
+
+      virtual void ResolveUniforms() override;
+
       virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) override
       {
          ShaderProgram->SetFloats("ToWorld", mat);
