@@ -2,9 +2,9 @@
 
 out vec4 OutputColor;
 
-uniform vec4 LinesColor;
+uniform vec3 LinesColor;
 
 void main()
 {
-	OutputColor = LinesColor;
+	OutputColor = vec4(LinesColor, 1.0f);
 }

@@ -138,7 +138,7 @@ namespace graphics
    public:
       DebugPrimitiveMaterial();
 
-      mm::vec4 Color;
+      mm::vec3 Color;
 
       virtual void ResolveUniforms() override;
 
