@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "entry-point/global_systems.h"
+
 namespace graphics
 {
    RenderManager::RenderManager(const std::shared_ptr<GraphicsDevice>& gd)
@@ -31,6 +33,18 @@ namespace graphics
    {
       LightsUBO->UpdateData(sizeof(PointLightAligned16) * PointLightCounter, PointLightList);
       LightsUBO->UpdateData(sizeof(SpotlightAligned16) * SpotlightCounter, SpotlightList, sizeof(PointLightAligned16) * MaxPointLights);
+
+      for (size_t i = 0; i < PointLightCounter; ++i)
+      {
+         auto& pl = PointLightList[i];
+
+         float disc = 4 * pl.Offset * pl.Offset - 4 * (pl.Offset * pl.Offset - 10 * pl.Stretch); //10 is the reverse fraction of 1/10 because here we solve fraction equation
+                                                                                                 //This number means what maximum attenuation we will account
+
+         float x = (-2 * pl.Offset + sqrt(disc)) / 2;
+
+         g_DebugManager->AddAASphere({ 1.0f }, 24, PointLightList[i].Position, x);
+      }
 
 
       std::sort(CurrentRenderQueue.begin(), CurrentRenderQueue.end(), [](auto& left, auto& right)

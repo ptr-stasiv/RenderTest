@@ -9,13 +9,17 @@
 namespace graphics
 {
    //This manager will be later used to control the objects lifetime, so it isn't useless
-   class DebugPrimiteManager
+   class DebugPrimitiveManager
    {
    private:
+      std::shared_ptr<DebugPrimitiveMaterial> MaterialInstance;
       std::shared_ptr<RenderManager> RM;
    public:
-      DebugPrimiteManager(const std::shared_ptr<RenderManager>& rm)
-         : RM(rm) {}
+      DebugPrimitiveManager(const std::shared_ptr<RenderManager>& rm)
+         : RM(rm)
+      {
+         MaterialInstance = std::make_shared<DebugPrimitiveMaterial>();
+      }
 
       void AddAACube(const mm::vec3& color,
                      const mm::vec3& center, const mm::vec3& size)
@@ -50,7 +54,7 @@ namespace graphics
          mesh.Vertices.Positions.emplace_back(center.x + size.x, center.y, center.z + size.z);
          mesh.Vertices.Positions.emplace_back(center.x, center.y, center.z + size.z);
 
-         auto material = std::make_shared<DebugPrimitiveMaterial>();
+         auto& material = std::make_shared<DebugPrimitiveMaterial>(*MaterialInstance);
 
          material->Color = color;
 
@@ -122,7 +126,7 @@ namespace graphics
             }
          }
 
-         auto material = std::make_shared<DebugPrimitiveMaterial>();
+         auto& material = std::make_shared<DebugPrimitiveMaterial>(*MaterialInstance);
 
          material->Color = color;
 

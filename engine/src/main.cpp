@@ -151,7 +151,7 @@ int main()
    auto cubeMesh = std::make_shared<graphics::Mesh>();;
    cubeMesh->Vertices = *cubeData;
    cubeMesh->Material = cubeM;
-   cubeMesh->Scale = { 5.0f, 0.5f, 5.0f };
+   cubeMesh->Scale = { 15.0f, 0.5f, 15.0f };
    cubeMesh->Translate = { 0.0f, -3.0f, -5.0f };
 
    scene::Scene scene;
@@ -159,15 +159,12 @@ int main()
    scene::Register(scene, cubeMesh);
 
    scene::Register(scene, std::make_shared<graphics::PointLight>(
-                                           graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 10.0f, 3.0f)));
+                                           graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 20.0f, 0.0f)));
 
    scene::Register(scene, MainCamera);
 
    app::RunEngineApp([&]()
       {
-         g_DebugManager->AddAACube({ 0.3f, 1.0f, 0.4f }, { -1.0f, 5.0f, 0.0f }, { 2.0f, 6.0f, 1.0f });
-
-         g_DebugManager->AddAASphere({ 1.0f, 0.2f, 0.1f }, 36, { -1.0f, 5.0f, -5.0f }, 5.0f);
 
          scene::UpdateAndRender(scene);
       });

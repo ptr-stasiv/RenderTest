@@ -40,6 +40,7 @@ namespace graphics
 
       BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath,
                    const std::string_view& geomShaderPath = "");
+      BaseMaterial() = default;
 
       virtual ~BaseMaterial() = default;
 
@@ -47,7 +48,6 @@ namespace graphics
          : InstanceId(GenerateMaterialId())
       {
          ShaderProgram = baseMaterial.ShaderProgram;
-         LOG_WARNING("Copy constructor");
       }
 
       inline BaseMaterial& operator = (const BaseMaterial& baseMaterial)
@@ -55,7 +55,6 @@ namespace graphics
          InstanceId = GenerateMaterialId();
 
          ShaderProgram = baseMaterial.ShaderProgram;
-         LOG_WARNING("Copy operator");
       }
 
       BaseMaterial(BaseMaterial&&) = default;

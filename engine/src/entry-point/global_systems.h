@@ -12,6 +12,6 @@ inline std::shared_ptr<app::Window> g_Window;
 
 inline std::shared_ptr<graphics::RenderManager> g_RenderManager;
 
-inline std::shared_ptr<graphics::DebugPrimiteManager> g_DebugManager;
+inline std::shared_ptr<graphics::DebugPrimitiveManager> g_DebugManager;
 
 inline std::shared_ptr<input::InputManager> g_InputManager;

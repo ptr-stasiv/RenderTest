@@ -23,7 +23,7 @@ namespace app
 
       g_RenderManager = std::make_shared<graphics::RenderManager>(g_GraphicsDevice);
 
-      g_DebugManager = std::make_shared<graphics::DebugPrimiteManager>(g_RenderManager);
+      g_DebugManager = std::make_shared<graphics::DebugPrimitiveManager>(g_RenderManager);
 
       g_InputManager = std::make_shared<input::InputManager>(g_Window);
 
