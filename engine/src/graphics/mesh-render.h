@@ -73,6 +73,7 @@ namespace graphics
       
       virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) {} 
       virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) {}
+      virtual void SetCameraToClipMatrix(const mm::mat4& mat) {}
       virtual void SetCameraToClipMatrix(const math::Matrix4& mat) {}
       virtual void SetCameraPosition(const mm::vec3& position) {}
       virtual void SetSpotlightsCount(const size_t count) {}
@@ -106,9 +107,14 @@ namespace graphics
          ShaderProgram->SetFloats("ToWorld", mat);
       } 
 
-      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) override 
+      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) override
       {
          ShaderProgram->SetFloats("ToCamera", mat);
+      }
+
+      virtual void SetCameraToClipMatrix(const mm::mat4& mat) override
+      {
+         ShaderProgram->SetFloats("ToClip", mat);
       }
 
       virtual void SetCameraToClipMatrix(const math::Matrix4& mat) override
@@ -151,7 +157,7 @@ namespace graphics
          ShaderProgram->SetFloats("ToCamera", mat);
       }
 
-      virtual void SetCameraToClipMatrix(const math::Matrix4& mat) override
+      virtual void SetCameraToClipMatrix(const mm::mat4& mat) override
       {
          ShaderProgram->SetFloats("ToClip", mat);
       }

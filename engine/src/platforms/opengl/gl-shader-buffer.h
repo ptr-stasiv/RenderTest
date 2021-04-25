@@ -38,7 +38,7 @@ namespace graphics
 
          inline std::any GetData(const size_t offset, const size_t size) override
          {
-            void* obtainedData;
+            void* obtainedData = malloc(size + offset);
             glGetNamedBufferSubData(BindId, static_cast<GLintptr>(offset), size, obtainedData);
 
             return obtainedData;

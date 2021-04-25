@@ -170,6 +170,14 @@ namespace graphics
             glUniformMatrix4fv(loc, 1, GL_FALSE, m.Data);
          }
 
+         inline void SetFloats(const std::string_view& name, const mm::mat4& m) const override
+         {
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform: %s", &name[0]);
+
+            glUniformMatrix4fv(loc, 1, GL_FALSE, mm::transpose(m).Data);
+         }
+
          inline void SetFloats(const std::string_view& name, const mm::vec4& v) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());

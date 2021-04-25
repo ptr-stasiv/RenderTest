@@ -41,9 +41,9 @@ namespace graphics
          return math::CreateLookAtMatrix(RightAxis, UpAxis, ForwardAxis, Position);
       }
 
-      inline math::Matrix4 GetCameraProjection() const
+      inline mm::mat4 GetCameraProjection() const
       {
-         return math::CreatePerspectiveMatrix(Aspect, Fov, 0.01f, 1000.0f);
+         return mm::perspective(Fov, Aspect, 0.01f, 1000.0f);
       }
    };
 }

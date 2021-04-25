@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "math/matrices/matrix4x4.h"
+#include "math/many-math/matrices.h"
 #include "texture2d.h"
 #include "uniform-buffer.h"
 #include "shader-buffer.h"
@@ -44,6 +45,8 @@ namespace graphics
       virtual void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Texture2D>& texture) const = 0;
 
       virtual void SetFloats(const std::string_view& name, const math::Matrix4& m) const = 0;
+
+      virtual void SetFloats(const std::string_view& name, const mm::mat4& m) const = 0;
 
       virtual void SetFloats(const std::string_view& name, const mm::vec4& v) const = 0;
 

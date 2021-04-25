@@ -25,9 +25,30 @@
 
 #include "math/math.h"
 
+#include "math/many-math/matrices.h"
+
 int main()
 {
+   auto m1 = math::CreatePerspectiveMatrix(1.77f, mm::PI / 4, 0.01f, 1000.0f);
+   auto m2 = mm::transpose(mm::perspective(mm::PI / 4, 1.77f, 0.01f, 1000.0f));
+
    app::CreateEngineApp();
+
+   mm::vec4 v(1.0f, 2.0f, 3.0f, 4.0f);
+
+   mm::n_mat<float, 4, 4> mat({ 0.0f });
+   mat.m14 = 2.0f;
+   mat.m24 = 3.0f;
+   mat.m34 = 0.5f;
+   mat.m44 = 4.0f;
+
+   mm::n_mat<float, 4, 4> mat1({ 0.0f });
+   mat1.m11 = 2.0f;
+   mat1.m22 = 3.0f;
+   mat1.m33 = 0.5f;
+   mat1.m44 = 4.0f;
+
+   mm::n_mat<float, 4, 4> r = mm::transpose(mat);
 
    auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), mm::PI / 4, 1.7f, 5.0f);
 
@@ -165,7 +186,6 @@ int main()
 
    app::RunEngineApp([&]()
       {
-
          scene::UpdateAndRender(scene);
       });
 

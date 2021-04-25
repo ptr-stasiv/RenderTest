@@ -86,9 +86,6 @@ void main()
     vec3 viewDir = normalize(CameraPosition - vs_in.FragPos);
 
 
-    
-    float a = 0.0f;
-
     for(int i = 0; i < min(PointLightsCount, MAX_POINT_LIGHTS); ++i)
     {
         vec3 lightPos = lightBlock.PointLightArray[i].Position.xyz;
@@ -102,7 +99,6 @@ void main()
                                     lightDir, normal, viewDir);
         float lightDist = abs(length(lightPos - vs_in.FragPos));
         float attentuation = (1 / pow(offset + lightDist, 2)) * stretch;
-        a = attentuation;
 
         lightSum += phong * attentuation;
     }
@@ -132,8 +128,6 @@ void main()
         lightSum += lightDir * attentuation;
     }
 
-    if(a <= 0.1f)
-        FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    else
-        FragColor = texture(DiffuseTexture, vs_in.UV) * vec4(lightSum, 1.0f);
+
+    FragColor = texture(DiffuseTexture, vs_in.UV) * vec4(lightSum, 1.0f);
 }

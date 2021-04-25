@@ -34,6 +34,14 @@ namespace graphics
       LightsUBO->UpdateData(sizeof(PointLightAligned16) * PointLightCounter, PointLightList);
       LightsUBO->UpdateData(sizeof(SpotlightAligned16) * SpotlightCounter, SpotlightList, sizeof(PointLightAligned16) * MaxPointLights);
 
+      struct alignas(16) BoundingSphere
+      {
+         mm::vec4 Center;
+         float Radius;
+      };
+
+      std::vector<BoundingSphere> BoundingSphereList;
+
       for (size_t i = 0; i < PointLightCounter; ++i)
       {
          auto& pl = PointLightList[i];
@@ -44,6 +52,8 @@ namespace graphics
          float x = (-2 * pl.Offset + sqrt(disc)) / 2;
 
          g_DebugManager->AddAASphere({ 1.0f }, 24, PointLightList[i].Position, x);
+
+         BoundingSphereList.push_back({ pl.Position, x });
       }
 
 
