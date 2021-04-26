@@ -69,8 +69,8 @@ namespace graphics
          auto& mesh = renderer.second;
 
          mm::mat4 worldTransform;
-         worldTransform = mm::scale(worldTransform, mesh.Scale);
          worldTransform = mm::translate(worldTransform, mesh.Translate);
+         worldTransform = mm::scale(worldTransform, mesh.Scale);
          //mm::rotate(mesh.Rotation.w, mm::vec3(mesh.Rotation.x, mesh.Rotation.y, mesh.Rotation.x));
 
          auto& material = mesh.Material;

@@ -175,10 +175,15 @@ namespace mm
          {
             float elem = 0.0f;
 
-            for (size_t i = 0.0f; i < Columns; ++i)
-               elem += mat1.Data[i + r * Rows] * mat2.Data[c + i * Columns2];
+            for (size_t i = 0; i < Columns; ++i)
+            {
+               float v1 = mat1.Data[i + r * Columns];
+               float v2 = mat2.Data[c + i * Columns2];
 
-            res.Data[r + c * Columns2] = elem;
+               elem += v1 * v2;
+            }
+
+            res.Data[c + r * Columns2] = elem;
          }
       }
 
