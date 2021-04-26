@@ -1,10 +1,26 @@
 #pragma once
+#include <algorithm>
+
 #include "math/many-math/vectors.h"
 
 namespace mm
 {
    template<typename T, size_t Rows, size_t Columns>
    struct n_mat;
+
+   template<typename T, size_t Rows, size_t Columns>
+   inline n_mat<T, Rows, Columns> identity(const n_mat<T, Rows, Columns>& mat);
+
+#define MATRIX_CONSTRUCTOR(rows, columns) \
+   n_mat() \
+   { \
+      *this = identity(*this); \
+   } \
+   n_mat(const T& scalar) \
+   { \
+      for(size_t i = 0; i < rows * columns; ++i) \
+         Data[i] = scalar; \
+   }
 
    template<typename T>
    struct n_mat<T, 4, 4>
@@ -20,25 +36,113 @@ namespace mm
             float m31, m32, m33, m34;
             float m41, m42, m43, m44;
          };
+
+         struct
+         {
+            mm::vec4 Row1;
+            mm::vec4 Row2;
+            mm::vec4 Row3;
+            mm::vec4 Row4;
+         };
       };
+
+      MATRIX_CONSTRUCTOR(4, 4)
    };
 
    template<typename T>
-   struct n_mat<T, 4, 3>
+   struct n_mat<T, 3, 4>
    {
-      T Data[4 * 3];
+      union
+      {
+         T Data[3 * 4];
+
+         struct
+         {
+            float m11, m12, m13, m14;
+            float m21, m22, m23, m24;
+            float m31, m32, m33, m34;
+         };
+
+         struct 
+         {
+            mm::vec4 Row1;
+            mm::vec4 Row2;
+            mm::vec4 Row3;
+         };
+      };
+
+      MATRIX_CONSTRUCTOR(3, 4)
+   };
+
+   template<typename T>
+   struct n_mat<T, 2, 3>
+   {
+      union
+      {
+         T Data[2 * 3];
+
+         struct
+         {
+            float m11, m12, m13;
+            float m21, m22, m23;
+         };
+
+         struct
+         {
+            mm::vec3 Row1;
+            mm::vec3 Row2;
+         };
+      };
+
+      MATRIX_CONSTRUCTOR(2, 3)
    };
 
    template<typename T>
    struct n_mat<T, 3, 3>
    {
-      T Data[3 * 3];
+      union
+      {
+         T Data[3 * 3];
+
+         struct 
+         {
+            float m11, m12, m13;
+            float m21, m22, m23;
+            float m31, m32, m33;
+         };
+
+         struct 
+         {
+            mm::vec3 Row1;
+            mm::vec3 Row2;
+            mm::vec3 Row3;
+         };
+      };
+
+      MATRIX_CONSTRUCTOR(3, 3)
    };
 
    template<typename T>
    struct n_mat<T, 2, 2>
    {
-      T Data[2 * 2];
+      union
+      {
+         T Data[2 * 2];
+
+         struct
+         {
+            float m11, m12;
+            float m21, m22;
+         };
+
+         struct 
+         {
+            mm::vec2 Row1;
+            mm::vec2 Row2;
+         };
+      };
+
+      MATRIX_CONSTRUCTOR(2, 2)
    };
 
 
@@ -82,6 +186,21 @@ namespace mm
    }
 
    template<typename T, size_t Rows, size_t Columns>
+   inline n_mat<T, Rows, Columns> identity(const n_mat<T, Rows, Columns>& mat)
+   {
+      n_mat<T, Rows, Columns> res{ 0 };
+
+      size_t rowOffset = 0;
+      for(size_t i = 0; i < Rows; ++i)
+      {
+         res.Data[i * Columns + rowOffset] = 1;
+         ++rowOffset;
+      }
+
+      return res;
+   }
+
+   template<typename T, size_t Rows, size_t Columns>
    inline n_mat<T, Columns, Rows> transpose(const n_mat<T, Rows, Columns>& mat)
    {
       n_mat<T, Columns, Rows> res{ 0 };
@@ -95,22 +214,85 @@ namespace mm
       return res;
    }
 
-   template<typename T, size_t Rows>
-   inline n_mat<T, Rows, 4> translate(const mm::n_vector<T, Rows>& offset)
+   template<typename T, size_t Rows, size_t Columns, size_t VectorComponents>
+   inline n_mat<T, Rows, Columns> translate(const n_mat<T, Rows, Columns>& base, const mm::n_vector<T, VectorComponents> offset)
    {
-      
+      n_mat<T, Rows, Columns> res;
+
+      for(size_t i = 0; i < std::min(VectorComponents, Rows); ++i)
+         res.Data[i * Columns + Columns - 1] = offset.Data[i];
+
+      return base * res;
+   }
+
+   template<typename T, size_t Rows, size_t Columns, size_t VectorComponents>
+   inline n_mat<T, Rows, Columns> scale(const n_mat<T, Rows, Columns>& base, const mm::n_vector<T, VectorComponents>& scaleFactors)
+   {
+      n_mat<T, Rows, Columns> res;
+
+      size_t rowOffset = 0;
+      for(size_t i = 0; i < std::min(VectorComponents, Rows); ++i)
+      {
+         res.Data[i * Columns + rowOffset] = scaleFactors.Data[i];
+         ++rowOffset;
+      }
+
+      return base * res;
    }
 
    template<typename T, size_t Rows, size_t Columns>
-   inline n_mat<T, Rows, Columns> scale(const mm::n_vector<T, Rows>& scaleFactors)
+   inline n_mat<T, Rows, Columns> rotate(const float angle, const mm::n_vector<T, Rows>& rotateFactors)
    {
+      static_assert(Rows >= 3 && Columns >= 3);
 
+      const float s = sin(angle);
+      const float c = cos(angle);
+
+      mm::n_mat<T, Rows, Columns> zAxisMat;
+      zAxisMat = identity(zAxisMat);
+      zAxisMat.Data[0] = c * rotateFactors.z;
+      zAxisMat.Data[1] = s * rotateFactors.z;
+      zAxisMat.Data[4] = -s * rotateFactors.z;
+      zAxisMat.Data[5] = c * rotateFactors.z;
+      zAxisMat.Data[10] = 1.0f;
+
+      mm::n_mat<T, Rows, Columns> yAxisMat;
+      yAxisMat = identity(yAxisMat);
+      yAxisMat.Data[0] = c * rotateFactors.y;
+      yAxisMat.Data[2] = -s * rotateFactors.y;
+      yAxisMat[5] = 1.0f;
+      yAxisMat.Data[8] = s * rotateFactors.y;
+      yAxisMat.Data[10] = c * rotateFactors.y;
+
+      mm::n_mat<T, Rows, Columns> xAxisMat;
+      xAxisMat = identity(xAxisMat);
+      xAxisMat.Data[0] = 1.0f;
+      xAxisMat.Data[5] = c  * rotateFactors.x;
+      xAxisMat.Data[6] = s * rotateFactors.x;
+      xAxisMat.Data[10] = -s * rotateFactors.x ;
+      xAxisMat.Data[11] = c * rotateFactors.x;
+
+      return xAxisMat * yAxisMat * zAxisMat;
    }
 
+   inline n_mat<float, 4, 4> lookAt(const mm::vec3& axisX, const mm::vec3& axisY, const mm::vec3& axisZ, const mm::vec3& offset)
+   {
+      n_mat<float, 4, 4> res;
+
+      res.Row1 = axisX;
+      res.Row2 = axisY;
+      res.Row3 = axisZ;
+
+      res.Data[3] = -mm::dot(axisX, offset);
+      res.Data[7] = -mm::dot(axisY, offset);
+      res.Data[11] = -mm::dot(axisZ, offset);
+
+      return res;
+   }
 
    inline n_mat<float, 4, 4> perspective(const float fov, const float ar, const float nearZ, const float farZ)
    {
-      n_mat<float, 4, 4> res{ 0 };
+      n_mat<float, 4, 4> res;
 
       res.Data[0] = 1 / (tan(fov / 2.0f) * ar);
       res.Data[5] = 1 / tan(fov / 2.0f);
@@ -128,7 +310,7 @@ namespace mm
 
    inline n_mat<float, 4, 4> ortho(const float right, const float top, const float farZ, const float nearZ)
    {
-      n_mat<float, 4, 4> res{ 0 };
+      n_mat<float, 4, 4> res;
 
       res.Data[0] = 1.0f / right;
       res.Data[5] = 1.0f / top;
@@ -151,4 +333,5 @@ namespace mm
    using mat2 = n_mat<float, 2, 2>;
 
    using mat3x4 = n_mat<float, 3, 4>;
+   using mat2x3 = n_mat<float, 2, 3>;
 }

@@ -68,9 +68,10 @@ namespace graphics
 
          auto& mesh = renderer.second;
 
-         auto& transformmatrix = math::CreateScaleMatrix(mesh.Scale)
-                                 * math::CreateRotationMatrix(mesh.Rotation.w, { mesh.Rotation.x, mesh.Rotation.y, mesh.Rotation.x })
-                                 * math::CreateTranslateMatrix(mesh.Translate);
+         mm::mat4 worldTransform;
+         worldTransform = mm::scale(worldTransform, mesh.Scale);
+         worldTransform = mm::translate(worldTransform, mesh.Translate);
+         //mm::rotate(mesh.Rotation.w, mm::vec3(mesh.Rotation.x, mesh.Rotation.y, mesh.Rotation.x));
 
          auto& material = mesh.Material;
 
@@ -89,7 +90,7 @@ namespace graphics
 
          }
 
-         material->SetObjectToWorldMatrix(transformmatrix);
+         material->SetObjectToWorldMatrix(worldTransform);
          material->ResolveUniforms();
 
          PositionsVBO->UpdateData(mesh.Vertices.Positions.size() * sizeof(mm::vec3), &mesh.Vertices.Positions[0]);

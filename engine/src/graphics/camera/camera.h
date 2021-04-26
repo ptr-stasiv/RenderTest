@@ -36,9 +36,9 @@ namespace graphics
       void Move(const CameraMoveType moveType, const float value, const float deltaTime);
       void Rotate(const float posX, const float posY, const float deltaTime);
 
-      inline math::Matrix4 GetCameraViewMatrix() const
+      inline mm::mat4 GetCameraViewMatrix() const
       {
-         return math::CreateLookAtMatrix(RightAxis, UpAxis, ForwardAxis, Position);
+         return mm::lookAt(RightAxis, UpAxis, ForwardAxis, Position);
       }
 
       inline mm::mat4 GetCameraProjection() const

@@ -71,10 +71,9 @@ namespace graphics
 
       //Through this functions render supply global information to shader
       
-      virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) {} 
-      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) {}
+      virtual void SetObjectToWorldMatrix(const mm::mat4& mat) {}
+      virtual void SetWorldToCameraMatrix(const mm::mat4& mat) {}
       virtual void SetCameraToClipMatrix(const mm::mat4& mat) {}
-      virtual void SetCameraToClipMatrix(const math::Matrix4& mat) {}
       virtual void SetCameraPosition(const mm::vec3& position) {}
       virtual void SetSpotlightsCount(const size_t count) {}
       virtual void SetPointLightsCount(const size_t count) {}
@@ -102,22 +101,17 @@ namespace graphics
 
       virtual void ResolveUniforms() override;
 
-      virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) override 
+      virtual void SetObjectToWorldMatrix(const mm::mat4& mat) override
       {
          ShaderProgram->SetFloats("ToWorld", mat);
       } 
 
-      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) override
+      virtual void SetWorldToCameraMatrix(const mm::mat4& mat) override
       {
          ShaderProgram->SetFloats("ToCamera", mat);
       }
 
       virtual void SetCameraToClipMatrix(const mm::mat4& mat) override
-      {
-         ShaderProgram->SetFloats("ToClip", mat);
-      }
-
-      virtual void SetCameraToClipMatrix(const math::Matrix4& mat) override
       {
          ShaderProgram->SetFloats("ToClip", mat);
       }
@@ -147,12 +141,12 @@ namespace graphics
 
       virtual void ResolveUniforms() override;
 
-      virtual void SetObjectToWorldMatrix(const math::Matrix4& mat) override
+      virtual void SetObjectToWorldMatrix(const mm::mat4& mat) override
       {
          ShaderProgram->SetFloats("ToWorld", mat);
       }
 
-      virtual void SetWorldToCameraMatrix(const math::Matrix4& mat) override
+      virtual void SetWorldToCameraMatrix(const mm::mat4& mat) override
       {
          ShaderProgram->SetFloats("ToCamera", mat);
       }
