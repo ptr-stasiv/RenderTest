@@ -19,7 +19,10 @@ namespace graphics
          { InternalFormat::RGB8, GL_RGB8 },
          { InternalFormat::RGBA8, GL_RGBA8 },
          { InternalFormat::RGB16, GL_RGB16 },
-         { InternalFormat::RGBA16, GL_RGBA16 }
+         { InternalFormat::RGBA16, GL_RGBA16 },
+         { InternalFormat::Depth16, GL_DEPTH_COMPONENT16 },
+         { InternalFormat::Depth24, GL_DEPTH_COMPONENT24 },
+         { InternalFormat::Depth32, GL_DEPTH_COMPONENT32 }
       };
 
       inline std::unordered_map<Format, GLenum> FormatLookupMap =
@@ -27,7 +30,8 @@ namespace graphics
          { Format::RGB, GL_RGB },
          { Format::RGBA, GL_RGBA },
          { Format::BGR, GL_BGR },
-         { Format::BGRA, GL_BGRA }
+         { Format::BGRA, GL_BGRA },
+         { Format::Depth, GL_DEPTH_COMPONENT }
       };
 
       inline std::unordered_map<Type, GLenum> TypeLookupMap =

@@ -127,7 +127,6 @@ namespace graphics
 
          glfwSetScrollCallback(GlfwWindow, input::ScrollCallback);
 
-
          //
          //This should be move out from here
          //

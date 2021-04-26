@@ -9,12 +9,21 @@ namespace graphics
       Depth
    };
 
+   enum class Attachments : uint8_t
+   {
+      Color,
+      Depth
+   };
+
    enum class InternalFormat : uint8_t
    {
       RGB8,
       RGBA8,
       RGB16,
-      RGBA16
+      RGBA16,
+      Depth16,
+      Depth24,
+      Depth32
    };
 
    enum class Format : uint8_t
@@ -22,7 +31,8 @@ namespace graphics
       RGB,
       RGBA,
       BGR,
-      BGRA
+      BGRA,
+      Depth
    };
 
    enum class Type : uint8_t

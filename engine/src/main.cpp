@@ -29,10 +29,6 @@
 
 int main()
 {
-   mm::mat4 m;
-   m = mm::scale(m, mm::vec3(3.0f));
-   m = mm::translate(m, mm::vec3(0, -3, -5));
-
    app::CreateEngineApp();
 
    auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), mm::PI / 4, 1.7f, 5.0f);

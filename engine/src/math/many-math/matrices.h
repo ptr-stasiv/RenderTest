@@ -245,8 +245,8 @@ namespace mm
       return base * res;
    }
 
-   template<typename T, size_t Rows, size_t Columns>
-   inline n_mat<T, Rows, Columns> rotate(const float angle, const mm::n_vector<T, Rows>& rotateFactors)
+   template<typename T, size_t Rows, size_t Columns, size_t VectorComponents>
+   inline n_mat<T, Rows, Columns> rotate(const n_mat<T, Rows, Columns>& base, const float angle, const mm::n_vector<T, VectorComponents>& rotateFactors)
    {
       static_assert(Rows >= 3 && Columns >= 3);
 
@@ -254,7 +254,6 @@ namespace mm
       const float c = cos(angle);
 
       mm::n_mat<T, Rows, Columns> zAxisMat;
-      zAxisMat = identity(zAxisMat);
       zAxisMat.Data[0] = c * rotateFactors.z;
       zAxisMat.Data[1] = s * rotateFactors.z;
       zAxisMat.Data[4] = -s * rotateFactors.z;
@@ -262,22 +261,20 @@ namespace mm
       zAxisMat.Data[10] = 1.0f;
 
       mm::n_mat<T, Rows, Columns> yAxisMat;
-      yAxisMat = identity(yAxisMat);
       yAxisMat.Data[0] = c * rotateFactors.y;
       yAxisMat.Data[2] = -s * rotateFactors.y;
-      yAxisMat[5] = 1.0f;
+      yAxisMat.Data[5] = 1.0f;
       yAxisMat.Data[8] = s * rotateFactors.y;
       yAxisMat.Data[10] = c * rotateFactors.y;
 
       mm::n_mat<T, Rows, Columns> xAxisMat;
-      xAxisMat = identity(xAxisMat);
       xAxisMat.Data[0] = 1.0f;
       xAxisMat.Data[5] = c  * rotateFactors.x;
       xAxisMat.Data[6] = s * rotateFactors.x;
       xAxisMat.Data[10] = -s * rotateFactors.x ;
       xAxisMat.Data[11] = c * rotateFactors.x;
 
-      return xAxisMat * yAxisMat * zAxisMat;
+      return base * (xAxisMat * yAxisMat * zAxisMat);
    }
 
    inline n_mat<float, 4, 4> lookAt(const mm::vec3& axisX, const mm::vec3& axisY, const mm::vec3& axisZ, const mm::vec3& offset)
