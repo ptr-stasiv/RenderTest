@@ -14,6 +14,12 @@ namespace graphics
          { Feature::Depth, GL_DEPTH_TEST }
       };
 
+      inline std::unordered_map<Attachment, GLenum> AttachmentLookupMap =
+      {
+         { Attachment::Color, GL_COLOR_ATTACHMENT0 },
+         { Attachment::Depth, GL_DEPTH_ATTACHMENT }
+      };
+
       inline std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap = 
       {
          { InternalFormat::RGB8, GL_RGB8 },
@@ -57,6 +63,7 @@ namespace graphics
 }
 
 #define OGL_FEATURE(f) graphics::gl::FeatureLookupMap.at(f)
+#define OGL_ATTACHMENT(a) graphics::gl::AttachmentLookupMap.at(a)
 #define OGL_IFORMAT(f) graphics::gl::InternalFormatLookupMap.at(f)
 #define OGL_FORMAT(f) graphics::gl::FormatLookupMap.at(f)
 #define OGL_TYPE(t) graphics::gl::TypeLookupMap.at(t)

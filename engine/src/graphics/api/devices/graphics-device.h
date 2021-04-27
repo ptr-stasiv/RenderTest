@@ -8,6 +8,7 @@
 #include "graphics/api/vertex-buffer.h"
 #include "graphics/api/uniform-buffer.h"
 #include "graphics/api/shader-buffer.h"
+#include "graphics/api/framebuffer.h"
 
 namespace graphics
 {
@@ -32,6 +33,8 @@ namespace graphics
       virtual std::shared_ptr<UniformBuffer> CreateUBO() = 0;
 
       virtual std::shared_ptr<ShaderBuffer> CreateSBO() = 0;
+
+      virtual std::shared_ptr<Framebuffer> CreateFBO() = 0;
       
       
       //Commands

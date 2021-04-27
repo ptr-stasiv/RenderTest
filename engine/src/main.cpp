@@ -143,7 +143,7 @@ int main()
    cubeM->Specular = mm::vec3(0.8f);
    cubeM->Glossiness = 8.0f;
    cubeM->DiffuseTexture = cubeDiffuse;
-   cubeM->NormalTexture = pistolNorm;
+   cubeM->NormalTexture = cubeNorm;
 
    auto pistolMesh = std::make_shared<graphics::Mesh>();
    pistolMesh->Vertices = *pistolData;

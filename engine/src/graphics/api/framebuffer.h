@@ -8,8 +8,12 @@ namespace graphics
 {
    class Framebuffer
    {
+   public:
       Framebuffer() = default;
       virtual ~Framebuffer() = default;
+
+      virtual void Bind() const = 0;
+      virtual void Unbind() const = 0;
 
       virtual void AttachTexture2D(const Attachment attachment, const std::shared_ptr<Texture2D>& texture) = 0;
    };

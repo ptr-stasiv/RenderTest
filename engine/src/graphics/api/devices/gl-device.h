@@ -9,6 +9,7 @@
 #include "platforms/opengl/gl-uniform-buffer.h"
 #include "platforms/opengl/gl-shader-buffer.h"
 #include "platforms/opengl/gl-compute-shader.h"
+#include "platforms/opengl/gl-framebuffer.h"
 
 namespace graphics
 {
@@ -54,6 +55,10 @@ namespace graphics
          return std::make_shared<gl::ShaderBufferGL>();
       }
       
+      inline std::shared_ptr<Framebuffer> CreateFBO() override
+      {
+         return std::make_shared<gl::FramebufferGL>();
+      }
       
      //Commands
       

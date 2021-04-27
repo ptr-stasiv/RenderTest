@@ -9,7 +9,7 @@ namespace graphics
       Depth
    };
 
-   enum class Attachments : uint8_t
+   enum class Attachment : uint8_t
    {
       Color,
       Depth
