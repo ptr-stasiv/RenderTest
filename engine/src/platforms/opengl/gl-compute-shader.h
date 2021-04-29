@@ -50,7 +50,7 @@ namespace graphics
          {
             Use();
 
-            glDispatchCompute(workGroupsX, 1, 1);
+            glDispatchCompute(workGroupsX, workGroupsY, workGroupsZ);
 
             glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
          }

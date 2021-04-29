@@ -35,16 +35,25 @@ namespace graphics
       TilesCalculationCS = GD->CreateComputeShader();
       TilesCalculationCS->Attach(utils::ReadFromFile("res/shaders/compute/tiles-calculation.cs"));
 
+      struct Tile
+      {
+         mm::vec2 Position;
+         mm::vec2 Size;
+      };
+
+      constexpr uint8_t tilesX = 4;
+      constexpr uint8_t tilesY = 4;
+
+      std::vector<Tile> tiles(tilesX * tilesY);
+
       auto sbo = GD->CreateSBO();
-      sbo->InitData(sizeof(float) * 16, nullptr);
+      sbo->InitData(sizeof(Tile) * tilesX * tilesY, nullptr);
 
       TilesCalculationCS->AddInputBuffer(sbo, "tilesBuffer");
 
-      TilesCalculationCS->Dispatch(16);
+      TilesCalculationCS->Dispatch(tilesX, tilesY);
 
-      void* data = malloc(sizeof(float) * 16);
-      float* tileData = (float*)data;
-      glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * 16, data);
+      sbo->GetData(0, sizeof(Tile) * tilesX * tilesY, &tiles[0]);
    }
 
    void RenderManager::Update(const Camera& camera)

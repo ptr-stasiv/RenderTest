@@ -11,10 +11,11 @@ namespace graphics
       {
       public:
          GLuint BindId;
+         size_t Size;
 
          inline ShaderBufferGL()
          {
-            glGenBuffers(1, &BindId);
+            glCreateBuffers(1, &BindId);
          }
 
          inline ~ShaderBufferGL() override
@@ -24,22 +25,22 @@ namespace graphics
 
          inline void InitData(const size_t size, const void* data) override
          {
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, BindId);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_DYNAMIC_DRAW);
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+            glNamedBufferData(BindId, size, data, GL_DYNAMIC_DRAW);
+            Size = size;
          }
 
-         inline void UpdateData(const size_t size, const void* data, const size_t offset) override
+         inline void UpdateData(const size_t offset, const size_t size, const void* data) override
          {
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, BindId);
-            glBufferSubData(GL_SHADER_STORAGE_BUFFER, static_cast<GLintptr>(offset), size, data);
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+            ASSERT(offset + size <= Size, "Update data is too big!");
+
+            glNamedBufferSubData(BindId, static_cast<GLintptr>(offset), size, data);
          }
 
-         inline void GetData(const size_t offset, const size_t size, void** buffer) override
+         inline void GetData(const size_t offset, const size_t size, void* buffer) override
          {
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, BindId);
-            glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, size, *buffer);
+            ASSERT(offset + size <= Size, "Offset + size is out of buffer range!");
+
+            glGetNamedBufferSubData(BindId, static_cast<GLintptr>(offset), size, buffer);
          }
       };
    }

@@ -2,12 +2,18 @@
 
 layout(local_size_x = 1) in;
 
+struct Tile
+{
+    vec2 Position;
+    vec2 Size;
+};
+
 layout(std430) buffer tilesBuffer
 {
-    float Values[16];
+    Tile Tiles[];
 };
 
 void main()
 {
-    Values[gl_GlobalInvocationID.x] = 2.0f;
+    Tiles[gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * gl_NumWorkGroups.x].Position = vec2(1.0f);
 }
