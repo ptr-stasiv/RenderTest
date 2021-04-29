@@ -1,8 +1,12 @@
 #include "render-manager.h"
 
 #include <algorithm>
+#include <thread>
 
 #include "entry-point/global_systems.h"
+
+#include "GL/glew.h"
+#include "platforms/opengl/gl-compute-shader.h"
 
 namespace graphics
 {
@@ -27,6 +31,20 @@ namespace graphics
       //UBO's setup
       LightsUBO = gd->CreateUBO();
       LightsUBO->InitData((sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) * (MaxPointLights + MaxSpotlights), nullptr);
+
+      TilesCalculationCS = GD->CreateComputeShader();
+      TilesCalculationCS->Attach(utils::ReadFromFile("res/shaders/compute/tiles-calculation.cs"));
+
+      auto sbo = GD->CreateSBO();
+      sbo->InitData(sizeof(float) * 16, nullptr);
+
+      TilesCalculationCS->AddInputBuffer(sbo, "tilesBuffer");
+
+      TilesCalculationCS->Dispatch(16);
+
+      void* data = malloc(sizeof(float) * 16);
+      float* tileData = (float*)data;
+      glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(float) * 16, data);
    }
 
    void RenderManager::Update(const Camera& camera)
@@ -42,6 +60,7 @@ namespace graphics
 
       std::vector<BoundingSphere> BoundingSphereList;
 
+      //Debug the tiled rendering
       for (size_t i = 0; i < PointLightCounter; ++i)
       {
          auto& pl = PointLightList[i];

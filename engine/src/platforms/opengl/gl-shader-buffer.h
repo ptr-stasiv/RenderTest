@@ -36,12 +36,10 @@ namespace graphics
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
          }
 
-         inline std::any GetData(const size_t offset, const size_t size) override
+         inline void GetData(const size_t offset, const size_t size, void** buffer) override
          {
-            void* obtainedData = malloc(size + offset);
-            glGetNamedBufferSubData(BindId, static_cast<GLintptr>(offset), size, obtainedData);
-
-            return obtainedData;
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, BindId);
+            glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, size, *buffer);
          }
       };
    }

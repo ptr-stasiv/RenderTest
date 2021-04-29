@@ -13,6 +13,6 @@ namespace graphics
 
       virtual void UpdateData(const size_t size, const void* data, const size_t offset = 0) = 0;
       
-      virtual std::any GetData(const size_t offset, const size_t size) = 0;
+      virtual void GetData(const size_t offset, const size_t size, void** buffer) = 0;
    };
 }

@@ -33,6 +33,7 @@ namespace graphics
 
             const char* src = shaderSrc.data();
             glShaderSource(shader, 1, &src, NULL);
+            glCompileShader(shader);
 
             glAttachShader(ProgramId, shader);
             glDeleteShader(shader);
@@ -45,10 +46,13 @@ namespace graphics
             glUseProgram(ProgramId);
          }
 
-         inline void Dispatch(uint32_t workGroupsX, uint32_t workGroupsY = 0, const uint32_t workGroupsZ = 0) override
+         inline void Dispatch(uint32_t workGroupsX, uint32_t workGroupsY, const uint32_t workGroupsZ) override
          {
             Use();
-            glDispatchCompute(workGroupsX, workGroupsY, workGroupsZ);
+
+            glDispatchCompute(workGroupsX, 1, 1);
+
+            glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
          }
          
          inline void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) override
@@ -56,13 +60,11 @@ namespace graphics
             auto& glSSBO = std::static_pointer_cast<ShaderBufferGL>(ssbo);
 
             GLuint blockId = glGetProgramResourceIndex(ProgramId, GL_SHADER_STORAGE_BLOCK, &name[0]);
-            ASSERT(blockId >= 0, "Invalid SSBO id!");
-
-            glShaderStorageBlockBinding(ProgramId, blockId, SBufferCounter);
+            ASSERT(blockId != GL_INVALID_INDEX, "Invalid SSBO id!");
             
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, glSSBO->BindId);
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SBufferCounter, glSSBO->BindId);
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+            glShaderStorageBlockBinding(ProgramId, blockId, SBufferCounter);
 
             ++SBufferCounter;
          }

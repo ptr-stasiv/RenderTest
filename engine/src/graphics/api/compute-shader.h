@@ -18,7 +18,7 @@ namespace graphics
 
       virtual void Use() const = 0;
 
-      virtual void Dispatch(uint32_t workGroupsX, uint32_t workGroupsY = 0, const uint32_t workGroupsZ = 0) = 0;
+      virtual void Dispatch(uint32_t workGroupsX, uint32_t workGroupsY = 1, const uint32_t workGroupsZ = 1) = 0;
 
       virtual void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) = 0;
 
