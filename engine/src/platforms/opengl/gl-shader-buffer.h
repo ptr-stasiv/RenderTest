@@ -29,7 +29,7 @@ namespace graphics
             Size = size;
          }
 
-         inline void UpdateData(const size_t offset, const size_t size, const void* data) override
+         inline void UpdateData(const size_t offset, const size_t size, void* data) override
          {
             ASSERT(offset + size <= Size, "Update data is too big!");
 
@@ -40,7 +40,7 @@ namespace graphics
          {
             ASSERT(offset + size <= Size, "Offset + size is out of buffer range!");
 
-            glGetNamedBufferSubData(BindId, static_cast<GLintptr>(offset), size, buffer);
+            glGetNamedBufferSubData(BindId, 0, size, buffer);
          }
       };
    }

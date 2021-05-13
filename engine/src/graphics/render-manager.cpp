@@ -10,6 +10,12 @@
 
 namespace graphics
 {
+   struct BoundingSphere
+   {
+      mm::vec3 Center;
+      mm::vec3 Point;
+   };
+
    RenderManager::RenderManager(const std::shared_ptr<GraphicsDevice>& gd)
       : GD(gd)
    {
@@ -31,41 +37,12 @@ namespace graphics
       //UBO's setup
       LightsUBO = gd->CreateUBO();
       LightsUBO->InitData((sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) * (MaxPointLights + MaxSpotlights), nullptr);
-
-      TilesCalculationCS = GD->CreateComputeShader();
-      TilesCalculationCS->Attach(utils::ReadFromFile("res/shaders/compute/tiles-calculation.cs"));
-
-      struct Tile
-      {
-         mm::vec2 Position;
-         mm::vec2 Size;
-      };
-
-      constexpr uint8_t tilesX = 4;
-      constexpr uint8_t tilesY = 4;
-
-      std::vector<Tile> tiles(tilesX * tilesY);
-
-      auto sbo = GD->CreateSBO();
-      sbo->InitData(sizeof(Tile) * tilesX * tilesY, nullptr);
-
-      TilesCalculationCS->AddInputBuffer(sbo, "tilesBuffer");
-
-      TilesCalculationCS->Dispatch(tilesX, tilesY);
-
-      sbo->GetData(0, sizeof(Tile) * tilesX * tilesY, &tiles[0]);
    }
 
    void RenderManager::Update(const Camera& camera)
    {
       LightsUBO->UpdateData(sizeof(PointLightAligned16) * PointLightCounter, PointLightList);
       LightsUBO->UpdateData(sizeof(SpotlightAligned16) * SpotlightCounter, SpotlightList, sizeof(PointLightAligned16) * MaxPointLights);
-
-      struct alignas(16) BoundingSphere
-      {
-         mm::vec4 Center;
-         float Radius;
-      };
 
       std::vector<BoundingSphere> BoundingSphereList;
 
@@ -81,7 +58,11 @@ namespace graphics
 
          g_DebugManager->AddAASphere({ 1.0f }, 24, PointLightList[i].Position, x);
 
-         BoundingSphereList.push_back({ pl.Position, x });
+         BoundingSphere sphere;
+         sphere.Center = pl.Position;
+         sphere.Point = pl.Position + mm::vec4(x, 0.0f, 0.0f, 0.0f);
+
+         BoundingSphereList.push_back(sphere);
       }
 
 

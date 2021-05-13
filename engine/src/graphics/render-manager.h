@@ -77,8 +77,6 @@ namespace graphics
       size_t PointLightCounter = 0;
       size_t SpotlightCounter = 0;
 
-      std::shared_ptr<ComputeShader> TilesCalculationCS;
-
       std::shared_ptr<GraphicsDevice> GD;
    public:
       std::shared_ptr<VertexBuffer> PositionsVBO;

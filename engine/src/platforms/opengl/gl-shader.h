@@ -94,15 +94,13 @@ namespace graphics
          inline void AddInputBuffer(const std::shared_ptr<ShaderBuffer>& ssbo, const std::string_view& name) override
          {
             auto& glSSBO = std::static_pointer_cast<ShaderBufferGL>(ssbo);
-               
-            GLuint blockId = glGetProgramResourceIndex(ProgramId, GL_SHADER_STORAGE_BLOCK, &name[0]);
-            ASSERT(blockId >= 0, "Invalid SSBO id!");
 
-            glShaderStorageBlockBinding(ProgramId, blockId, SBufferCounter);
-            
+            GLuint blockId = glGetProgramResourceIndex(ProgramId, GL_SHADER_STORAGE_BLOCK, &name[0]);
+            ASSERT(blockId != GL_INVALID_INDEX, "Invalid SSBO id!");
+
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, glSSBO->BindId);
             glBindBufferBase(GL_SHADER_STORAGE_BUFFER, SBufferCounter, glSSBO->BindId);
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+            glShaderStorageBlockBinding(ProgramId, blockId, SBufferCounter);
 
             ++SBufferCounter;
          }
@@ -194,6 +192,14 @@ namespace graphics
             glUniform3f(loc, v.x, v.y, v.z);
          }
 
+         inline void SetFloats(const std::string_view& name, const mm::vec2& v) const override
+         {
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform: %s", &name[0]);
+
+            glUniform2f(loc, v.x, v.y);
+         }
+
          inline void SetFloat(const std::string_view& name, const float s) const override
          {
             int loc = glGetUniformLocation(ProgramId, name.data());
@@ -208,6 +214,14 @@ namespace graphics
             UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform: %s", &name[0]);
 
             glUniform1i(loc, s);
+         }
+
+         inline void SetInts(const std::string_view& name, const mm::ivec2& v) const override
+         {
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform: %s", &name[0]);
+
+            glUniform2i(loc, v.x, v.y);
          }
       };
    }

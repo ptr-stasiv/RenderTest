@@ -52,8 +52,12 @@ namespace graphics
 
       virtual void SetFloats(const std::string_view& name, const mm::vec3& v) const = 0;
 
+      virtual void SetFloats(const std::string_view& name, const mm::vec2& v) const = 0;
+
       virtual void SetFloat(const std::string_view& name, const float s) const = 0;
 
       virtual void SetInt(const std::string_view& name, const int32_t s) const = 0;
+
+      virtual void SetInts(const std::string_view& name, const mm::ivec2& v) const = 0;
    };
 }
