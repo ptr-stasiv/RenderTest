@@ -1,6 +1,0 @@
-﻿  gui.cpp
-D:\Dev\RenderTest\gui\src\gui.cpp(6,1): warning C4273: 'Foo': inconsistent dll linkage
-D:\Dev\RenderTest\gui\src\gui.h(9,14): message : see previous definition of 'Foo'
-D:\Dev\RenderTest\gui\src\gui.cpp(7): warning C4710: 'printf': function not inlined
-     Creating library output\win64\debug\enginegui.lib and object output\win64\debug\enginegui.exp
-  enginegui.vcxproj -> D:\Dev\RenderTest\gui\output\win64\debug\enginegui.dll
