@@ -1,0 +1,3 @@
+[*.{c++,cc,cpp,cxx,h,h++,hh,hpp,hxx,inl,ipp,tlh,tli}]
+indent_size = 3
+tab_width = 3

@@ -27,8 +27,19 @@
 
 #include "math/many-math/matrices.h"
 
+#include "utils/config-file.h"
+
 int main()
 {
+   auto updateFunc = [](const utils::ConfigMap& map)
+   {
+       for (auto [key, value] : map)
+           LOG_WARNING("%s : %s", key, value.GetAsString());
+   };
+
+   utils::ConfigFile file("src/config.cef", updateFunc);
+
+
    app::CreateEngineApp();
 
    auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), mm::PI / 4, 1.7f, 5.0f);
