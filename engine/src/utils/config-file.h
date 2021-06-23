@@ -59,9 +59,14 @@ namespace utils
       }
    };
 
+   //This function is called in the engine main loop
+   void ConfigFileUpdate();
+
    using ConfigMap = std::map<std::string, ValueWrapper>;
+
    struct ConfigFile
    {
+   private:
       std::filesystem::path Path;
 
       std::ifstream FileHandler;
@@ -69,22 +74,16 @@ namespace utils
       //This function is called when the file opens first time and later when the file modify
       std::function<void(const ConfigMap&)> OnFileUpdate;
 
+      std::filesystem::file_time_type LastTimeModified;
+
+      size_t Id;
+
+      void OpenFile();
+      void CloseFile();
+
+      friend void ConfigFileUpdate();
+   public:
       ConfigFile(const std::string& path, const std::function<void(const ConfigMap&)> updateFunc);
-
-      void OpenFile()
-      {
-          FileHandler.open(Path);
-
-          if (!FileHandler.is_open())
-          {
-              LOG_ERROR("Invalid config file path specified!");
-              return;
-          }
-      }
-
-      void CloseFile()
-      {
-          FileHandler.close();
-      }
+      ~ConfigFile();
    };
 }

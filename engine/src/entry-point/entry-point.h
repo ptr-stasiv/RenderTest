@@ -5,6 +5,7 @@
 #include "graphics/api/devices/gl-device.h"
 #include "jobs/job-system.h"
 #include "utils/timer.h"
+#include "utils/config-file.h"
 
 #include "global_systems.h"
 
@@ -40,6 +41,9 @@ namespace app
      while(!g_Window->ShouldClose())
      {
         frameTimer.Reset();
+
+
+        utils::ConfigFileUpdate();
 
 
         g_Window->BeginFrame();
