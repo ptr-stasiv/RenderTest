@@ -28,9 +28,13 @@ namespace graphics
       float Yaw;
       float Pitch;
 
-      Camera(const mm::vec3 position, const float fov, const float aspect, const float speed);
+      bool Perspective;
+
+      Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const float yaw = 90.0f, const float pitch = 0.0f);
+      Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const mm::vec3& direction);
 
       Camera()  = default;
+
       ~Camera() = default;
 
       void Move(const CameraMoveType moveType, const float value, const float deltaTime);
@@ -43,7 +47,10 @@ namespace graphics
 
       inline mm::mat4 GetCameraProjection() const
       {
-         return mm::perspective(Fov, Aspect, 0.01f, 1000.0f);
+         if(Perspective)
+            return mm::perspective(Fov, Aspect, 0.01f, 1000.0f);
+         else
+            return mm::ortho(10, 10, 10.0f, 1.0f);
       }
    };
 }

@@ -20,7 +20,7 @@ namespace graphics
       camera.UpAxis = mm::cross(camera.ForwardAxis, camera.RightAxis);
    }
 
-   Camera::Camera(const mm::vec3 position, const float fov, const float aspect, const float speed)
+   Camera::Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const float yaw, const float pitch)
    {
       Position = position;
 
@@ -28,10 +28,31 @@ namespace graphics
       Aspect = aspect;
       Speed = speed;
 
-      Yaw = 90.0f;
-      Pitch = 0.0f;
+      Yaw = yaw;
+      Pitch = pitch;
+
+      Perspective = perspective;
 
       CameraComputeBasis(*this);
+   }
+
+   Camera::Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const mm::vec3& direction)
+   {
+      Position = position;
+
+      Fov = fov;
+      Aspect = aspect;
+      Speed = speed;
+
+      Perspective = perspective;
+
+      ForwardAxis = direction;
+
+      UpAxis = ForwardAxis;
+      UpAxis.x += 1.0f;
+      UpAxis = mm::normalize(UpAxis);
+
+      RightAxis = mm::normalize(mm::cross(UpAxis, ForwardAxis));
    }
 
    void Camera::Move(const CameraMoveType moveType, const float value, const float deltaTime)

@@ -299,8 +299,8 @@ namespace mm
       res.Data[0] = 1 / (tan(fov / 2.0f) * ar);
       res.Data[5] = 1 / tan(fov / 2.0f);
 
-      const float b = (2 * farZ * nearZ) / (nearZ - farZ);
-      const float a = (farZ - nearZ) / (nearZ - farZ);
+      const float b = -(2 * farZ * nearZ) / (farZ - nearZ);
+      const float a = -(farZ + nearZ) / (farZ - nearZ);
 
       res.Data[10] = a;
       res.Data[11] = b;

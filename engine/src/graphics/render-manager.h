@@ -59,6 +59,8 @@ namespace graphics
 
       float InnerAngle;
       float OuterAngle;
+
+      int ShadowMapId;
    };
 
    inline constexpr size_t MaxVerticesPerDraw = 500'000;
@@ -69,15 +71,27 @@ namespace graphics
    class RenderManager
    {
    private:
+      std::shared_ptr<Texture2D> depthTexture;
+
+
+
       std::vector<std::pair<RenderKey, Mesh>> CurrentRenderQueue;
 
       PointLightAligned16 PointLightList[MaxPointLights];
       SpotlightAligned16 SpotlightList[MaxSpotlights];
 
+      std::shared_ptr<Texture2D> DirectionalShadowMaps;
+
       size_t PointLightCounter = 0;
       size_t SpotlightCounter = 0;
 
       std::shared_ptr<GraphicsDevice> GD;
+
+      void ShadowPass(const Camera& camera);
+      void LightPass(const Camera& camera);
+      void GeometryPass(const Camera& camera);
+
+      //TODO seperate update function on few seperate, as light, geometry, etc.
    public:
       std::shared_ptr<VertexBuffer> PositionsVBO;
       std::shared_ptr<VertexBuffer> NormalsVBO;
@@ -116,6 +130,7 @@ namespace graphics
          uboSL.Color = sl.Color;
          uboSL.InnerAngle = sl.InnerAngle;
          uboSL.OuterAngle = sl.OuterAngle;
+         uboSL.ShadowMapId = SpotlightCounter;
 
          SpotlightList[SpotlightCounter++] = uboSL;
       }

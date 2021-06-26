@@ -34,7 +34,7 @@ int main()
    app::CreateEngineApp();
 
 
-   auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), mm::PI / 4, 1.7f, 5.0f);
+   auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), true, mm::PI / 4, 1.7f, 5.0f);
 
 
    auto updateFunc = [&](const utils::ConfigMap& map)
@@ -42,7 +42,7 @@ int main()
       MainCamera->Fov = map.at("fov").GetAsFloat();
    };
 
-   utils::ConfigFile configFile("src/config.cef", updateFunc);
+   utils::ConfigFile configFile("config.cef", updateFunc);
 
 
    assets::AssetManager AssetManager;
@@ -172,13 +172,17 @@ int main()
    scene::Register(scene, pistolMesh);
    scene::Register(scene, cubeMesh);
 
-   scene::Register(scene, std::make_shared<graphics::PointLight>(
-                                           graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 20.0f, 0.0f)));
+   /*scene::Register(scene, std::make_shared<graphics::PointLight>(
+                                           graphics::PointLight({ 0.0f, 3.0f, -5.0f }, { 1.0f, 1.0f, 1.0f }, 20.0f, 0.0f)));*/
+
+   scene::Register(scene, std::make_shared<graphics::Spotlight>(
+                                           graphics::Spotlight({ 0.0f, 5.0f, 0.0f }, { 0.0f, -0.7f, 0.0f }, { 1.0f, 1.0f, 1.0f }, mm::PI / 3, mm::PI / 4)));
 
    scene::Register(scene, MainCamera);
 
    app::RunEngineApp([&]()
       {
+         LOG_ERROR("%f %f %f", MainCamera->ForwardAxis.x, MainCamera->ForwardAxis.y, MainCamera->ForwardAxis.z);
          scene::UpdateAndRender(scene);
       });
 

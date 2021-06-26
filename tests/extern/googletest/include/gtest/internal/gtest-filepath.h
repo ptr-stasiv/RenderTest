@@ -65,7 +65,7 @@ class GTEST_API_ FilePath {
   FilePath(const FilePath& rhs) : pathname_(rhs.pathname_) { }
 
   explicit FilePath(const std::string& pathname) : pathname_(pathname) {
-    mm::normalize();
+    normalize();
   }
 
   FilePath& operator=(const FilePath& rhs) {
@@ -193,7 +193,7 @@ class GTEST_API_ FilePath {
   // the primary path separator '\\', so that for example "bar\\/\\foo" becomes
   // "bar\\foo".
 
-  void mm::normalize();
+  void normalize();
 
   // Returns a pointer to the last occurence of a valid path separator in
   // the FilePath. On Windows, for example, both '/' and '\' are valid path

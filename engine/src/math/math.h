@@ -2,8 +2,6 @@
 #include "many-math/vectors.h"
 #include "math/many-math/matrices.h"
 
-#include "matrices/matrix4x4.h"
-
 namespace mm
 {
    constexpr float PI = 3.14159265359f;
@@ -12,5 +10,10 @@ namespace mm
    constexpr float ToRad(const float degrees)
    {
       return PI * degrees / 180.0f;
+   }
+
+   constexpr float ToDeg(const float rad)
+   {
+      return 180.0f * rad / PI;
    }
 }

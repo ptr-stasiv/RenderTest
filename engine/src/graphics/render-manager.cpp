@@ -37,9 +37,40 @@ namespace graphics
       //UBO's setup
       LightsUBO = gd->CreateUBO();
       LightsUBO->InitData((sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) * (MaxPointLights + MaxSpotlights), nullptr);
+
+
+      graphics::TextureParams params;
+      params.MagFilter = TextureFilter::Nearest;
+      params.MinFilter = TextureFilter::Nearest;
+      params.WrapS = TextureWrap::ClampToEdge;
+      params.WrapT = TextureWrap::ClampToEdge;
+
+      depthTexture = GD->CreateTexture2D();
+      depthTexture->InitData(1280, 720, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
    }
 
-   void RenderManager::Update(const Camera& camera)
+   void RenderManager::ShadowPass(const Camera& camera)
+   {
+      static std::shared_ptr<Framebuffer> fbo = GD->CreateFBO();
+
+      for (size_t i = 0; i < SpotlightCounter; ++i)
+      {
+         SpotlightAligned16 sl = SpotlightList[i];
+
+         Camera lightCamera({ 0.0f, 5.0f, 0.0f }, false, mm::PI / 2, 1.7f, 0.0f, sl.Direction);
+
+         fbo->AttachTexture2D(graphics::Attachment::Depth, depthTexture);
+
+         fbo->Bind();
+         glClear(GL_DEPTH_BUFFER_BIT);
+         glEnable(GL_DEPTH_TEST);
+
+         GeometryPass(lightCamera);
+         fbo->Unbind();
+      }
+   }
+
+   void RenderManager::LightPass(const Camera& camera)
    {
       LightsUBO->UpdateData(sizeof(PointLightAligned16) * PointLightCounter, PointLightList);
       LightsUBO->UpdateData(sizeof(SpotlightAligned16) * SpotlightCounter, SpotlightList, sizeof(PointLightAligned16) * MaxPointLights);
@@ -65,11 +96,21 @@ namespace graphics
          BoundingSphereList.push_back(sphere);
       }
 
+      GeometryPass(camera);
 
-      std::sort(CurrentRenderQueue.begin(), CurrentRenderQueue.end(), [](auto& left, auto& right)
-         {
-            return left.first > right.first;
-         });
+      //Scene update render data every frame
+      //So this values if fully useable till the light pass
+      PointLightCounter = 0;
+      SpotlightCounter = 0;
+   }
+
+   void RenderManager::GeometryPass(const Camera& camera)
+   {
+      std::sort(CurrentRenderQueue.begin(), CurrentRenderQueue.end(),
+                [](auto& left, auto& right)
+                {
+                   return left.first > right.first;
+                });
 
       for (auto& renderer : CurrentRenderQueue)
       {
@@ -77,6 +118,7 @@ namespace graphics
 
          auto& mesh = renderer.second;
 
+         //TODO implement rotation
          mm::mat4 worldTransform;
          worldTransform = mm::translate(worldTransform, mesh.Translate);
          worldTransform = mm::scale(worldTransform, mesh.Scale);
@@ -86,7 +128,7 @@ namespace graphics
          if (renderer.first.MaterialId != lastKey.MaterialId)
          {
             material->ShaderProgram->Use();
-           
+
             material->SetCameraPosition(camera.Position);
             material->SetWorldToCameraMatrix(camera.GetCameraViewMatrix());
             material->SetCameraToClipMatrix(camera.GetCameraProjection());
@@ -95,7 +137,6 @@ namespace graphics
             material->SetSpotlightsCount(SpotlightCounter);
 
             material->ResolveUniforms();
-
          }
 
          material->SetObjectToWorldMatrix(worldTransform);
@@ -106,8 +147,18 @@ namespace graphics
          UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(mm::vec2), &mesh.Vertices.UVs[0]);
          TangentsVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(mm::vec3), &mesh.Vertices.Tangents[0]);
 
+         material->ShaderProgram->SetTexture2D("DepthTexture", depthTexture);
+
          GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size());
       }
+   }
+
+   void RenderManager::Update(const Camera& camera)
+   {
+      ShadowPass(camera);
+
+      LightPass(camera);
+
 
       CurrentRenderQueue.clear();
 
