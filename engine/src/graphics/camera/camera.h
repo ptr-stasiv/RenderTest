@@ -13,6 +13,7 @@ namespace graphics
       MoveDown
    };
 
+   //TODO rework this class, reason is a lot of C code
    struct Camera
    {
       mm::vec3 Position;
@@ -28,10 +29,17 @@ namespace graphics
       float Yaw;
       float Pitch;
 
+      float Size;
+      float Near;
+      float Far;
+
       bool Perspective;
 
-      Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const float yaw = 90.0f, const float pitch = 0.0f);
-      Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const mm::vec3& direction);
+      Camera(const mm::vec3& position, const float fov, const float aspect, const float speed, const float yaw = 90.0f, const float pitch = 0.0f);
+      Camera(const mm::vec3& position, const mm::vec3& direction, const float fov, const float aspect, const float speed);
+
+      Camera(const float size, const float far, const float near, const mm::vec3& position);
+      Camera(const float size, const float far, const float near, const mm::vec3& position, const mm::vec3& direction);
 
       Camera()  = default;
 
@@ -50,7 +58,7 @@ namespace graphics
          if(Perspective)
             return mm::perspective(Fov, Aspect, 0.01f, 1000.0f);
          else
-            return mm::ortho(10, 10, 10.0f, 1.0f);
+            return mm::ortho(Size, Size, Far, Near);
       }
    };
 }

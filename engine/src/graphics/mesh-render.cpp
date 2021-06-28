@@ -2,6 +2,8 @@
 #include "mesh-render.h"
 #include "entry-point/global_systems.h"
 
+#include <sstream>
+
 namespace graphics
 {
    BaseMaterial::BaseMaterial(const std::string_view& vertexShaderPath, const std::string_view& fragmentShaderPath,
@@ -58,6 +60,18 @@ namespace graphics
 
       ShaderProgram->SetTexture2D("DiffuseTexture", DiffuseTexture);
       ShaderProgram->SetTexture2D("NormalTexture", NormalTexture);
+
+      for (size_t i = 0; i < g_RenderManager->GetSpotlightsCount(); ++i)
+      {
+         //Temoral solution, needed because in the shadow pass this function is called as well as in the main pass
+         if (!g_RenderManager->ShadowMaps[i])
+            continue;
+
+         std::stringstream name;
+         name << "ShadowMaps[" << i << ']';
+
+         ShaderProgram->SetTexture2D(name.str(), g_RenderManager->ShadowMaps[i]);
+      }
    }
 
    DebugPrimitiveMaterial::DebugPrimitiveMaterial()

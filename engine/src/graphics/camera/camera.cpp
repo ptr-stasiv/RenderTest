@@ -20,7 +20,7 @@ namespace graphics
       camera.UpAxis = mm::cross(camera.ForwardAxis, camera.RightAxis);
    }
 
-   Camera::Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const float yaw, const float pitch)
+   Camera::Camera(const mm::vec3& position, const float fov, const float aspect, const float speed, const float yaw, const float pitch)
    {
       Position = position;
 
@@ -31,12 +31,12 @@ namespace graphics
       Yaw = yaw;
       Pitch = pitch;
 
-      Perspective = perspective;
+      Perspective = true;
 
       CameraComputeBasis(*this);
    }
 
-   Camera::Camera(const mm::vec3& position, const bool perspective, const float fov, const float aspect, const float speed, const mm::vec3& direction)
+   Camera::Camera(const mm::vec3& position, const mm::vec3& direction, const float fov, const float aspect, const float speed)
    {
       Position = position;
 
@@ -44,7 +44,39 @@ namespace graphics
       Aspect = aspect;
       Speed = speed;
 
-      Perspective = perspective;
+      Perspective = true;
+
+      ForwardAxis = direction;
+
+      UpAxis = ForwardAxis;
+      UpAxis.x += 1.0f;
+      UpAxis = mm::normalize(UpAxis);
+
+      RightAxis = mm::normalize(mm::cross(UpAxis, ForwardAxis));
+   }
+
+   Camera::Camera(const float size, const float far, const float near, const mm::vec3& position)
+   {
+      Position = position;
+
+      Size = size;
+      Far = far;
+      Near = near;
+
+      Perspective = false;
+
+      CameraComputeBasis(*this);
+   }
+
+   Camera::Camera(const float size, const float far, const float near, const mm::vec3& position, const mm::vec3& direction)
+   {
+      Position = position;
+
+      Size = size;
+      Far = far;
+      Near = near;
+
+      Perspective = false;
 
       ForwardAxis = direction;
 

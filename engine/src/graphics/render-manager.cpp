@@ -45,28 +45,33 @@ namespace graphics
       params.WrapS = TextureWrap::ClampToEdge;
       params.WrapT = TextureWrap::ClampToEdge;
 
-      depthTexture = GD->CreateTexture2D();
-      depthTexture->InitData(1280, 720, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
+
+      GeneralShadowMap = GD->CreateTexture2D();
+      GeneralShadowMap->InitData(1280, 720, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
+
+      GeneralShadowFBO = GD->CreateFBO();
+      GeneralShadowFBO->AttachTexture2D(graphics::Attachment::Depth, GeneralShadowMap);
    }
 
    void RenderManager::ShadowPass(const Camera& camera)
    {
-      static std::shared_ptr<Framebuffer> fbo = GD->CreateFBO();
-
       for (size_t i = 0; i < SpotlightCounter; ++i)
       {
-         SpotlightAligned16 sl = SpotlightList[i];
+         auto& sl = SpotlightList[i];
 
-         Camera lightCamera({ 0.0f, 5.0f, 0.0f }, false, mm::PI / 2, 1.7f, 0.0f, sl.Direction);
+         //TODO different constructors for perspective and orthographic
+         Camera lightCamera(10.0f, 10.0f, 1.0f, sl.Position, sl.Direction);
 
-         fbo->AttachTexture2D(graphics::Attachment::Depth, depthTexture);
+         sl.Camera = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
 
-         fbo->Bind();
+         GeneralShadowFBO->Bind();
          glClear(GL_DEPTH_BUFFER_BIT);
          glEnable(GL_DEPTH_TEST);
-
+         
          GeometryPass(lightCamera);
-         fbo->Unbind();
+         GeneralShadowFBO->Unbind();
+
+         ShadowMaps[i] = GeneralShadowMap;
       }
    }
 
@@ -146,8 +151,6 @@ namespace graphics
          NormalsVBO->UpdateData(mesh.Vertices.Normals.size() * sizeof(mm::vec3), &mesh.Vertices.Normals[0]);
          UVsVBO->UpdateData(mesh.Vertices.UVs.size() * sizeof(mm::vec2), &mesh.Vertices.UVs[0]);
          TangentsVBO->UpdateData(mesh.Vertices.Tangents.size() * sizeof(mm::vec3), &mesh.Vertices.Tangents[0]);
-
-         material->ShaderProgram->SetTexture2D("DepthTexture", depthTexture);
 
          GD->DrawTriangles(material->ShaderProgram, mesh.Vertices.Positions.size());
       }

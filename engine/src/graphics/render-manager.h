@@ -36,9 +36,9 @@ namespace graphics
    {
       enum : uint32_t
       {
-        Normal,
-        Debug,
-        Hud
+         Normal,
+         Debug,
+         Hud
       };
    };
 
@@ -53,6 +53,8 @@ namespace graphics
 
    struct alignas(16) SpotlightAligned16
    {
+      mm::mat4 Camera;
+
       mm::vec4 Position;
       mm::vec4 Direction;
       mm::vec4 Color;
@@ -71,16 +73,15 @@ namespace graphics
    class RenderManager
    {
    private:
-      std::shared_ptr<Texture2D> depthTexture;
-
-
+      std::shared_ptr<Texture2D> GeneralShadowMap;
+      std::shared_ptr<Framebuffer> GeneralShadowFBO;
+      mm::mat4 ortho;
+      mm::mat4 view;
 
       std::vector<std::pair<RenderKey, Mesh>> CurrentRenderQueue;
 
       PointLightAligned16 PointLightList[MaxPointLights];
       SpotlightAligned16 SpotlightList[MaxSpotlights];
-
-      std::shared_ptr<Texture2D> DirectionalShadowMaps;
 
       size_t PointLightCounter = 0;
       size_t SpotlightCounter = 0;
@@ -90,8 +91,6 @@ namespace graphics
       void ShadowPass(const Camera& camera);
       void LightPass(const Camera& camera);
       void GeometryPass(const Camera& camera);
-
-      //TODO seperate update function on few seperate, as light, geometry, etc.
    public:
       std::shared_ptr<VertexBuffer> PositionsVBO;
       std::shared_ptr<VertexBuffer> NormalsVBO;
@@ -99,6 +98,8 @@ namespace graphics
       std::shared_ptr<VertexBuffer> TangentsVBO;
 
       std::shared_ptr<UniformBuffer> LightsUBO;
+
+      std::shared_ptr<Texture2D> ShadowMaps[MaxSpotlights];
 
       RenderManager(const std::shared_ptr<GraphicsDevice>& gd);
 
@@ -133,6 +134,16 @@ namespace graphics
          uboSL.ShadowMapId = SpotlightCounter;
 
          SpotlightList[SpotlightCounter++] = uboSL;
+      }
+
+      inline size_t GetPointLightsCount() const
+      {
+         return PointLightCounter;
+      }
+
+      inline size_t GetSpotlightsCount() const
+      {
+         return SpotlightCounter;
       }
    };
 }

@@ -31,7 +31,7 @@ uniform float Glossiness;
 layout(bindless_sampler) uniform sampler2D DiffuseTexture;
 layout(bindless_sampler) uniform sampler2D NormalTexture;
 
-layout(bindless_sampler) uniform sampler2D DepthTexture;
+layout(bindless_sampler) uniform sampler2D ShadowMaps[MAX_SPOTLIGHTS];
 
 struct PointLight
 {
@@ -40,11 +40,12 @@ struct PointLight
 
     float Stretch;
     float Offset;
-
 };
 
 struct Spotlight
 {
+    mat4 Camera;
+
     vec4 Position;
     vec4 Direction;
     vec4 Color;
@@ -61,13 +62,29 @@ layout(std140) uniform LightBlock
     Spotlight SpotlightArray[MAX_SPOTLIGHTS];
 } lightBlock;
 
+float CalculateSpotlightShadow(in int id)
+{
+    vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
+
+    vec3 proj = lightSpaceFrag.xyz / lightSpaceFrag.w;
+
+    proj = proj * 0.5f + 0.5f;
+
+    float fragDeptth = proj.z;
+    float shadowDepth = texture(ShadowMaps[id], proj.xy).r;
+
+    float bias = 0.005f;
+
+    return (fragDeptth - bias < shadowDepth ? 1.0f : 0.0f);
+}
+
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
-                    in vec3 lightDir, in vec3 normal, in vec3 viewDir)
+                    in vec3 lightDir, in vec3 normal, in vec3 viewDir, in float shadow)
 {
     vec3 ambientComponent = lightColor * 0.1f;
 
     float diffC = max(dot(lightDir, normal), 0.0f);
-    vec3 diffuseComponent  = lightColor * diffC;
+    vec3 diffuseComponent  = lightColor * diffC * shadow;
 
     vec3 halfVector = normalize(viewDir + lightDir);
     float specC = pow(max(dot(halfVector, normal), 0.0f), gloss);
@@ -101,7 +118,7 @@ void main()
         float offset = lightBlock.PointLightArray[i].Offset;
         
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
-                                    lightDir, normal, viewDir);
+                                    lightDir, normal, viewDir, 0.0f);
         float lightDist = abs(length(lightPos - vs_in.FragPos));
         float attentuation = (1 / pow(offset + lightDist, 2)) * stretch;
 
@@ -118,8 +135,10 @@ void main()
         float innerAngle = lightBlock.SpotlightArray[i].InnnerAngle;
         float outerAngle = lightBlock.SpotlightArray[i].OuterAngle;
 
+        float shadow = CalculateSpotlightShadow(i);
+
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
-                                    lightDir, normal, viewDir);
+                                    lightDir, normal, viewDir, shadow);
 
         
         float currentA = outerAngle - acos(dot(spotDir, -lightDir));
@@ -129,6 +148,7 @@ void main()
         lightSum += phong * attentuation;
     }
 
+    float shadow = CalculateSpotlightShadow(0);
 
-    FragColor = texture(DepthTexture, vs_in.UV) * vec4(lightSum, 1.0f);
+    FragColor = texture(DiffuseTexture, vs_in.UV) * vec4(lightSum, 1.0f);
 }
