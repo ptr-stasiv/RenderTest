@@ -8,6 +8,7 @@ namespace graphics
    enum class TextureWrap
    {
       ClampToEdge,
+      ClampToBorder,
       Repeat
    };
 
@@ -37,6 +38,9 @@ namespace graphics
       
       virtual void UpdateData(const size_t sizeX, const size_t sizeY, const void* data) = 0;
       
+      //Through OpenGL api you should call this before init function
+      virtual void SetBorderColor(const mm::vec4& color) const = 0;
+
       virtual uint16_t GetSizeX() const = 0;
       virtual uint16_t GetSizeY() const = 0;
    };

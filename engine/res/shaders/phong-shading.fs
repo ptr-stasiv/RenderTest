@@ -70,12 +70,12 @@ float CalculateSpotlightShadow(in int id)
 
     proj = proj * 0.5f + 0.5f;
 
-    float fragDeptth = proj.z;
+    float fragDepth = proj.z;
     float shadowDepth = texture(ShadowMaps[id], proj.xy).r;
 
     float bias = 0.005f;
 
-    return (fragDeptth - bias < shadowDepth ? 1.0f : 0.0f);
+    return (fragDepth - bias > shadowDepth ? 1.0f : 0.0f);
 }
 
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
@@ -84,7 +84,7 @@ vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec
     vec3 ambientComponent = lightColor * 0.1f;
 
     float diffC = max(dot(lightDir, normal), 0.0f);
-    vec3 diffuseComponent  = lightColor * diffC * shadow;
+    vec3 diffuseComponent  = lightColor * diffC * (1.0f - shadow);
 
     vec3 halfVector = normalize(viewDir + lightDir);
     float specC = pow(max(dot(halfVector, normal), 0.0f), gloss);

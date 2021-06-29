@@ -52,7 +52,7 @@ namespace graphics
       UpAxis.x += 1.0f;
       UpAxis = mm::normalize(UpAxis);
 
-      RightAxis = mm::normalize(mm::cross(UpAxis, ForwardAxis));
+      RightAxis = mm::normalize(mm::cross(ForwardAxis, UpAxis));
    }
 
    Camera::Camera(const float size, const float far, const float near, const mm::vec3& position)
@@ -93,10 +93,10 @@ namespace graphics
 
       switch (moveType)
       {
-      case CameraMoveType::MoveForward:  Position -= ForwardAxis * speed; break;
-      case CameraMoveType::MoveBackward: Position += ForwardAxis * speed; break;
-      case CameraMoveType::MoveRight:    Position += RightAxis * speed; break;
-      case CameraMoveType::MoveLeft:     Position -= RightAxis * speed;  break;
+      case CameraMoveType::MoveForward:  Position += ForwardAxis * speed; break;
+      case CameraMoveType::MoveBackward: Position -= ForwardAxis * speed; break;
+      case CameraMoveType::MoveRight:    Position -= RightAxis * speed; break;
+      case CameraMoveType::MoveLeft:     Position += RightAxis * speed;  break;
       case CameraMoveType::MoveUp:       Position += UpAxis * speed; break;
       case CameraMoveType::MoveDown:     Position -= UpAxis * speed; break;
       }
@@ -117,7 +117,7 @@ namespace graphics
       }
 
       Yaw += (posX - lastX) * deltaTime * 7.0f;
-      Pitch += (posY - lastY) * deltaTime * 7.0f;
+      Pitch -= (posY - lastY) * deltaTime * 7.0f;
 
       lastX = posX;
       lastY = posY;

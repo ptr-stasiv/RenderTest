@@ -12,6 +12,7 @@ namespace graphics
       inline std::unordered_map<TextureWrap, GLenum> TextureWrappLookupMap = 
       {
          { TextureWrap::ClampToEdge, GL_CLAMP_TO_EDGE },
+         { TextureWrap::ClampToBorder, GL_CLAMP_TO_BORDER },
          { TextureWrap::Repeat, GL_REPEAT } 
       };
 
@@ -35,6 +36,10 @@ namespace graphics
          Format CurrentFormat;
          Type CurrentType;
 
+         //This can't be done straight by passing texture params
+         //Because I'm using here immutable textures
+         mutable mm::vec4 BorderColor;
+
          Texture2dGL() = default;
 
          ~Texture2dGL() = default;
@@ -56,6 +61,8 @@ namespace graphics
             glTextureParameteri(BindId, GL_TEXTURE_MIN_FILTER, OGL_TEXTURE_FILTER(params.MinFilter));
             glTextureParameteri(BindId, GL_TEXTURE_MAG_FILTER, OGL_TEXTURE_FILTER(params.MagFilter));
 
+            glTextureParameterfv(BindId, GL_TEXTURE_BORDER_COLOR, BorderColor.Data);
+
             glTextureStorage2D(BindId, 1, OGL_IFORMAT(internalFormat), sizeX, sizeY);
 
             Handle = glGetTextureHandleARB(BindId);
@@ -65,6 +72,11 @@ namespace graphics
          inline void UpdateData(const size_t sizeX, const size_t sizeY, const void* data) override
          {
             glTextureSubImage2D(BindId, 0, 0, 0, sizeX, sizeY, OGL_FORMAT(CurrentFormat), OGL_TYPE(CurrentType), data);
+         }
+
+         inline void SetBorderColor(const mm::vec4& color) const override
+         {
+            BorderColor = color;
          }
          
          inline uint16_t GetSizeX() const override

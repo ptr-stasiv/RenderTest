@@ -42,11 +42,12 @@ namespace graphics
       graphics::TextureParams params;
       params.MagFilter = TextureFilter::Nearest;
       params.MinFilter = TextureFilter::Nearest;
-      params.WrapS = TextureWrap::ClampToEdge;
-      params.WrapT = TextureWrap::ClampToEdge;
+      params.WrapS = TextureWrap::ClampToBorder;
+      params.WrapT = TextureWrap::ClampToBorder;
 
 
       GeneralShadowMap = GD->CreateTexture2D();
+      GeneralShadowMap->SetBorderColor(mm::vec4(1.0f));
       GeneralShadowMap->InitData(1280, 720, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
 
       GeneralShadowFBO = GD->CreateFBO();
@@ -60,14 +61,14 @@ namespace graphics
          auto& sl = SpotlightList[i];
 
          //TODO different constructors for perspective and orthographic
-         Camera lightCamera(10.0f, 10.0f, 1.0f, sl.Position, sl.Direction);
+         Camera lightCamera(sl.Position, sl.Direction, 1.0f, 1.77f, 0.0f);
 
          sl.Camera = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
 
          GeneralShadowFBO->Bind();
          glClear(GL_DEPTH_BUFFER_BIT);
          glEnable(GL_DEPTH_TEST);
-         
+
          GeometryPass(lightCamera);
          GeneralShadowFBO->Unbind();
 
