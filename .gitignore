@@ -8,7 +8,7 @@ binaries/
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
-*_runtimedependencies.txt
+**/*_runtimedependencies.txt
 tags
 
 compile_commands.json

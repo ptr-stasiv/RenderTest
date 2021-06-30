@@ -1,9 +1,0 @@
-﻿
-Debug|x64
-  config.cef
-
-Release|x64
-  config.cef
-
-Retail|x64
-  config.cef
