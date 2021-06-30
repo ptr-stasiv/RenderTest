@@ -38,7 +38,7 @@ namespace graphics
       LightsUBO = gd->CreateUBO();
       LightsUBO->InitData((sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) * (MaxPointLights + MaxSpotlights), nullptr);
 
-
+      
       graphics::TextureParams params;
       params.MagFilter = TextureFilter::Nearest;
       params.MinFilter = TextureFilter::Nearest;

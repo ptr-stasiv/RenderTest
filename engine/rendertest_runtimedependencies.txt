@@ -1,9 +1,9 @@
 ﻿
 Debug|x64
-  res
+  config.cef
 
 Release|x64
-  res
+  config.cef
 
 Retail|x64
-  res
+  config.cef

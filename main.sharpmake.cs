@@ -1,4 +1,8 @@
-﻿using Sharpmake;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Sharpmake;
 
 namespace sharpmake
 {
@@ -23,6 +27,13 @@ namespace sharpmake
             config.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
 
 
+            //Copy resource folder to output
+            //I haven't yet found cross platform solution
+            config.EventPostBuild.Add(@"XCOPY $(SolutionDir)\engine\res\ $(TargetDir)\res\ /S /Y");
+
+            //Copy config file
+            config.TargetCopyFiles.Add(@"[project.SharpmakeCsPath]/engine/config.cef");
+
 
             //Defines
 
@@ -36,8 +47,6 @@ namespace sharpmake
 
             if (target.Platform == Platform.win64)
                 config.Defines.Add("WINDOWS");
-
-
 
             config.ProjectPath = @"[project.SharpmakeCsPath]/engine";
 
@@ -53,7 +62,7 @@ namespace sharpmake
             config.LibraryPaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glew/lib");
 
 
-            config.LibraryFiles.AddRange(new Strings("opengl32", "glfw3", "glew32s", "msvcrt"));;
+            config.LibraryFiles.AddRange(new Strings("opengl32", "glfw3", "glew32s", "msvcrt")); ;
 
 
             config.Output = Configuration.OutputType.Exe;
