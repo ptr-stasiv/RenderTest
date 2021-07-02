@@ -92,6 +92,11 @@ namespace graphics
          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       }
 
+      inline void SetViewport(const mm::ivec2& origin, const mm::ivec2& size) const override
+      {
+         glViewport(origin.x, origin.y, size.x, size.y);
+      }
+
       inline void SetClearColor(const mm::vec4& color) const override
       {
           glClearColor(color.x, color.y, color.z, color.w);

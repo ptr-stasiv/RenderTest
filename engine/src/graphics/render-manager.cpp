@@ -51,7 +51,7 @@ namespace graphics
 
       GeneralShadowMap = GD->CreateTexture2D();
       GeneralShadowMap->SetBorderColor(mm::vec4(1.0f));
-      GeneralShadowMap->InitData(1280, 720, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
+      GeneralShadowMap->InitData(512, 512, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
 
       GeneralShadowFBO = GD->CreateFBO();
       GeneralShadowFBO->AttachTexture2D(graphics::Attachment::Depth, GeneralShadowMap);
@@ -60,10 +60,15 @@ namespace graphics
    void RenderManager::ShadowPass(const Camera& camera)
    {
       GeneralShadowFBO->Bind();
+
+      GD->SetViewport({ 0, 0 }, { GeneralShadowMap->GetSizeX(), 
+                                  GeneralShadowMap->GetSizeY() });
+
       GD->EnableFeature(graphics::Feature::Depth);
 
       //Cause artifacts
       //GD->SetCullingFace(graphics::Face::Front);
+
 
       for (size_t i = 0; i < SpotlightCounter; ++i)
       {
@@ -71,8 +76,11 @@ namespace graphics
 
          auto& sl = SpotlightList[i];
 
+         float textureAR = GeneralShadowMap->GetSizeX()
+                           / GeneralShadowMap->GetSizeY();
+
          //TODO different constructors for perspective and orthographic
-         Camera lightCamera(sl.Position, sl.Direction, 1.0f, 1.77f, 0.0f);
+         Camera lightCamera(sl.Position, sl.Direction, textureAR, 1.0f, 0.0f);
 
          sl.Camera = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
 
@@ -81,7 +89,12 @@ namespace graphics
          ShadowMaps[i] = GeneralShadowMap;
       }
 
+
       GD->SetCullingFace(graphics::Face::Back);
+
+      GD->SetViewport({ 0, 0 }, { g_Window->GetCanvas()->GetWidth(), 
+                                  g_Window->GetCanvas()->GetHeight() });
+
       GeneralShadowFBO->Unbind();
    }
 

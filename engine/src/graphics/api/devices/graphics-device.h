@@ -47,6 +47,8 @@ namespace graphics
 
       virtual void Clear() = 0;
 
+      virtual void SetViewport(const mm::ivec2& origin, const mm::ivec2& size) const = 0;
+
       virtual void SetClearColor(const mm::vec4& color) const = 0;
 
       virtual void SetBlendSettings(const BlendFunc func, const BlendValue src, const BlendValue dst) const = 0;
