@@ -60,47 +60,52 @@ namespace graphics
          return std::make_shared<gl::FramebufferGL>();
       }
       
-     //Commands
-      
-     inline std::string GetDeviceInfo() const override
-     {
-         return "";
-     }
+      //Commands
+       
+      inline std::string GetDeviceInfo() const override
+      {
+          return "";
+      }
 
-     inline void EnableFeature(const Feature feature) const override
-     {
-         glEnable(OGL_FEATURE(feature));
-     }
+      inline void EnableFeature(const Feature feature) const override
+      {
+          glEnable(OGL_FEATURE(feature));
+      }
 
-     inline void DisableFeature(const Feature feature) const override
-     {
-         glDisable(OGL_FEATURE(feature));
-     }
+      inline void DisableFeature(const Feature feature) const override
+      {
+          glDisable(OGL_FEATURE(feature));
+      }
 
-     inline void DrawTriangles(const std::shared_ptr<ShaderProgram>& program, const size_t verticesCount) const override
-     {
-        auto& glProgram = std::static_pointer_cast<gl::ShaderProgramGL>(program);
+      inline void DrawTriangles(const std::shared_ptr<ShaderProgram>& program, const size_t verticesCount) const override
+      {
+         auto& glProgram = std::static_pointer_cast<gl::ShaderProgramGL>(program);
 
-        glProgram->Use();
-        glBindVertexArray(glProgram->Vao);
+         glProgram->Use();
+         glBindVertexArray(glProgram->Vao);
 
-        glDrawArrays(GL_TRIANGLES, 0, verticesCount);
-     }
+         glDrawArrays(GL_TRIANGLES, 0, verticesCount);
+      }
 
-     inline void Clear() override
-     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     }
+      inline void Clear() override
+      {
+         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      }
 
-     inline void SetClearColor(const mm::vec4& color) const override
-     {
-         glClearColor(color.x, color.y, color.z, color.w);
-     } 
+      inline void SetClearColor(const mm::vec4& color) const override
+      {
+          glClearColor(color.x, color.y, color.z, color.w);
+      } 
 
-     inline void SetBlendSettings(const BlendFunc func, const BlendValue src, const BlendValue dst) const override
-     {
-         glBlendEquation(OGL_BLEND_FUNC(func));
-         glBlendFunc(OGL_BLEND_VALUE(src), OGL_BLEND_VALUE(dst));
-     } 
+      inline void SetBlendSettings(const BlendFunc func, const BlendValue src, const BlendValue dst) const override
+      {
+          glBlendEquation(OGL_BLEND_FUNC(func));
+          glBlendFunc(OGL_BLEND_VALUE(src), OGL_BLEND_VALUE(dst));
+      } 
+
+      inline void SetCullingFace(const Face face) const override
+      {
+         glCullFace(OGL_FACE(face));
+      }
    };
 }

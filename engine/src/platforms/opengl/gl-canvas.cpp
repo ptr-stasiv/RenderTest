@@ -117,7 +117,20 @@ namespace graphics
             PRINT_AND_TERMINATE("Error in OpengGL initialization!");
 
 
-         //Setup input
+         //Alpha blending
+         glEnable(GL_BLEND);
+         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+         glBlendEquation(GL_FUNC_ADD);
+
+         glEnable(GL_DEPTH_TEST);
+
+         glEnable(GL_CULL_FACE);
+
+         glEnable(GL_DEBUG_OUTPUT);
+         glDebugMessageCallback(ErrorCallback, 0);
+
+
+         //Input setup
 
          glfwSetKeyCallback(GlfwWindow, input::KeyCallback);
 
@@ -126,6 +139,10 @@ namespace graphics
          glfwSetCursorPosCallback(GlfwWindow, input::CursorCallback);
 
          glfwSetScrollCallback(GlfwWindow, input::ScrollCallback);
+
+         glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
 
          //
          //This should be move out from here
@@ -139,17 +156,6 @@ namespace graphics
          WD_LOG_MESSAGE("%s %s", vendorInfo, rendererInfo);
          WD_LOG_MESSAGE("Opengl %s", versionInfo);
          WD_LOG_MESSAGE("GLSL %s\n", glslInfo);
-
-         glEnable(GL_BLEND);
-         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-         glBlendEquation(GL_FUNC_ADD);
-
-         glEnable(GL_DEPTH_TEST);
-
-         glEnable(GL_DEBUG_OUTPUT);
-         glDebugMessageCallback(ErrorCallback, 0);
-
-         glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
       }
    }
 }

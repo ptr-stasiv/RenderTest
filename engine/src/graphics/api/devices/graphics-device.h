@@ -51,6 +51,8 @@ namespace graphics
 
       virtual void SetBlendSettings(const BlendFunc func, const BlendValue src, const BlendValue dst) const = 0;
 
+      virtual void SetCullingFace(const Face face) const = 0;
+
       virtual void DrawTriangles(const std::shared_ptr<ShaderProgram>& program, const size_t verticesCount) const = 0;
    };
 }

@@ -19,6 +19,9 @@ namespace graphics
    RenderManager::RenderManager(const std::shared_ptr<GraphicsDevice>& gd)
       : GD(gd)
    {
+      //Enable face culling
+      GD->SetCullingFace(graphics::Face::Back);
+
       //Setup VBO's
 
       PositionsVBO = GD->CreateVBO();
@@ -56,8 +59,16 @@ namespace graphics
 
    void RenderManager::ShadowPass(const Camera& camera)
    {
+      GeneralShadowFBO->Bind();
+      GD->EnableFeature(graphics::Feature::Depth);
+
+      //Cause artifacts
+      //GD->SetCullingFace(graphics::Face::Front);
+
       for (size_t i = 0; i < SpotlightCounter; ++i)
       {
+         GD->Clear();
+
          auto& sl = SpotlightList[i];
 
          //TODO different constructors for perspective and orthographic
@@ -65,15 +76,13 @@ namespace graphics
 
          sl.Camera = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
 
-         GeneralShadowFBO->Bind();
-         glClear(GL_DEPTH_BUFFER_BIT);
-         glEnable(GL_DEPTH_TEST);
-
          GeometryPass(lightCamera);
-         GeneralShadowFBO->Unbind();
 
          ShadowMaps[i] = GeneralShadowMap;
       }
+
+      GD->SetCullingFace(graphics::Face::Back);
+      GeneralShadowFBO->Unbind();
    }
 
    void RenderManager::LightPass(const Camera& camera)

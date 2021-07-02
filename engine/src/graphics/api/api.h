@@ -54,4 +54,11 @@ namespace graphics
       SrcAlpha,
       OneMinusSrcAlpha
    };
+
+   enum class Face : uint8_t
+   {
+      Front,
+      Back,
+      Both
+   };
 }

@@ -59,6 +59,13 @@ namespace graphics
          { BlendValue::SrcAlpha, GL_SRC_ALPHA },
          { BlendValue::OneMinusSrcAlpha, GL_ONE_MINUS_SRC_ALPHA }
       };
+
+      inline std::unordered_map<Face, GLenum> FaceValueLookupMap =
+      {
+         { Face::Front, GL_FRONT },
+         { Face::Back, GL_BACK },
+         { Face::Both, GL_FRONT_AND_BACK }
+      };
    }
 }
 
@@ -69,4 +76,4 @@ namespace graphics
 #define OGL_TYPE(t) graphics::gl::TypeLookupMap.at(t)
 #define OGL_BLEND_FUNC(f) graphics::gl::BlendFuncLookupMap.at(f)
 #define OGL_BLEND_VALUE(v) graphics::gl::BlendValueLookupMap.at(v)
-
+#define OGL_FACE(f) graphics::gl::FaceValueLookupMap.at(f)
