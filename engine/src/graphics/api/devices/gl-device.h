@@ -5,6 +5,7 @@
 #include "platforms/opengl/gl-canvas.h"
 #include "platforms/opengl/gl-shader.h"
 #include "platforms/opengl/gl-texture2d.h"
+#include "platforms/opengl/gl-cubemap.h"
 #include "platforms/opengl/gl-vertex-buffer.h"
 #include "platforms/opengl/gl-uniform-buffer.h"
 #include "platforms/opengl/gl-shader-buffer.h"
@@ -38,6 +39,11 @@ namespace graphics
       inline std::shared_ptr<Texture2D> CreateTexture2D() override
       {
          return std::make_shared<gl::Texture2dGL>();
+      }
+
+      inline std::shared_ptr<Cubemap> CreateCubemap() override
+      {
+         return std::make_shared<gl::CubemapGL>();
       }
 
       inline std::shared_ptr<VertexBuffer> CreateVBO() override

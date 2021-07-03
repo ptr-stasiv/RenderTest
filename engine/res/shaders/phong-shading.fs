@@ -4,6 +4,7 @@
 
 #define MAX_POINT_LIGHTS 32
 #define MAX_SPOTLIGHTS 32
+#define SHADOW_BIAS 0.005f
 
 out vec4 FragColor;
 
@@ -32,14 +33,19 @@ layout(bindless_sampler) uniform sampler2D DiffuseTexture;
 layout(bindless_sampler) uniform sampler2D NormalTexture;
 
 layout(bindless_sampler) uniform sampler2D ShadowMaps[MAX_SPOTLIGHTS];
+layout(bindless_sampler) uniform sampler2DArray CubeShadowMaps[MAX_POINT_LIGHTS];
 
 struct PointLight
 {
+    mat4 Camera[6];
+
     vec4 Position;
     vec4 Color;
 
     float Stretch;
     float Offset;
+
+    int ShadowMapId;
 };
 
 struct Spotlight
@@ -73,9 +79,36 @@ float CalculateSpotlightShadow(in int id)
     float fragDepth = proj.z;
     float shadowDepth = texture(ShadowMaps[id], proj.xy).r;
 
-    float bias = 0.005f;
+    if(fragDepth > 1.0f)
+        return 0.0f;
 
-    return (fragDepth - bias > shadowDepth ? 1.0f : 0.0f);
+    return (fragDepth - SHADOW_BIAS > shadowDepth ? 1.0f : 0.0f);
+}
+
+float CalculatePointlightShadow(in int id)
+{
+    float shadow = 0.0f;
+
+    for(int i = 0; i < 6; ++i)
+    {
+        vec4 lightSpaceFrag = lightBlock.PointLightArray[id].Camera[i] * vec4(vs_in.FragPos, 1.0f);
+
+        vec3 proj = lightSpaceFrag.xyz / lightSpaceFrag.w;
+
+        proj = proj * 0.5f + 0.5f;
+
+        float fragDepth = proj.z;
+
+        if(fragDepth > 1.0f)
+           continue;
+
+        float shadowDepth = texture(CubeShadowMaps[id], vec3(proj.xy, i)).r;
+
+        if(!(proj.z > 1.0f) && (fragDepth - SHADOW_BIAS) > shadowDepth)
+            shadow = 1.0f;
+    }
+
+    return shadow;
 }
 
 vec3 CalculatePhong(in vec3 lightColor, in vec3 specular, in float gloss, in vec3 emissive, 
@@ -117,8 +150,10 @@ void main()
         float stretch = lightBlock.PointLightArray[i].Stretch;
         float offset = lightBlock.PointLightArray[i].Offset;
         
+        float shadow = CalculatePointlightShadow(i);
+
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
-                                    lightDir, normal, viewDir, 0.0f);
+                                    lightDir, normal, viewDir, shadow);
         float lightDist = abs(length(lightPos - vs_in.FragPos));
         float attentuation = (1 / pow(offset + lightDist, 2)) * stretch;
 

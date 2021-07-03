@@ -5,6 +5,7 @@
 #include "graphics/api/shader-program.h"
 #include "graphics/api/compute-shader.h"
 #include "graphics/api/texture2d.h"
+#include "graphics/api/cubemap.h"
 #include "graphics/api/vertex-buffer.h"
 #include "graphics/api/uniform-buffer.h"
 #include "graphics/api/shader-buffer.h"
@@ -27,6 +28,8 @@ namespace graphics
       virtual std::shared_ptr<ComputeShader> CreateComputeShader() = 0;
 
       virtual std::shared_ptr<Texture2D> CreateTexture2D() = 0;
+
+      virtual std::shared_ptr<Cubemap> CreateCubemap() = 0;
 
       virtual std::shared_ptr<VertexBuffer> CreateVBO() = 0;
 

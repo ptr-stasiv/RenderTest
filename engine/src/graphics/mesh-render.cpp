@@ -72,6 +72,17 @@ namespace graphics
 
          ShaderProgram->SetTexture2D(name.str(), g_RenderManager->ShadowMaps[i]);
       }
+
+      for (size_t i = 0; i < g_RenderManager->GetPointLightsCount(); ++i)
+      {
+         if (!g_RenderManager->CubeShadowMaps[i])
+            continue;
+
+         std::stringstream name;
+         name << "CubeShadowMaps[" << i << ']';
+
+         ShaderProgram->SetTexture2D(name.str(), g_RenderManager->CubeShadowMaps[i]);
+      }
    }
 
    DebugPrimitiveMaterial::DebugPrimitiveMaterial()

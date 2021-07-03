@@ -36,7 +36,17 @@ namespace graphics
          inline void AttachTexture2D(const Attachment attachment, const std::shared_ptr<Texture2D>& texture) override
          {
             auto glTex = std::static_pointer_cast<Texture2dGL>(texture);
-            glNamedFramebufferTexture2DEXT(BindId, OGL_ATTACHMENT(attachment), GL_TEXTURE_2D, glTex->BindId, 0);
+
+            glNamedFramebufferTexture2DEXT(BindId, OGL_ATTACHMENT(attachment), 
+                                           GL_TEXTURE_2D, glTex->BindId, 0);
+         }
+
+         inline void AttachTexture2D(const Attachment attachment, const CubeFace face, const std::shared_ptr<Cubemap>& cubemap) override
+         {
+            auto glTex = std::static_pointer_cast<CubemapGL>(cubemap);
+
+            glNamedFramebufferTextureLayer(BindId, OGL_ATTACHMENT(attachment),
+                                           glTex->BindId, 0, static_cast<GLint>(face));
          }
       };
    }

@@ -4,6 +4,7 @@
 #include "gl-api.h"
 #include "graphics/api/shader-program.h"
 #include "gl-texture2d.h"
+#include "gl-cubemap.h"
 #include "gl-vertex-buffer.h"
 #include "gl-uniform-buffer.h"
 #include "gl-shader-buffer.h"
@@ -156,6 +157,16 @@ namespace graphics
             UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform: %s", &name[0]);
 
             auto& glTexture = std::static_pointer_cast<gl::Texture2dGL>(texture);
+
+            glUniformHandleui64ARB(loc, glTexture->Handle);
+         }
+
+         inline void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Cubemap>& cubemap) const override
+         {
+            int loc = glGetUniformLocation(ProgramId, name.data());
+            UNIFORM_ASSERT(loc >= 0, "Invalid shader uniform: %s", &name[0]);
+
+            auto& glTexture = std::static_pointer_cast<gl::CubemapGL>(cubemap);
 
             glUniformHandleui64ARB(loc, glTexture->Handle);
          }

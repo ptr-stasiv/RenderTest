@@ -5,6 +5,7 @@
 #include "math/matrices/matrix4x4.h"
 #include "math/many-math/matrices.h"
 #include "texture2d.h"
+#include "cubemap.h"
 #include "uniform-buffer.h"
 #include "shader-buffer.h"
 #include "vertex-buffer.h"
@@ -43,6 +44,8 @@ namespace graphics
       virtual void Use() const = 0;
 
       virtual void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Texture2D>& texture) const = 0;
+
+      virtual void SetTexture2D(const std::string_view& name, const std::shared_ptr<graphics::Cubemap>& texture) const = 0;
 
       virtual void SetFloats(const std::string_view& name, const math::Matrix4& m) const = 0;
 

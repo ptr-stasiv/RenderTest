@@ -42,7 +42,10 @@ namespace graphics
 
          Texture2dGL() = default;
 
-         ~Texture2dGL() = default;
+         inline ~Texture2dGL() override
+         {
+            glDeleteTextures(1, &BindId);
+         }
 
          inline void InitData(const uint16_t sizeX, const uint16_t sizeY,
                        const InternalFormat internalFormat, const Format format,

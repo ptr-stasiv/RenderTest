@@ -44,11 +44,15 @@ namespace graphics
 
    struct alignas(16) PointLightAligned16
    {
+      mm::mat4 Camera[6];
+
       mm::vec4 Position;
       mm::vec4 Color;
 
       float Stretch;
       float Offset;
+
+      uint32_t ShadowMapId;
    };
 
    struct alignas(16) SpotlightAligned16
@@ -62,8 +66,9 @@ namespace graphics
       float InnerAngle;
       float OuterAngle;
 
-      int ShadowMapId;
+      uint32_t ShadowMapId;
    };
+
 
    inline constexpr size_t MaxVerticesPerDraw = 500'000;
 
@@ -74,6 +79,7 @@ namespace graphics
    {
    private:
       std::shared_ptr<Texture2D> GeneralShadowMap;
+      std::shared_ptr<Cubemap> GeneralCubeShadowMap;
       std::shared_ptr<Framebuffer> GeneralShadowFBO;
       mm::mat4 ortho;
       mm::mat4 view;
@@ -100,6 +106,7 @@ namespace graphics
       std::shared_ptr<UniformBuffer> LightsUBO;
 
       std::shared_ptr<Texture2D> ShadowMaps[MaxSpotlights];
+      std::shared_ptr<Cubemap> CubeShadowMaps[MaxPointLights];
 
       RenderManager(const std::shared_ptr<GraphicsDevice>& gd);
 
@@ -119,6 +126,7 @@ namespace graphics
          uboPL.Color = pl.Color;
          uboPL.Stretch = pl.Stretch;
          uboPL.Offset = pl.Offset;
+         uboPL.ShadowMapId = SpotlightCounter;
 
          PointLightList[PointLightCounter++] = uboPL;
       }

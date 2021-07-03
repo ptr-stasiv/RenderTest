@@ -42,19 +42,21 @@ namespace graphics
       LightsUBO->InitData((sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) * (MaxPointLights + MaxSpotlights), nullptr);
 
       
-      graphics::TextureParams params;
-      params.MagFilter = TextureFilter::Nearest;
-      params.MinFilter = TextureFilter::Nearest;
-      params.WrapS = TextureWrap::ClampToBorder;
-      params.WrapT = TextureWrap::ClampToBorder;
-
+      graphics::TextureParams shadowTextureParams;
+      shadowTextureParams.MagFilter = TextureFilter::Nearest;
+      shadowTextureParams.MinFilter = TextureFilter::Nearest;
+      shadowTextureParams.WrapS = TextureWrap::ClampToBorder;
+      shadowTextureParams.WrapT = TextureWrap::ClampToBorder;
 
       GeneralShadowMap = GD->CreateTexture2D();
       GeneralShadowMap->SetBorderColor(mm::vec4(1.0f));
-      GeneralShadowMap->InitData(512, 512, InternalFormat::Depth24, Format::Depth, Type::Uint, params);
+      GeneralShadowMap->InitData(512, 512, InternalFormat::Depth24, Format::Depth, Type::Uint, shadowTextureParams);
+
+      GeneralCubeShadowMap = GD->CreateCubemap();
+      GeneralCubeShadowMap->SetBorderColor(mm::vec4(1.0f));
+      GeneralCubeShadowMap->InitData(512, 512, InternalFormat::Depth24, Format::Depth, Type::Uint, shadowTextureParams);
 
       GeneralShadowFBO = GD->CreateFBO();
-      GeneralShadowFBO->AttachTexture2D(graphics::Attachment::Depth, GeneralShadowMap);
    }
 
    void RenderManager::ShadowPass(const Camera& camera)
@@ -70,6 +72,8 @@ namespace graphics
       //GD->SetCullingFace(graphics::Face::Front);
 
 
+      GeneralShadowFBO->AttachTexture2D(graphics::Attachment::Depth, GeneralShadowMap);
+
       for (size_t i = 0; i < SpotlightCounter; ++i)
       {
          GD->Clear();
@@ -79,7 +83,6 @@ namespace graphics
          float textureAR = GeneralShadowMap->GetSizeX()
                            / GeneralShadowMap->GetSizeY();
 
-         //TODO different constructors for perspective and orthographic
          Camera lightCamera(sl.Position, sl.Direction, textureAR, 1.0f, 0.0f);
 
          sl.Camera = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
@@ -87,6 +90,41 @@ namespace graphics
          GeometryPass(lightCamera);
 
          ShadowMaps[i] = GeneralShadowMap;
+      }
+
+      
+      for (size_t i = 0; i < PointLightCounter; ++i)
+      {
+         static std::unordered_map<CubeFace, mm::vec3> cubeFaceDirections =
+         {
+            { CubeFace::Top, mm::vec3(0.0f, 1.0f, 0.0f) },
+            { CubeFace::Bottom, mm::vec3(0.0f, -1.0f, 0.0f) },
+            { CubeFace::Front, mm::vec3(0.0f, 0.0f, 1.0f) },
+            { CubeFace::Backward, mm::vec3(0.0f, 0.0f, -1.0f) },
+            { CubeFace::Left, mm::vec3(-1.0f, 0.0f, 0.0f) },
+            { CubeFace::Right, mm::vec3(1.0f, 0.0f, 0.0f) }
+         };
+
+         for (uint8_t f = 0; f < 6; ++f)
+         {
+            GeneralShadowFBO->AttachTexture2D(graphics::Attachment::Depth, static_cast<CubeFace>(f), GeneralCubeShadowMap);
+
+            GD->Clear();
+
+            
+            auto& pl = PointLightList[i];
+
+            float textureAR = GeneralShadowMap->GetSizeX()
+                              / GeneralShadowMap->GetSizeY();
+
+            Camera lightCamera(pl.Position, cubeFaceDirections.at(static_cast<CubeFace>(f)), textureAR, 1.0f, 0.0f);
+
+            pl.Camera[f] = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
+
+            GeometryPass(lightCamera);
+
+            CubeShadowMaps[i] = GeneralCubeShadowMap;
+         }
       }
 
 
