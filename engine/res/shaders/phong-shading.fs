@@ -6,6 +6,9 @@
 #define MAX_SPOTLIGHTS 32
 #define SHADOW_BIAS 0.005f
 
+#define SHADOW_W 512
+#define SHADOW_H 512
+
 out vec4 FragColor;
 
 in VS_OUT
@@ -77,12 +80,30 @@ float CalculateSpotlightShadow(in int id)
     proj = proj * 0.5f + 0.5f;
 
     float fragDepth = proj.z;
-    float shadowDepth = texture(ShadowMaps[id], proj.xy).r;
 
     if(fragDepth > 1.0f)
         return 0.0f;
 
-    return (fragDepth - SHADOW_BIAS > shadowDepth ? 1.0f : 0.0f);
+
+    float pixelW = 1.0f / SHADOW_W;
+    float pixelH = 1.0f / SHADOW_H;
+
+    float shadow = 0.0f;
+
+    for(float x = -1.0f; x <= 1.0f; ++x)
+    {
+        for(float y = 1.0f; y >= -1.0f; --y)
+        {
+            float shadowDepth = texture(ShadowMaps[id], vec2(proj.x + x * pixelW, proj.y + y * pixelH)).r;
+
+            if((fragDepth - SHADOW_BIAS) > shadowDepth)
+                shadow += 1.0f;
+        }
+    }
+
+    shadow /= 9.0f;
+
+    return shadow;
 }
 
 float CalculatePointlightShadow(in int id)
@@ -102,11 +123,22 @@ float CalculatePointlightShadow(in int id)
         if(fragDepth > 1.0f)
            continue;
 
-        float shadowDepth = texture(CubeShadowMaps[id], vec3(proj.xy, i)).r;
+        float pixelW = 1.0f / SHADOW_W;
+        float pixelH = 1.0f / SHADOW_H;
 
-        if(!(proj.z > 1.0f) && (fragDepth - SHADOW_BIAS) > shadowDepth)
-            shadow = 1.0f;
+        for(float x = -1.0f; x <= 1.0f; ++x)
+        {
+            for(float y = 1.0f; y >= -1.0f; --y)
+            {
+                float shadowDepth = texture(CubeShadowMaps[id], vec3(proj.x + x * pixelW, proj.y + y * pixelH, i)).r;
+
+                if((fragDepth - SHADOW_BIAS) > shadowDepth)
+                    shadow += 1.0f;
+            }
+        }
     }
+
+    shadow /= 9.0f;
 
     return shadow;
 }
