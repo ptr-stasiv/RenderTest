@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <functional>
 
+#include "graphics_config.h"
+
 #include "mesh-render.h"
 
 #include "graphics/camera/camera.h"
@@ -14,6 +16,14 @@
 
 namespace graphics
 {
+   struct RenderCfg
+   {
+      int32_t ShadowWidth = cfg::ShadowWidth;
+      int32_t ShadowHeight = cfg::ShadowHeight;
+
+      float ShadowBias = cfg::ShadowBias;
+   };
+
    union RenderKey
    {
       uint64_t KeyId;
@@ -104,6 +114,7 @@ namespace graphics
       std::shared_ptr<VertexBuffer> TangentsVBO;
 
       std::shared_ptr<UniformBuffer> LightsUBO;
+      std::shared_ptr<UniformBuffer> RenderCfgUBO;
 
       std::shared_ptr<Texture2D> ShadowMaps[MaxSpotlights];
       std::shared_ptr<Cubemap> CubeShadowMaps[MaxPointLights];
@@ -116,6 +127,7 @@ namespace graphics
       {
          CurrentRenderQueue.emplace_back(key, mesh);
       }
+
 
       //TODO move structure's reassigning to the scene setup
       

@@ -1,2 +1,5 @@
-#Camera settings
-fov:0.7
+//Graphics settings
+Shadow_Width: 512
+Shadow_Height: 512
+
+Shadow_Bias: 0.005

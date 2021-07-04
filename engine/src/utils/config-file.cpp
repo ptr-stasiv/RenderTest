@@ -39,7 +39,7 @@ namespace utils
       Id = ConfigFilesArr.size() - 1;
 
       OpenFile();
-      OnFileUpdate(ParseConfigFile(FileHandler));
+      Callback();
       CloseFile();
    }
 
@@ -64,6 +64,18 @@ namespace utils
       FileHandler.close();
    }
 
+   void ConfigFile::Callback()
+   {
+      try
+      {
+         OnFileUpdate(ParseConfigFile(FileHandler));
+      }
+      catch (...)
+      {
+         PRINT_AND_TERMINATE("Invalid config file!");
+      }
+   }
+
    void ConfigFileUpdate()
    {
       for (auto cf : ConfigFilesArr)
@@ -73,7 +85,7 @@ namespace utils
          if (currentTime != cf->LastTimeModified)
          {
             cf->OpenFile();
-            cf->OnFileUpdate(ParseConfigFile(cf->FileHandler));
+            cf->Callback();
             cf->CloseFile();
 
             cf->LastTimeModified = currentTime;

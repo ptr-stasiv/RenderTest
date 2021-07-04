@@ -81,6 +81,8 @@ namespace utils
       void OpenFile();
       void CloseFile();
 
+      void Callback();
+
       friend void ConfigFileUpdate();
    public:
       ConfigFile(const std::string& path, const std::function<void(const ConfigMap&)> updateFunc);

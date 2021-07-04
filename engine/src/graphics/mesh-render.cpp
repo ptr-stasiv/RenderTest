@@ -44,9 +44,11 @@ namespace graphics
       ShaderProgram->AddInputBuffer(g_RenderManager->UVsVBO, 2, 2, sizeof(mm::vec2), Type::Float);
       ShaderProgram->AddInputBuffer(g_RenderManager->TangentsVBO, 3, 3, sizeof(mm::vec3), Type::Float);
 
-      ShaderProgram->AddInputBuffer(g_RenderManager->LightsUBO, "LightBlock", sizeof(PointLightAligned16) * MaxPointLights);
+      ShaderProgram->AddInputBuffer(g_RenderManager->LightsUBO, "LightBlock", (sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) 
+                                                                               * (MaxPointLights + MaxSpotlights));
+      ShaderProgram->AddInputBuffer(g_RenderManager->RenderCfgUBO, "RenderCfgBlock", sizeof(RenderCfg), 0);
    }
-
+   
    void PhongMaterial::ResolveUniforms()
    {
       ShaderProgram->SetFloats("Diffuse", Diffuse);

@@ -4,10 +4,6 @@
 
 #define MAX_POINT_LIGHTS 32
 #define MAX_SPOTLIGHTS 32
-#define SHADOW_BIAS 0.005f
-
-#define SHADOW_W 512
-#define SHADOW_H 512
 
 out vec4 FragColor;
 
@@ -71,6 +67,14 @@ layout(std140) uniform LightBlock
     Spotlight SpotlightArray[MAX_SPOTLIGHTS];
 } lightBlock;
 
+layout(std140) uniform RenderCfgBlock
+{
+    int ShadowWidth;
+    int ShadowHeight;
+
+    float ShadowBias;
+} renderCfgBlock;
+
 float CalculateSpotlightShadow(in int id)
 {
     vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
@@ -85,10 +89,15 @@ float CalculateSpotlightShadow(in int id)
         return 0.0f;
 
 
-    float pixelW = 1.0f / SHADOW_W;
-    float pixelH = 1.0f / SHADOW_H;
+    float pixelW = 1.0f / renderCfgBlock.ShadowWidth;
+    float pixelH = 1.0f / renderCfgBlock.ShadowHeight;
 
     float shadow = 0.0f;
+
+    float shadowDepth = texture(ShadowMaps[id], proj.xy).r;
+
+    if((fragDepth) > shadowDepth)
+        shadow += 1.0f;
 
     for(float x = -1.0f; x <= 1.0f; ++x)
     {
@@ -96,7 +105,7 @@ float CalculateSpotlightShadow(in int id)
         {
             float shadowDepth = texture(ShadowMaps[id], vec2(proj.x + x * pixelW, proj.y + y * pixelH)).r;
 
-            if((fragDepth - SHADOW_BIAS) > shadowDepth)
+            if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
                 shadow += 1.0f;
         }
     }
@@ -123,8 +132,8 @@ float CalculatePointlightShadow(in int id)
         if(fragDepth > 1.0f)
            continue;
 
-        float pixelW = 1.0f / SHADOW_W;
-        float pixelH = 1.0f / SHADOW_H;
+        float pixelW = 1.0f / renderCfgBlock.ShadowWidth;
+        float pixelH = 1.0f / renderCfgBlock.ShadowHeight;
 
         for(float x = -1.0f; x <= 1.0f; ++x)
         {
@@ -132,7 +141,7 @@ float CalculatePointlightShadow(in int id)
             {
                 float shadowDepth = texture(CubeShadowMaps[id], vec3(proj.x + x * pixelW, proj.y + y * pixelH, i)).r;
 
-                if((fragDepth - SHADOW_BIAS) > shadowDepth)
+                if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
                     shadow += 1.0f;
             }
         }

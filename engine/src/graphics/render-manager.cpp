@@ -19,6 +19,8 @@ namespace graphics
    RenderManager::RenderManager(const std::shared_ptr<GraphicsDevice>& gd)
       : GD(gd)
    {
+      RenderCfg cfg;
+
       //Enable face culling
       GD->SetCullingFace(graphics::Face::Back);
 
@@ -38,9 +40,14 @@ namespace graphics
 
       
       //UBO's setup
+
       LightsUBO = gd->CreateUBO();
       LightsUBO->InitData((sizeof(PointLightAligned16) + sizeof(SpotlightAligned16)) * (MaxPointLights + MaxSpotlights), nullptr);
 
+      RenderCfgUBO = gd->CreateUBO();
+      RenderCfgUBO->InitData(sizeof(RenderCfg), nullptr);
+      RenderCfgUBO->UpdateData(sizeof(RenderCfg), &cfg, 0);
+      
       
       graphics::TextureParams shadowTextureParams;
       shadowTextureParams.MagFilter = TextureFilter::Nearest;
@@ -50,11 +57,11 @@ namespace graphics
 
       GeneralShadowMap = GD->CreateTexture2D();
       GeneralShadowMap->SetBorderColor(mm::vec4(1.0f));
-      GeneralShadowMap->InitData(512, 512, InternalFormat::Depth24, Format::Depth, Type::Uint, shadowTextureParams);
+      GeneralShadowMap->InitData(cfg.ShadowWidth, cfg.ShadowHeight, InternalFormat::Depth24, Format::Depth, Type::Uint, shadowTextureParams);
 
       GeneralCubeShadowMap = GD->CreateCubemap();
       GeneralCubeShadowMap->SetBorderColor(mm::vec4(1.0f));
-      GeneralCubeShadowMap->InitData(512, 512, InternalFormat::Depth24, Format::Depth, Type::Uint, shadowTextureParams);
+      GeneralCubeShadowMap->InitData(cfg.ShadowWidth, cfg.ShadowHeight, InternalFormat::Depth24, Format::Depth, Type::Uint, shadowTextureParams);
 
       GeneralShadowFBO = GD->CreateFBO();
    }

@@ -9,6 +9,8 @@
 
 #include "global_systems.h"
 
+#include "utils/config-file.h"
+
 namespace app
 {
    float g_DeltaTime;
@@ -16,6 +18,17 @@ namespace app
 
    inline void CreateEngineApp()
    {
+      //Read engine config file
+      auto updateFunc = [&](const utils::ConfigMap& map)
+      {
+         graphics::cfg::ShadowWidth = map.at("Shadow_Width").GetAsInt32();
+         graphics::cfg::ShadowHeight = map.at("Shadow_Height").GetAsInt32();
+         graphics::cfg::ShadowBias = map.at("Shadow_Bias").GetAsFloat();
+      };
+
+      utils::ConfigFile configFile("config.cef", updateFunc);
+
+
       //Resolving all subsystems dependencies
       
       g_GraphicsDevice = std::make_shared<graphics::OpenglGraphicsDevice>(); //TODO make the device selectable from the config if the will be one more
