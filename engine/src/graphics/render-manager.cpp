@@ -126,7 +126,7 @@ namespace graphics
 
             Camera lightCamera(pl.Position, cubeFaceDirections.at(static_cast<CubeFace>(f)), textureAR, 1.0f, 0.0f);
 
-            pl.Camera[f] = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
+            pl.Cameras[f] = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
 
             GeometryPass(lightCamera);
 

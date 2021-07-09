@@ -54,7 +54,7 @@ namespace graphics
 
    struct alignas(16) PointLightAligned16
    {
-      mm::mat4 Camera[6];
+      mm::mat4 Cameras[6];
 
       mm::vec4 Position;
       mm::vec4 Color;

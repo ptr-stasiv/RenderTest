@@ -36,7 +36,7 @@ layout(bindless_sampler) uniform sampler2DArray CubeShadowMaps[MAX_POINT_LIGHTS]
 
 struct PointLight
 {
-    mat4 Camera[6];
+    mat4 Cameras[6];
 
     vec4 Position;
     vec4 Color;
@@ -75,6 +75,89 @@ layout(std140) uniform RenderCfgBlock
     float ShadowBias;
 } renderCfgBlock;
 
+float CalculateSpotlightAverageBlock(in int id)
+{
+    const int samplesCount = 4;
+    const vec2 poissonSamples[samplesCount] =  
+    {                                                  
+        vec2( 0.8964025188766082f, 0.5210459610093066f ),
+        vec2( 0.3034428007058425f, 0.03027352883518175f ),
+        vec2( 0.40063038946417495f, 0.5050727830165079f ),
+        vec2( 0.8212987485517685f, 0.001785112544145262f )
+    };                                                 
+
+    vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
+    vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
+    fragPP = fragPP * 0.5f + 0.5f;
+
+    float depthAvrg = 0.0f;
+    float blocksCount = 0.0f;
+
+    for(int i = 0; i < samplesCount; ++i)
+    {
+        vec2 sampleOffset = poissonSamples[i] / 300.0f;
+
+        float depth = texture(ShadowMaps[id], fragPP.xy + sampleOffset).r;
+
+        if((fragPP.z - renderCfgBlock.ShadowBias) > depth)
+        {
+            depthAvrg += depth;
+            ++blocksCount;
+        }
+    }
+
+    return depthAvrg <= 0.0f ? 0.0f : depthAvrg / blocksCount;
+}
+
+float CalculateSpotlightShadowPCSS(in int id)
+{
+    float averageBlocker = CalculateSpotlightAverageBlock(id);
+
+    if(averageBlocker <= 0.0f)
+        return 0.0f;
+
+    vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
+    vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
+    fragPP = fragPP * 0.5f + 0.5f;
+
+    float receiver = fragPP.z;
+
+    float lightW = 7.0f;
+
+    float penumbraW = (receiver - averageBlocker) * lightW / averageBlocker;
+
+
+    int kernelSize = int(penumbraW * 30);
+
+    kernelSize = kernelSize > 40 ? 40 : kernelSize;
+    kernelSize = kernelSize < 1 ? 2 : kernelSize;
+
+    vec2 texelSize = vec2(1.0f / renderCfgBlock.ShadowWidth, 1.0f / renderCfgBlock.ShadowHeight);
+
+    float shadow = 0.0f;
+
+
+    int count = 0;
+
+    for(int x = -kernelSize; x <= kernelSize; ++x)
+    {
+        count++;
+        for(int y = -kernelSize; y <= kernelSize; ++y)
+        {
+            float sampleDepth = texture(ShadowMaps[id], fragPP.xy + vec2(x, y) * texelSize).r;
+
+            if(fragPP.z - renderCfgBlock.ShadowBias  > sampleDepth)
+                shadow += 1.0f;
+        }
+    }
+
+
+    count = count >= 0 ? count : 1;
+    shadow /= count * count;
+
+    return shadow;
+}
+
 float CalculateSpotlightShadow(in int id)
 {
     vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
@@ -89,28 +172,39 @@ float CalculateSpotlightShadow(in int id)
         return 0.0f;
 
 
+    float shadow = 0.0f;
+
     float pixelW = 1.0f / renderCfgBlock.ShadowWidth;
     float pixelH = 1.0f / renderCfgBlock.ShadowHeight;
 
-    float shadow = 0.0f;
+    const vec2 poissonSamples[4] =  
+    {                                                  
+        vec2( 0.8964025188766082f, 0.5210459610093066f ),
+        vec2( 0.3034428007058425f, 0.03027352883518175f ),
+        vec2( 0.40063038946417495f, 0.5050727830165079f ),
+        vec2( 0.8212987485517685f, 0.001785112544145262f )
+    };                                                 
 
-    float shadowDepth = texture(ShadowMaps[id], proj.xy).r;
-
-    if((fragDepth) > shadowDepth)
-        shadow += 1.0f;
-
-    for(float x = -1.0f; x <= 1.0f; ++x)
+    for(int i = 0; i < 4; ++i)
     {
-        for(float y = 1.0f; y >= -1.0f; --y)
-        {
-            float shadowDepth = texture(ShadowMaps[id], vec2(proj.x + x * pixelW, proj.y + y * pixelH)).r;
+        float shadowDepth = texture(ShadowMaps[id], proj.xy + (poissonSamples[i] / 250)).r;
 
-            if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
-                shadow += 1.0f;
-        }
+        if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
+            shadow += 1.0f;
     }
 
-    shadow /= 9.0f;
+    //for(float x = -1.0f; x <= 1.0f; ++x)
+    //{
+    //    for(float y = 1.0f; y >= -1.0f; --y)
+    //    {
+            //float shadowDepth = texture(ShadowMaps[id], vec2(proj.x + x * pixelW, proj.y + y * pixelH)).r;
+
+            //if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
+            //    shadow += 1.0f;
+    //    }
+    //}
+
+    shadow /= 4.0f;
 
     return shadow;
 }
@@ -121,7 +215,7 @@ float CalculatePointlightShadow(in int id)
 
     for(int i = 0; i < 6; ++i)
     {
-        vec4 lightSpaceFrag = lightBlock.PointLightArray[id].Camera[i] * vec4(vs_in.FragPos, 1.0f);
+        vec4 lightSpaceFrag = lightBlock.PointLightArray[id].Cameras[i] * vec4(vs_in.FragPos, 1.0f);
 
         vec3 proj = lightSpaceFrag.xyz / lightSpaceFrag.w;
 
@@ -135,19 +229,35 @@ float CalculatePointlightShadow(in int id)
         float pixelW = 1.0f / renderCfgBlock.ShadowWidth;
         float pixelH = 1.0f / renderCfgBlock.ShadowHeight;
 
-        for(float x = -1.0f; x <= 1.0f; ++x)
-        {
-            for(float y = 1.0f; y >= -1.0f; --y)
-            {
-                float shadowDepth = texture(CubeShadowMaps[id], vec3(proj.x + x * pixelW, proj.y + y * pixelH, i)).r;
+        const vec2 poissonSamples[4] =  
+        {                                                  
+            vec2( 0.8964025188766082f, 0.5210459610093066f ),
+            vec2( 0.3034428007058425f, 0.03027352883518175f ),
+            vec2( 0.40063038946417495f, 0.5050727830165079f ),
+            vec2( 0.8212987485517685f, 0.001785112544145262f )
+        };     
 
-                if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
-                    shadow += 1.0f;
-            }
+        for(int i = 0; i < 4; ++i)
+        {
+            float shadowDepth = texture(CubeShadowMaps[id],vec3(proj.xy + (poissonSamples[i] / 250), i)).r;
+
+            if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
+                shadow += 1.0f;
         }
+
+        //for(float x = -1.0f; x <= 1.0f; ++x)
+        //{
+        //    for(float y = 1.0f; y >= -1.0f; --y)
+        //    {
+        //        float shadowDepth = texture(CubeShadowMaps[id], vec3(proj.x + x * pixelW, proj.y + y * pixelH, i)).r;
+
+        //        if((fragDepth - renderCfgBlock.ShadowBias) > shadowDepth)
+        //            shadow += 1.0f;
+        //    }
+        //}
     }
 
-    shadow /= 9.0f;
+    shadow /= 4.0f;
 
     return shadow;
 }
@@ -211,7 +321,7 @@ void main()
         float innerAngle = lightBlock.SpotlightArray[i].InnnerAngle;
         float outerAngle = lightBlock.SpotlightArray[i].OuterAngle;
 
-        float shadow = CalculateSpotlightShadow(i);
+        float shadow = CalculateSpotlightShadowPCSS(i);
 
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
                                     lightDir, normal, viewDir, shadow);
