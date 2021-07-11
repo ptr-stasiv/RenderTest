@@ -172,7 +172,7 @@ int main()
 
    app::RunEngineApp([&]()
       {
-         //pistolMesh->Translate.x -= 0.1f * app::g_DeltaTime;
+         pistolMesh->Translate.x -= 0.1f * app::g_DeltaTime;
 
          scene::UpdateAndRender(scene);
       });

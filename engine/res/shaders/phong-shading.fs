@@ -80,10 +80,10 @@ float CalculateSpotlightAverageBlock(in int id)
     const int samplesCount = 4;
     const vec2 poissonSamples[samplesCount] =  
     {                                                  
-        vec2( 0.8964025188766082f, 0.5210459610093066f ),
-        vec2( 0.3034428007058425f, 0.03027352883518175f ),
-        vec2( 0.40063038946417495f, 0.5050727830165079f ),
-        vec2( 0.8212987485517685f, 0.001785112544145262f )
+        vec2(0.6732585315436848, -0.8608556105939367),
+        vec2(0.6655615153788441, -0.8260501340569204),
+        vec2(0.7226796340727406, -0.8163655010537019),
+        vec2(0.6210108395945246, -0.7689578657333613)
     };                                                 
 
     vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);

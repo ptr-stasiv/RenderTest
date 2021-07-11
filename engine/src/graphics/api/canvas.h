@@ -3,6 +3,7 @@
 #include <any>
 
 #include "events/subject.h"
+#include "imgui.h"
 
 namespace graphics
 {

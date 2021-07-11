@@ -25,6 +25,9 @@ namespace graphics
       private:
          uint16_t Width;
          uint16_t Height;
+
+         void ImGuiBeginFrame();
+         void ImGuiEndFrame();
       public:
          GLFWwindow* GlfwWindow;
 
@@ -42,10 +45,14 @@ namespace graphics
          {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glfwPollEvents();
+
+            ImGuiBeginFrame();
          }
 
          inline void EndFrame() override
          {
+            ImGuiEndFrame();
+
             glfwSwapBuffers(GlfwWindow);
          }
 

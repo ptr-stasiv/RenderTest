@@ -50,6 +50,7 @@ namespace sharpmake
 
             config.ProjectPath = @"[project.SharpmakeCsPath]/engine";
 
+            config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/imgui");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glfw/include");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/extern/glew/include");
             config.IncludePaths.Add(@"[project.SharpmakeCsPath]/engine/src/vendors");
