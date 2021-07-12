@@ -1,5 +1,5 @@
 //Graphics settings
-Shadow_Width: 512
-Shadow_Height: 512
+Shadow_Width: 1024
+Shadow_Height: 1024
 
 Shadow_Bias: 0.005
