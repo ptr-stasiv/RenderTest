@@ -113,70 +113,70 @@ const vec2 poissonSamples32[32] =
 
 const vec2 poissonSamples64[64] = 
 {
-    vec2( 0.6823332673722882f, 0.7693616044902143f ),   
-    vec2( 0.14020839003463936f, 0.2412819505527043f ),  
-    vec2( 0.6450665264254224f, 0.28146005142352293f ),  
-    vec2( 0.16581789780152623f, 0.7664830243290259f ),  
-    vec2( 0.8817705223981847f, 0.5065669478378487f ),   
-    vec2( 0.4464878094493284f, 0.997767784792779f ),    
-    vec2( 0.886577064604794f, 0.05222737916694298f ),   
-    vec2( 0.3913184797530187f, 0.5128642838500113f ),   
-    vec2( 0.42371069277492535f, 0.764793544766694f ),   
-    vec2( 0.1459829341211928f, 0.5229854860244226f ),   
-    vec2( 0.20465062700198533f, 0.016569876657159477f ),
-    vec2( 0.41724008940139923f, 0.24440311922780034f ), 
-    vec2( 0.8675963237097074f, 0.27775463295890435f ),  
-    vec2( 0.6331875521007994f, 0.5156230284006605f ),   
-    vec2( 0.9285327220696543f, 0.7953601899702276f ),   
-    vec2( 0.6939784202081056f, 0.999905034183962f ),    
-    vec2( 0.7856621936517407f, 0.6423306725633416f ),   
-    vec2( 0.25316731452673513f, 0.38399098804385656f ), 
-    vec2( 0.9890703845748741f, 0.6431728980117875f ),   
-    vec2( 0.007394794485270251f, 0.3832556752916382f ), 
-    vec2( 0.5594419267592333f, 0.8910881453535987f ),   
-    vec2( 0.05759988041029762f, 0.09829420964523639f ), 
-    vec2( 0.5149553090828863f, 0.6317482830023845f ),   
-    vec2( 0.2895173755347359f, 0.6504306084362619f ),   
-    vec2( 0.2769491712708452f, 0.16774683610238628f ),  
-    vec2( 0.3030138176728262f, 0.8834493304761336f ),   
-    vec2( 0.5556858816039051f, 0.12222795493647898f ),  
-    vec2( 0.9985454411112139f, 0.9536853046837467f ),   
-    vec2( 0.7725891066749621f, 0.40072738603042013f ),  
-    vec2( 0.8203496825021748f, 0.9084093946143528f ),   
-    vec2( 0.7777664014000151f, 0.17360011721371116f ),  
-    vec2( 0.5164550118406248f, 0.38290726554669396f ),  
-    vec2( 0.005673933837322953f, 0.507811555122204f ),  
-    vec2( 0.3910855828634112f, 0.36366255224493826f ),  
-    vec2( 0.98332922014684f, 0.21877366451080205f ),    
-    vec2( 0.7946570369904519f, 0.783656779149179f ),    
-    vec2( 0.12716297524404863f, 0.9261348602211971f ),  
-    vec2( 0.6274875914809608f, 0.6425736910425622f ),   
-    vec2( 0.44379974995719906f, 0.13042828769409254f ), 
-    vec2( 0.5611156294824691f, 0.7619625987353662f ),   
-    vec2( 0.2851273752582246f, 0.7710802414251696f ),   
-    vec2( 0.11814305039640616f, 0.6270961899430632f ),  
-    vec2( 0.7444066215944408f, 0.534769969621964f ),    
-    vec2( 0.3224582442955253f, 0.0021334769045254776f ),
-    vec2( 0.6275568890136483f, 0.3988956594544456f ),   
-    vec2( 0.06148812070164267f, 0.7395739206479349f ),  
-    vec2( 0.8814639302080903f, 0.6864912977729014f ),   
-    vec2( 0.6676006387509288f, 0.1721725586644154f ),   
-    vec2( 0.580202681726419f, 0.009774520957600674f ),  
-    vec2( 0.14156461107995566f, 0.37532152396163465f ), 
-    vec2( 0.6644446917775119f, 0.8644431181540676f ),   
-    vec2( 0.24797096701967103f, 0.5226437772494446f ),  
-    vec2( 0.16695661718302557f, 0.14079502130037436f ), 
-    vec2( 0.5296934603530387f, 0.25534717817682373f ),  
-    vec2( 0.4053400095964541f, 0.8712099288400578f ),   
-    vec2( 0.9024319359702099f, 0.15536018930829099f ),  
-    vec2( 0.04637379839035649f, 0.8520112349709928f ),  
-    vec2( 0.5109284341174384f, 0.5123768332120583f ),   
-    vec2( 0.8935821499133476f, 0.3943086034599217f ),   
-    vec2( 0.1984958222102169f, 0.6753096550567069f ),   
-    vec2( 0.416123979566031f, 0.6174464722218164f ),    
-    vec2( 0.31998389820127393f, 0.27007695448065694f ), 
-    vec2( 0.8790507478786997f, 0.5978351490184093f ),   
-    vec2( 0.33150024660370936f, 0.4442410467532786f )  
+    vec2(0.6823332673722882, 0.769361604490214), 
+    vec2(0.14020839003463936, 0.24128195055270), 
+    vec2(0.6450665264254224, 0.281460051423522), 
+    vec2(0.16581789780152623, 0.76648302432902), 
+    vec2(0.8817705223981847, 0.506566947837848), 
+    vec2(0.4464878094493284, 0.997767784792779), 
+    vec2(0.886577064604794, 0.0522273791669429), 
+    vec2(0.3913184797530187, 0.512864283850011), 
+    vec2(0.42371069277492535, 0.76479354476669), 
+    vec2(0.1459829341211928, 0.522985486024422), 
+    vec2(0.20465062700198533, 0.01656987665715),
+    vec2(0.41724008940139923, 0.24440311922780), 
+    vec2(0.8675963237097074, 0.277754632958904), 
+    vec2(0.6331875521007994, 0.515623028400660), 
+    vec2(0.9285327220696543, 0.795360189970227), 
+    vec2(0.6939784202081056, 0.999905034183962), 
+    vec2(0.7856621936517407, 0.642330672563341), 
+    vec2(0.25316731452673513, 0.38399098804385), 
+    vec2(0.9890703845748741, 0.643172898011787), 
+    vec2(0.007394794485270251, 0.3832556752916), 
+    vec2(0.5594419267592333, 0.891088145353598), 
+    vec2(0.05759988041029762, 0.09829420964523), 
+    vec2(0.5149553090828863, 0.631748283002384), 
+    vec2(0.2895173755347359, 0.650430608436261), 
+    vec2(0.2769491712708452, 0.167746836102386), 
+    vec2(0.3030138176728262, 0.883449330476133), 
+    vec2(0.5556858816039051, 0.122227954936478), 
+    vec2(0.9985454411112139, 0.953685304683746), 
+    vec2(0.7725891066749621, 0.400727386030420), 
+    vec2(0.8203496825021748, 0.908409394614352), 
+    vec2(0.7777664014000151, 0.173600117213711), 
+    vec2(0.5164550118406248, 0.382907265546693), 
+    vec2(0.005673933837322953, 0.5078115551222), 
+    vec2(0.3910855828634112, 0.363662552244938), 
+    vec2(0.98332922014684, 0.21877366451080205), 
+    vec2(0.7946570369904519, 0.783656779149179), 
+    vec2(0.12716297524404863, 0.92613486022119), 
+    vec2(0.6274875914809608, 0.642573691042562), 
+    vec2(0.44379974995719906, 0.13042828769409), 
+    vec2(0.5611156294824691, 0.761962598735366), 
+    vec2(0.2851273752582246, 0.771080241425169), 
+    vec2(0.11814305039640616, 0.62709618994306), 
+    vec2(0.7444066215944408, 0.534769969621964), 
+    vec2(0.3224582442955253, 0.002133476904525),
+    vec2(0.6275568890136483, 0.398895659454445), 
+    vec2(0.06148812070164267, 0.73957392064793), 
+    vec2(0.8814639302080903, 0.686491297772901), 
+    vec2(0.6676006387509288, 0.172172558664415), 
+    vec2(0.580202681726419, 0.0097745209576006), 
+    vec2(0.14156461107995566, 0.37532152396163), 
+    vec2(0.6644446917775119, 0.864443118154067), 
+    vec2(0.24797096701967103, 0.52264377724944), 
+    vec2(0.16695661718302557, 0.14079502130037), 
+    vec2(0.5296934603530387, 0.255347178176823), 
+    vec2(0.4053400095964541, 0.871209928840057), 
+    vec2(0.9024319359702099, 0.155360189308290), 
+    vec2(0.04637379839035649, 0.85201123497099), 
+    vec2(0.5109284341174384, 0.512376833212058), 
+    vec2(0.8935821499133476, 0.394308603459921), 
+    vec2(0.1984958222102169, 0.675309655056706), 
+    vec2(0.416123979566031, 0.6174464722218164), 
+    vec2(0.31998389820127393, 0.27007695448065), 
+    vec2(0.8790507478786997, 0.597835149018409), 
+    vec2(0.33150024660370936, 0.44424104675327)
 };
 
 float rand(vec2 co)
@@ -193,11 +193,15 @@ float rand(vec2 co)
 #define LIGHT_SIZE 0.5f
 #define LIGHT_SIZE_UV (LIGHT_SIZE / FRUSTRUM_WIDTH)
 
-float SearchBlocker(in int id)
+float SearchBlockerSL(in int id)
 {
     vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
     vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
     fragPP = fragPP * 0.5f + 0.5f;
+
+    if(fragPP.z >= 1.0f)
+        return 0.0f;
+
 
     float kernelSize = LIGHT_SIZE_UV / fragPP.z;
 
@@ -220,9 +224,40 @@ float SearchBlocker(in int id)
     return blockersCount != 0.0f ? (avrgDepth / blockersCount) : 0.0f;
 }
 
+float SearchBlockerPL(in int id, in int side)
+{
+    vec4 lightSpaceFrag = lightBlock.PointLightArray[id].Cameras[side] * vec4(vs_in.FragPos, 1.0f);
+    vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
+    fragPP = fragPP * 0.5f + 0.5f;
+
+    if(fragPP.z >= 1.0f)
+        return 0.0f;
+
+
+    float kernelSize = LIGHT_SIZE_UV / fragPP.z;
+
+    float avrgDepth = 0.0f;
+    float blockersCount = 0.0f;
+
+    for(int i = 0; i < 32; ++i)
+    {
+       vec2 noiseSample = poissonSamples32[i] * 2.0f - 1.0f;
+
+       float sampleDepth = texture(CubeShadowMaps[id], vec3(fragPP.xy + noiseSample * kernelSize, side)).r;
+
+       if(fragPP.z - renderCfgBlock.ShadowBias > sampleDepth)
+       {
+          avrgDepth += sampleDepth;
+          ++blockersCount;
+       }
+    }
+   
+    return blockersCount != 0.0f ? (avrgDepth / blockersCount) : 0.0f;
+}
+
 float CalculateSpotlightPCSS(in int id)
 {
-   float blocker = SearchBlocker(id);
+   float blocker = SearchBlockerSL(id);
 
    if(blocker == 0.0f)
       return 0.0f;
@@ -231,6 +266,7 @@ float CalculateSpotlightPCSS(in int id)
    vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
    vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
    fragPP = fragPP * 0.5f + 0.5f;
+
 
    float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
    penumbra *= 0.7f; //Multiply by arbitrary factor, reduce noise
@@ -258,27 +294,44 @@ float CalculateSpotlightPCSS(in int id)
 
 float CalculatePointlightPCSS(in int id)
 {
-    float blocker = SearchBlocker(id);
-
-    if(blocker == 0.0f)
-       return 0.0f;
-
-    
-    vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
-    vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
-    fragPP = fragPP * 0.5f + 0.5f;
-
-    float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
-    penumbra *= 0.7f; //Multiply by arbitrary factor, reduce noise
-
-    float randomJitter = rand(fragPP.xy) * 2.0f - 1.0f; //When use fragPP instead of uv its dramatically reduce moire pattern appearance
-    float randomX = cos(randomJitter);
-    float randomY = sin(randomJitter);
-
     float shadow = 0.0f;
+
+    for(int i = 0; i < 6; ++i)
+    {
+        float blocker = SearchBlockerPL(id, i);
+
+        if(blocker == 0.0f)
+            continue;
+
+
+        vec4 lightSpaceFrag = lightBlock.PointLightArray[id].Cameras[i] * vec4(vs_in.FragPos, 1.0f);
+        vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
+        fragPP = fragPP * 0.5f + 0.5f;
+
+        float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
+        penumbra *= 0.7f;
+
+        float randomJitter = rand(fragPP.xy) * 2.0f - 1.0f;
+        float randomX = cos(randomJitter);
+        float randomY = sin(randomJitter);
+
+        for(int j = 0; j < 64; ++j)
+        {
+           vec2 noiseSample = poissonSamples64[j] * 2.0f - 1.0f;
+           noiseSample.x = noiseSample.x * randomX - noiseSample.y * randomY;
+           noiseSample.y = noiseSample.y * randomX + noiseSample.x * randomY;
+
+           float sampleDepth = texture(CubeShadowMaps[id], vec3(fragPP.xy + noiseSample * penumbra, i)).r;
+
+           if(fragPP.z - renderCfgBlock.ShadowBias > sampleDepth)
+              shadow += sampleDepth;      
+        }
+    }
+
+    return shadow / 64.0f;
 }
 
-float CalculateSpotlightShadow(in int id)
+float CalculateSpotlightHardShadow(in int id)
 {
     vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
 
@@ -307,7 +360,7 @@ float CalculateSpotlightShadow(in int id)
     return shadow;
 }
 
-float CalculatePointlightShadow(in int id)
+float CalculatePointlightHardShadow(in int id)
 {
     float shadow = 0.0f;
 
@@ -377,7 +430,7 @@ void main()
         float stretch = lightBlock.PointLightArray[i].Stretch;
         float offset = lightBlock.PointLightArray[i].Offset;
         
-        float shadow = CalculatePointlightShadow(i);
+        float shadow = CalculatePointlightPCSS(i);
 
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
                                     lightDir, normal, viewDir, shadow);

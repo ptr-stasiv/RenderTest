@@ -162,11 +162,11 @@ int main()
    scene::Register(scene, pistolMesh);
    scene::Register(scene, cubeMesh);
 
-   scene::Register(scene, std::make_shared<graphics::PointLight>(
-                                           graphics::PointLight({ 0.0f, 8.0f, 3.0f }, { 1.0f, 1.0f, 1.0f }, 20.0f, -1.0f)));
+   //scene::Register(scene, std::make_shared<graphics::PointLight>(
+   //                                        graphics::PointLight({ 0.0f, 3.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, 20.0f, -1.0f)));
 
-   //scene::Register(scene, std::make_shared<graphics::Spotlight>(
-   //                                        graphics::Spotlight({ 0.0f, 5.0f, -2.0f }, { -0.3f, -0.7f, 0.0f }, { 1.0f, 1.0f, 1.0f }, mm::PI / 3, mm::PI / 4)));
+   scene::Register(scene, std::make_shared<graphics::Spotlight>(
+                                           graphics::Spotlight({ 0.0f, 5.0f, -2.0f }, { -0.3f, -0.7f, 0.0f }, { 1.0f, 1.0f, 1.0f }, mm::PI / 3, mm::PI / 4)));
 
    scene::Register(scene, MainCamera);
 
