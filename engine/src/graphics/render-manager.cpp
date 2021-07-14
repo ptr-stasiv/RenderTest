@@ -90,9 +90,11 @@ namespace graphics
          float textureAR = GeneralShadowMap->GetSizeX()
                            / GeneralShadowMap->GetSizeY();
 
-         Camera lightCamera(sl.Position, sl.Direction, textureAR, 1.0f, 0.0f);
+         Camera lightCamera(sl.Position, sl.Direction, textureAR, sl.OuterAngle, 0.0f);
 
          sl.Camera = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
+
+         sl.FrustrumWidth = lightCamera.Fov * lightCamera.Aspect * 2;
 
          GeometryPass(lightCamera);
 
@@ -127,6 +129,8 @@ namespace graphics
             Camera lightCamera(pl.Position, cubeFaceDirections.at(static_cast<CubeFace>(f)), textureAR, 1.0f, 0.0f);
 
             pl.Cameras[f] = mm::transpose(lightCamera.GetCameraProjection() * lightCamera.GetCameraViewMatrix());
+
+            pl.FrustrumWidth = lightCamera.Fov * lightCamera.Aspect * 2;
 
             GeometryPass(lightCamera);
 

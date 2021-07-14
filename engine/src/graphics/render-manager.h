@@ -22,6 +22,8 @@ namespace graphics
       int32_t ShadowHeight = cfg::ShadowHeight;
 
       float ShadowBias = cfg::ShadowBias;
+      float LightSize = cfg::LightSize;
+      int SoftShadows = cfg::SoftShadows;
    };
 
    union RenderKey
@@ -62,6 +64,8 @@ namespace graphics
       float Stretch;
       float Offset;
 
+      float FrustrumWidth;
+
       uint32_t ShadowMapId;
    };
 
@@ -75,6 +79,8 @@ namespace graphics
 
       float InnerAngle;
       float OuterAngle;
+
+      float FrustrumWidth;
 
       uint32_t ShadowMapId;
    };

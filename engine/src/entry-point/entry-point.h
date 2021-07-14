@@ -24,6 +24,8 @@ namespace app
          graphics::cfg::ShadowWidth = map.at("Shadow_Width").GetAsInt32();
          graphics::cfg::ShadowHeight = map.at("Shadow_Height").GetAsInt32();
          graphics::cfg::ShadowBias = map.at("Shadow_Bias").GetAsFloat();
+         graphics::cfg::LightSize = map.at("Light_Size").GetAsFloat();
+         graphics::cfg::SoftShadows = map.at("Soft_Shadows").GetAsInt32();
       };
 
       utils::ConfigFile configFile("config.cef", updateFunc);

@@ -10,5 +10,7 @@ namespace graphics
 		inline uint16_t ShadowHeight = 512;
 
 		inline float ShadowBias = 0.005f;
+		inline float LightSize = 0.5f;
+		inline int SoftShadows = 1;
 	}
 }

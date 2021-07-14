@@ -3,3 +3,5 @@ Shadow_Width: 1024
 Shadow_Height: 1024
 
 Shadow_Bias: 0.005
+Light_Size: 0.5
+Soft_Shadows: 1

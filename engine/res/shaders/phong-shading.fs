@@ -44,6 +44,8 @@ struct PointLight
     float Stretch;
     float Offset;
 
+    float FrustrumWidth;
+
     int ShadowMapId;
 };
 
@@ -57,6 +59,8 @@ struct Spotlight
 
     float InnnerAngle;
     float OuterAngle;
+
+    float FrustrumWidth;
 
     int ShadowMapId;
 };
@@ -73,6 +77,8 @@ layout(std140) uniform RenderCfgBlock
     int ShadowHeight;
 
     float ShadowBias;
+    float LightSize;
+    int SoftShadows;
 } renderCfgBlock;
 
 const vec2 poissonSamples32[32] =  
@@ -189,10 +195,6 @@ float rand(vec2 co)
     return fract(sin(sn) * c);
 }
 
-#define FRUSTRUM_WIDTH 3.54f
-#define LIGHT_SIZE 0.5f
-#define LIGHT_SIZE_UV (LIGHT_SIZE / FRUSTRUM_WIDTH)
-
 float SearchBlockerSL(in int id)
 {
     vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
@@ -202,8 +204,9 @@ float SearchBlockerSL(in int id)
     if(fragPP.z >= 1.0f)
         return 0.0f;
 
+    float lightSize = renderCfgBlock.LightSize / lightBlock.SpotlightArray[id].FrustrumWidth;
 
-    float kernelSize = LIGHT_SIZE_UV / fragPP.z;
+    float kernelSize = lightSize / fragPP.z;
 
     float avrgDepth = 0.0f;
     float blockersCount = 0.0f;
@@ -233,8 +236,9 @@ float SearchBlockerPL(in int id, in int side)
     if(fragPP.z >= 1.0f)
         return 0.0f;
 
+    float lightSize = renderCfgBlock.LightSize / lightBlock.PointLightArray[id].FrustrumWidth;
 
-    float kernelSize = LIGHT_SIZE_UV / fragPP.z;
+    float kernelSize = lightSize / fragPP.z;
 
     float avrgDepth = 0.0f;
     float blockersCount = 0.0f;
@@ -268,7 +272,9 @@ float CalculateSpotlightPCSS(in int id)
    fragPP = fragPP * 0.5f + 0.5f;
 
 
-   float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
+   float lightSize = renderCfgBlock.LightSize / lightBlock.SpotlightArray[id].FrustrumWidth;
+
+   float penumbra = (fragPP.z - blocker) * lightSize / blocker;
    penumbra *= 0.7f; //Multiply by arbitrary factor, reduce noise
 
    float randomJitter = rand(fragPP.xy) * 2.0f - 1.0f; //When use fragPP instead of uv its dramatically reduce moire pattern appearance
@@ -308,7 +314,10 @@ float CalculatePointlightPCSS(in int id)
         vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
         fragPP = fragPP * 0.5f + 0.5f;
 
-        float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
+
+        float lightSize = renderCfgBlock.LightSize / lightBlock.PointLightArray[id].FrustrumWidth;
+
+        float penumbra = (fragPP.z - blocker) * lightSize / blocker;
         penumbra *= 0.7f;
 
         float randomJitter = rand(fragPP.xy) * 2.0f - 1.0f;
