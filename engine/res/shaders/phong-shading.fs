@@ -210,7 +210,7 @@ float SearchBlocker(in int id)
 
        float sampleDepth = texture(ShadowMaps[id], fragPP.xy + noiseSample * kernelSize).r;
 
-       if(fragPP.z > sampleDepth)
+       if(fragPP.z - renderCfgBlock.ShadowBias > sampleDepth)
        {
           avrgDepth += sampleDepth;
           ++blockersCount;
@@ -233,13 +233,13 @@ float CalculateSpotlightPCSS(in int id)
    fragPP = fragPP * 0.5f + 0.5f;
 
    float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
-   penumbra *= 1.3f; //Multiply by arbitrary factor
+   penumbra *= 0.7f; //Multiply by arbitrary factor, reduce noise
 
-   float shadow = 0.0f;
-
-   float randomJitter = rand(vs_in.UV) * 2.0f - 1.0f;
+   float randomJitter = rand(fragPP.xy) * 2.0f - 1.0f; //When use fragPP instead of uv its dramatically reduce moire pattern appearance
    float randomX = cos(randomJitter);
    float randomY = sin(randomJitter);
+
+   float shadow = 0.0f;
 
    for(int i = 0; i < 64; ++i)
    {
@@ -249,11 +249,33 @@ float CalculateSpotlightPCSS(in int id)
 
       float sampleDepth = texture(ShadowMaps[id], fragPP.xy + noiseSample * penumbra).r;
 
-      if(fragPP.z > sampleDepth)
+      if(fragPP.z - renderCfgBlock.ShadowBias > sampleDepth)
          shadow += sampleDepth;      
    }
 
    return shadow / 64.0f;
+}
+
+float CalculatePointlightPCSS(in int id)
+{
+    float blocker = SearchBlocker(id);
+
+    if(blocker == 0.0f)
+       return 0.0f;
+
+    
+    vec4 lightSpaceFrag = lightBlock.SpotlightArray[id].Camera * vec4(vs_in.FragPos, 1.0f);
+    vec3 fragPP = lightSpaceFrag.xyz / lightSpaceFrag.w;
+    fragPP = fragPP * 0.5f + 0.5f;
+
+    float penumbra = (fragPP.z - blocker) * LIGHT_SIZE_UV / blocker;
+    penumbra *= 0.7f; //Multiply by arbitrary factor, reduce noise
+
+    float randomJitter = rand(fragPP.xy) * 2.0f - 1.0f; //When use fragPP instead of uv its dramatically reduce moire pattern appearance
+    float randomX = cos(randomJitter);
+    float randomY = sin(randomJitter);
+
+    float shadow = 0.0f;
 }
 
 float CalculateSpotlightShadow(in int id)
@@ -389,6 +411,4 @@ void main()
     }
 
     FragColor = texture(DiffuseTexture, vs_in.UV) * vec4(lightSum, 1.0f);
-
-    //FragColor = vec4(vec3(rand(vs_in.UV)), 1.0f);
 }
