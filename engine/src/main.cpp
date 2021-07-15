@@ -46,6 +46,17 @@ int main()
    g_InputManager->AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                            { input::InputEvent::Q, -1.0f } });
 
+   static bool t = true;
+   g_InputManager->BindAction(input::InputEvent::F1, input::InputEventState::Released, [](const uintptr_t args)
+      {
+         t = !t;
+
+         if (t)
+            LOG_ERROR("True")
+         else
+            LOG_ERROR("False")
+      });
+
    g_InputManager->BindAxis("MoveForward", [](const float value, const uintptr_t args)
       {
          graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
@@ -179,3 +190,30 @@ int main()
 
    return 0;
 }
+
+//int main()
+//{
+//	app::CreateEngineApp();
+//
+//	g_Window->GetCanvas()->ShowCursor(true);
+//
+//	app::RunEngineApp([&]()
+//	{
+//			static ImGuiID dockspaceID = 0;
+//			ImGui::Begin("Editor space", nullptr, ImGuiWindowFlags_MenuBar);
+//
+//			dockspaceID = ImGui::GetID("EditorSpace");
+//			ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
+//
+//			ImGui::End();
+//
+//			ImGui::Begin("Viewport");
+//			ImGui::Image(0, ImVec2(400, 200));
+//			ImGui::End();
+//
+//			ImGui::Begin("Settings");
+//			ImGui::End();
+//	});
+//
+//	return 0;
+//}

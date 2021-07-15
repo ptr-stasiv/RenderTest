@@ -11,7 +11,7 @@ namespace graphics
 {
    namespace gl
    { 
-      namespace input
+      namespace callback
       {
          inline void KeyCallback(GLFWwindow* w, int key, int sc, int action, int mods)
          {
@@ -45,6 +45,11 @@ namespace graphics
          inline void ScrollCallback(GLFWwindow* w, double x, double y)
          {
             MouseScrollSubject.Invoke(event::MouseScrollEvent(y));
+         }
+
+         inline void ResizeCallback(GLFWwindow* w, int width, int height)
+         {
+            ResizeSubject.Invoke(event::ResizeEvent(width, height));
          }
       }
 
@@ -135,13 +140,15 @@ namespace graphics
 
          //Input setup
 
-         glfwSetKeyCallback(GlfwWindow, input::KeyCallback);
+         glfwSetKeyCallback(GlfwWindow, callback::KeyCallback);
 
-         glfwSetMouseButtonCallback(GlfwWindow, input::MouseButtonCallback);
+         glfwSetMouseButtonCallback(GlfwWindow, callback::MouseButtonCallback);
 
-         glfwSetCursorPosCallback(GlfwWindow, input::CursorCallback);
+         glfwSetCursorPosCallback(GlfwWindow, callback::CursorCallback);
 
-         glfwSetScrollCallback(GlfwWindow, input::ScrollCallback);
+         glfwSetScrollCallback(GlfwWindow, callback::ScrollCallback);
+
+         glfwSetWindowSizeCallback(GlfwWindow, callback::ResizeCallback);
 
          glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -165,7 +172,6 @@ namespace graphics
          ImGuiIO& io = ImGui::GetIO(); (void)io;
          io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
          io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
          ImGui::StyleColorsDark();
 

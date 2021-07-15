@@ -66,11 +66,16 @@ namespace input
 
       for (auto e : ActionsKeyList)
       {
-         if (NativeInputManager->IsPressOccured(e.KeyId)
-             || NativeInputManager->IsReleaseOccured(e.KeyId))
+         if (e.DesiredStateId == static_cast<uint8_t>(InputEventState::Pressed)
+             && NativeInputManager->IsPressOccured(e.KeyId))
          {
             e.Callback(e.Args);
-         } 
+         }
+         else if (e.DesiredStateId == static_cast<uint8_t>(InputEventState::Released)
+                  && NativeInputManager->IsReleaseOccured(e.KeyId))
+         {
+            e.Callback(e.Args);
+         }
       }
 
       for (auto e : AxisesKeyList)

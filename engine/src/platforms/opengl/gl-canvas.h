@@ -12,12 +12,13 @@ namespace graphics
 {
    namespace gl
    {
-      namespace input
+      namespace callback
       {
          inline event::Subject KeySubject;
          inline event::Subject MouseButtonSubject;
          inline event::Subject CursorSubject;
          inline event::Subject MouseScrollSubject;
+         inline event::Subject ResizeSubject;
       }
 
       class CanvasGL : public Canvas
@@ -56,9 +57,17 @@ namespace graphics
             glfwSwapBuffers(GlfwWindow);
          }
 
-         bool ShouldClose() override
+         inline bool ShouldClose() const override
          {
             return glfwWindowShouldClose(GlfwWindow);
+         }
+
+         inline void ShowCursor(const bool show) override
+         {
+            if(show)
+               glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            else
+               glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
          }
 
          inline uint16_t GetWidth() const override
@@ -73,22 +82,27 @@ namespace graphics
 
          inline void AddKeyCallback(const event::Callback& callback) override
          {
-            input::KeySubject.AddObserver(callback);
+            callback::KeySubject.AddObserver(callback);
          }
 
          inline void AddMouseButtonCallback(const event::Callback& callback) override
          {
-            input::MouseButtonSubject.AddObserver(callback);
+            callback::MouseButtonSubject.AddObserver(callback);
          }
 
          inline void AddCursorCallback(const event::Callback& callback) override
          {
-            input::CursorSubject.AddObserver(callback);
+            callback::CursorSubject.AddObserver(callback);
          }
 
          inline void AddScrollCallback(const event::Callback& callback) override
          {
-            input::MouseScrollSubject.AddObserver(callback);
+            callback::MouseScrollSubject.AddObserver(callback);
+         }
+
+         inline void AddResizeCallback(const event::Callback& callback) override
+         {
+            callback::ResizeSubject.AddObserver(callback);
          }
 
          CanvasGL(const CanvasGL&) = delete;

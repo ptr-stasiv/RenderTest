@@ -50,4 +50,16 @@ namespace event
 
       ASSIGN_EVENT_TYPE(0x04)
    };
+
+   class ResizeEvent : public BaseEvent
+   {
+   public:
+      uint16_t Width;
+      uint16_t Height;
+
+      inline ResizeEvent(const uint16_t w, const uint16_t h)
+         : Width(w), Height(h) {}
+
+      ASSIGN_EVENT_TYPE(0x05)
+   };
 }
