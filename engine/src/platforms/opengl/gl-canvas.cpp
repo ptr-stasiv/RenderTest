@@ -50,6 +50,13 @@ namespace graphics
          inline void ResizeCallback(GLFWwindow* w, int width, int height)
          {
             ResizeSubject.Invoke(event::ResizeEvent(width, height));
+
+            CanvasGL* canvas = reinterpret_cast<CanvasGL*>(glfwGetWindowUserPointer(w));
+
+            canvas->Width = width;
+            canvas->Height = height;
+
+            glViewport(0, 0, width, height);
          }
       }
 
@@ -124,6 +131,7 @@ namespace graphics
          if(glewInit() != GLEW_OK)
             PRINT_AND_TERMINATE("Error in OpengGL initialization!");
 
+         glfwSetWindowUserPointer(GlfwWindow, this);
 
          //Alpha blending
          glEnable(GL_BLEND);
@@ -151,7 +159,6 @@ namespace graphics
          glfwSetWindowSizeCallback(GlfwWindow, callback::ResizeCallback);
 
          glfwSetInputMode(GlfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 
 
          //

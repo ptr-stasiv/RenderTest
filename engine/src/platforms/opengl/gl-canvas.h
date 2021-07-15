@@ -24,13 +24,13 @@ namespace graphics
       class CanvasGL : public Canvas
       {
       private:
-         uint16_t Width;
-         uint16_t Height;
-
          void ImGuiBeginFrame();
          void ImGuiEndFrame();
       public:
          GLFWwindow* GlfwWindow;
+
+         uint16_t Width;
+         uint16_t Height;
 
          CanvasGL(const uint16_t width, const uint16_t height, const std::string_view& title);
 

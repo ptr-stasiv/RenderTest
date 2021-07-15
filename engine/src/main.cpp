@@ -46,15 +46,12 @@ int main()
    g_InputManager->AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                            { input::InputEvent::Q, -1.0f } });
 
-   static bool t = true;
    g_InputManager->BindAction(input::InputEvent::F1, input::InputEventState::Released, [](const uintptr_t args)
       {
+         static bool t = false;
          t = !t;
 
-         if (t)
-            LOG_ERROR("True")
-         else
-            LOG_ERROR("False")
+         g_Window->GetCanvas()->ShowCursor(t);
       });
 
    g_InputManager->BindAxis("MoveForward", [](const float value, const uintptr_t args)
@@ -83,6 +80,15 @@ int main()
          camera->Rotate(mouseE.PosX, mouseE.PosY, app::g_DeltaTime);
       }, callbackArgs };
    g_Window->GetCanvas()->AddCursorCallback(cameraCallback);
+
+   event::Callback resizeCallback = { [](event::BaseEvent& e, uintptr_t args)
+      {
+         event::ResizeEvent resizeE = event::CastEvent<event::ResizeEvent>(e);
+         graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
+         
+         camera->Aspect = (float)resizeE.Width / resizeE.Height;
+      }, callbackArgs };
+
 
    constexpr auto pistolPath = "res/meshes/pistol/pistol.obj";
    constexpr auto cubePath = "res/meshes/cube.obj";
