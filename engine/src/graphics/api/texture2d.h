@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 
+#include "math/math.h"
 #include "api.h"
 
 namespace graphics

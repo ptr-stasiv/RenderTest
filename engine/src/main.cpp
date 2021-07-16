@@ -29,6 +29,8 @@
 
 #include "platforms/opengl/gl-texture2d.h"
 
+#include "editor/editor.h"
+
 int main()
 {
    app::CreateEngineApp();
@@ -189,62 +191,20 @@ int main()
 
    scene::Register(scene, MainCamera);
 
-   graphics::TextureParams vTexParams;
-   vTexParams.MagFilter = graphics::TextureFilter::Linear;
-   vTexParams.MinFilter = graphics::TextureFilter::Linear;
-   vTexParams.WrapS = graphics::TextureWrap::ClampToEdge;
-   vTexParams.WrapT = graphics::TextureWrap::ClampToEdge;
-
-   auto viewportTexture = g_GraphicsDevice->CreateTexture2D();
-   viewportTexture->InitData(g_Window->GetCanvas()->GetWidth(), g_Window->GetCanvas()->GetHeight(),
-                             graphics::InternalFormat::RGB8, graphics::Format::RGB, graphics::Type::Ubyte, vTexParams);
-   GLuint pbo;
-   glGenBuffers(1, &pbo);
-   glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
-   glBufferData(GL_PIXEL_PACK_BUFFER, 3 * 1280 * 720, nullptr, GL_STREAM_DRAW);
+   editor::EditorManager editorManager;
 
    app::RunEngineApp([&]()
       {
+         editorManager.BeginScene();
+
+
          //pistolMesh->Translate.x -= 0.1f * app::g_DeltaTime;
          
          scene::UpdateAndRender(scene);
 
-         glBindBuffer(GL_PIXEL_PACK_BUFFER, pbo);
-         glReadPixels(0, 0, 1280, 720, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
-         GLsync s = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-         glClientWaitSync(s, 0, 0);
+         editorManager.EndScene();
 
-         GLubyte* p = (GLubyte*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
-
-         if (p)
-         {
-            viewportTexture->UpdateData(1280, 720, p);
-         }
-
-         glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-
-         g_GraphicsDevice->Clear();
-
-         static ImGuiID dockspaceID = 0;
-			ImGui::Begin("Editor space", nullptr, ImGuiWindowFlags_MenuBar);
-
-			dockspaceID = ImGui::GetID("EditorSpace");
-			ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
-
-			ImGui::End();
-
-			ImGui::Begin("Viewport");
-
-         auto glViewportTex = std::static_pointer_cast<graphics::gl::Texture2dGL>(viewportTexture);
-         glBindTexture(GL_TEXTURE_2D, glViewportTex->BindId);
-
-			ImGui::Image((void*)glViewportTex->BindId, ImVec2(g_Window->GetCanvas()->GetWidth(), g_Window->GetCanvas()->GetHeight()), 
-                       ImVec2(0, 1), ImVec2(1, 0));
-			ImGui::End();
-
-			ImGui::Begin("Settings");
-			ImGui::End();
       });
 
    return 0;

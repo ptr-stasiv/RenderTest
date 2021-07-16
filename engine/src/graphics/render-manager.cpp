@@ -1,12 +1,8 @@
 #include "render-manager.h"
 
 #include <algorithm>
-#include <thread>
 
 #include "entry-point/global_systems.h"
-
-#include "GL/glew.h"
-#include "platforms/opengl/gl-compute-shader.h"
 
 namespace graphics
 {
@@ -173,16 +169,7 @@ namespace graphics
          BoundingSphereList.push_back(sphere);
       }
 
-      if (DrawFBO)
-      {
-         DrawFBO->Bind();
-         GD->Clear();
-      }
-
       GeometryPass(camera);
-
-      if (DrawFBO)
-         DrawFBO->Unbind();
 
       //Scene update render data every frame
       //So this values if fully useable till the light pass

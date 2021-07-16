@@ -37,7 +37,7 @@ namespace sharpmake
 
             //Defines
 
-            config.Defines.Add("GLEW_STATIC");
+            config.Defines.Add("GLEW_STATIC", "OPENGL");
 
             if (target.Optimization == Optimization.Debug)
                 config.Defines.Add("DEBUG");
