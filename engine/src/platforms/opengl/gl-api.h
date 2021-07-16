@@ -22,7 +22,9 @@ namespace graphics
 
       inline std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap = 
       {
+         { InternalFormat::RGB, GL_RGB },
          { InternalFormat::RGB8, GL_RGB8 },
+         { InternalFormat::RGBA, GL_RGBA },
          { InternalFormat::RGBA8, GL_RGBA8 },
          { InternalFormat::RGB16, GL_RGB16 },
          { InternalFormat::RGBA16, GL_RGBA16 },

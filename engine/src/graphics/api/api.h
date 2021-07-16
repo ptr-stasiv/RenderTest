@@ -17,7 +17,9 @@ namespace graphics
 
    enum class InternalFormat : uint8_t
    {
+      RGB,
       RGB8,
+      RGBA,
       RGBA8,
       RGB16,
       RGBA16,

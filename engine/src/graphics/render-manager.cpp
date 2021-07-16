@@ -173,7 +173,16 @@ namespace graphics
          BoundingSphereList.push_back(sphere);
       }
 
+      if (DrawFBO)
+      {
+         DrawFBO->Bind();
+         GD->Clear();
+      }
+
       GeometryPass(camera);
+
+      if (DrawFBO)
+         DrawFBO->Unbind();
 
       //Scene update render data every frame
       //So this values if fully useable till the light pass

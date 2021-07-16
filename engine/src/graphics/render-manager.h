@@ -114,6 +114,8 @@ namespace graphics
       void LightPass(const Camera& camera);
       void GeometryPass(const Camera& camera);
    public:
+      std::shared_ptr<Framebuffer> DrawFBO;
+
       std::shared_ptr<VertexBuffer> PositionsVBO;
       std::shared_ptr<VertexBuffer> NormalsVBO;
       std::shared_ptr<VertexBuffer> UVsVBO;
