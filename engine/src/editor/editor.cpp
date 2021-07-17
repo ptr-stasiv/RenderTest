@@ -1,6 +1,7 @@
 #include "editor.h"
 
 #include "entry-point/global_systems.h"
+#include "graphics/graphics_config.h"
 
 namespace editor
 {
@@ -26,12 +27,7 @@ namespace editor
 #endif
 	}
 
-   void EditorManager::BeginScene()
-   {
-
-   }
-
-   void EditorManager::EndScene()
+   void EditorManager::SubmitViewport()
    {
 #ifdef OPENGL
       glBindBuffer(GL_PIXEL_PACK_BUFFER, ViewportPBO);
@@ -52,14 +48,22 @@ namespace editor
 
    void EditorManager::DrawPanels()
    {
+      //Set dock space size to window
+      ImGui::SetNextWindowSize(ImVec2(g_Window->GetCanvas()->GetWidth(),
+                                      g_Window->GetCanvas()->GetHeight()));
+
       static ImGuiID dockspaceID = 0;
-      ImGui::Begin("Editor space", nullptr, ImGuiWindowFlags_MenuBar);
+      ImGui::Begin("Editor space", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
       dockspaceID = ImGui::GetID("EditorSpace");
       ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode);
 
       ImGui::End();
 
+
+      //Set vieport limit
+      ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0), ImVec2(g_Window->GetCanvas()->GetWidth(), 
+                                                               g_Window->GetCanvas()->GetHeight()));
 
       ImGui::Begin("Viewport");
 
@@ -78,10 +82,37 @@ namespace editor
                    ImVec2(0, 1), ImVec2(1, 0));
 #endif
 
+      if (vSize.x != LastViewportW || vSize.y != LastViewportH)
+      {
+         LastViewportW = vSize.x;
+         LastViewportH = vSize.y;
+
+         if (OnViewportResize)
+            OnViewportResize(vSize.x, vSize.y);
+      }
+
+      ViewportFocused = ImGui::IsWindowFocused();
+
+
       ImGui::End();
 
 
       ImGui::Begin("Settings");
+
+
+      float bias = graphics::cfg::ShadowBias;
+      float lightSize = graphics::cfg::LightSize;
+      bool softShadows = graphics::cfg::SoftShadows;
+
+      ImGui::Text("Shadows");
+      ImGui::SliderFloat("Bias", &bias, 0.005f, 0.01f);
+      ImGui::SliderFloat("LightSize", &lightSize, 0.0f, 1.0f);
+      ImGui::Checkbox("Soft shadows", &softShadows);
+
+      graphics::cfg::ShadowBias = bias;
+      graphics::cfg::LightSize = lightSize;
+      graphics::cfg::SoftShadows = softShadows;
+
       ImGui::End();
    }
 }

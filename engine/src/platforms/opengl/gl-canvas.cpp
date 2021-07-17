@@ -143,7 +143,7 @@ namespace graphics
          glEnable(GL_CULL_FACE);
 
          glEnable(GL_DEBUG_OUTPUT);
-         glDebugMessageCallback(ErrorCallback, 0);
+         //glDebugMessageCallback(ErrorCallback, 0);
 
 
          //Input setup

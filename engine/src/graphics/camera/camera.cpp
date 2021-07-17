@@ -89,6 +89,9 @@ namespace graphics
 
    void Camera::Move(const CameraMoveType moveType, const float value, const float deltaTime)
    {
+      if (CameraLocked)
+         return;
+
       float speed = Speed * value * deltaTime;
 
       switch (moveType)
@@ -104,6 +107,9 @@ namespace graphics
 
    void Camera::Rotate(const float posX, const float posY, const float deltaTime)
    {
+      if (CameraLocked)
+         return;
+
       static char init = 0;
 
       static float lastX = 0.0f;

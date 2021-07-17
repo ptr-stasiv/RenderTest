@@ -35,6 +35,8 @@ namespace graphics
 
       bool Perspective;
 
+      bool CameraLocked;
+
       Camera(const mm::vec3& position, const float fov, const float aspect, const float speed, const float yaw = -90.0f, const float pitch = 0.0f);
       Camera(const mm::vec3& position, const mm::vec3& direction, const float fov, const float aspect, const float speed);
 

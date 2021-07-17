@@ -439,7 +439,13 @@ void main()
         float stretch = lightBlock.PointLightArray[i].Stretch;
         float offset = lightBlock.PointLightArray[i].Offset;
         
-        float shadow = CalculatePointlightPCSS(i);
+
+        float shadow = 0.0f;
+
+        if(renderCfgBlock.SoftShadows != 0)
+            shadow = CalculatePointlightPCSS(i);
+        else
+            shadow = CalculatePointlightHardShadow(i);
 
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
                                     lightDir, normal, viewDir, shadow);
@@ -459,7 +465,13 @@ void main()
         float innerAngle = lightBlock.SpotlightArray[i].InnnerAngle;
         float outerAngle = lightBlock.SpotlightArray[i].OuterAngle;
 
-        float shadow = CalculateSpotlightPCSS(i);
+
+        float shadow = 0.0f;
+
+        if(renderCfgBlock.SoftShadows != 0)
+            shadow = CalculateSpotlightPCSS(i);
+        else
+            shadow = CalculateSpotlightHardShadow(i);
 
         vec3 phong = CalculatePhong(lightColor, Specular, Glossiness, Emissive, 
                                     lightDir, normal, viewDir, shadow);

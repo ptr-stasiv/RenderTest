@@ -226,6 +226,9 @@ namespace graphics
 
    void RenderManager::Update(const Camera& camera)
    {
+      RenderCfg cfg;
+      RenderCfgUBO->UpdateData(sizeof(RenderCfg), &cfg, 0);
+
       ShadowPass(camera);
 
       LightPass(camera);

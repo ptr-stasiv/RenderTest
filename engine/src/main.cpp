@@ -38,6 +38,7 @@ int main()
 
    auto MainCamera = std::make_shared<graphics::Camera>(mm::vec3(0.0f, 0.0f, 10.0f), mm::PI / 4, 1.7f, 5.0f);
 
+   bool CameraCanMove = false;
 
    assets::AssetManager AssetManager;
 
@@ -50,13 +51,8 @@ int main()
    g_InputManager->AddAxisMapping("MoveUp", { { input::InputEvent::E, 1.0f },
                                            { input::InputEvent::Q, -1.0f } });
 
-   g_InputManager->BindAction(input::InputEvent::F1, input::InputEventState::Released, [](const uintptr_t args)
-      {
-         static bool t = false;
-         t = !t;
+   g_InputManager->AddAxisMapping("EnableCameraMove", { input::InputEvent::LeftAlt, 1.0f });
 
-         g_Window->GetCanvas()->ShowCursor(t);
-      });
 
    g_InputManager->BindAxis("MoveForward", [](const float value, const uintptr_t args)
       {
@@ -74,6 +70,17 @@ int main()
          graphics::Camera* camera = reinterpret_cast<graphics::Camera*>(args);
          camera->Move(graphics::CameraMoveType::MoveUp, value, app::g_DeltaTime);
       }, callbackArgs);
+
+   uintptr_t args = reinterpret_cast<uintptr_t>(&CameraCanMove);
+   g_InputManager->BindAxis("EnableCameraMove", [](const float value, const uintptr_t args)
+      {
+         bool* cMove = reinterpret_cast<bool*>(args);
+         
+         if (value != 0.0f)
+            *cMove = true;
+         else
+            *cMove = false;
+      }, args);
 
    //This temporal solution for smooth camera move
    //Its will have reworked soon
@@ -193,33 +200,28 @@ int main()
 
    editor::EditorManager editorManager;
 
+   editorManager.OnViewportResize = 
+      [&](const uint16_t w, const uint16_t h)
+      {
+        MainCamera->Aspect = (float)w / h;
+      };
+
    app::RunEngineApp([&]()
       {
-         editorManager.BeginScene();
-
+         MainCamera->CameraLocked = !(CameraCanMove && editorManager.ViewportFocused);
+         if(MainCamera->CameraLocked)
+            g_Window->GetCanvas()->ShowCursor(true);
+         else
+            g_Window->GetCanvas()->ShowCursor(false);
 
          //pistolMesh->Translate.x -= 0.1f * app::g_DeltaTime;
-         
+
          scene::UpdateAndRender(scene);
 
 
-         editorManager.EndScene();
+         editorManager.SubmitViewport();
 
       });
 
    return 0;
 }
-
-//int main()
-//{
-//	app::CreateEngineApp();
-//
-//	g_Window->GetCanvas()->ShowCursor(true);
-//
-//	app::RunEngineApp([&]()
-//	{
-
-//	});
-//
-//	return 0;
-//}
