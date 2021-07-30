@@ -70,8 +70,8 @@ namespace app
         g_Window->EndFrame();
 
 
-        g_DeltaTime = 1.0f / frameTimer.GetElapsedTime();
         g_FPS = 1000.0f / frameTimer.GetElapsedTime();
+        g_DeltaTime = 1.0f / g_FPS;
      }
    }
 }
