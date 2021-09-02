@@ -20,10 +20,10 @@ namespace editor
       ViewportTexture.reset();
       ViewportTexture = std::make_unique<graphics::gl::Texture2dGL>();
       ViewportTexture->InitData(g_Window->GetCanvas()->GetWidth(), g_Window->GetCanvas()->GetHeight(),
-         graphics::InternalFormat::RGB8, graphics::Format::RGB, graphics::Type::Ubyte, vTexParams);
+         graphics::InternalFormat::RGB32F, graphics::Format::RGB, graphics::Type::Float, vTexParams);
 
       glBindBuffer(GL_PIXEL_PACK_BUFFER, ViewportPBO);
-      glBufferData(GL_PIXEL_PACK_BUFFER, 3 * g_Window->GetCanvas()->GetWidth() * g_Window->GetCanvas()->GetHeight(), nullptr, GL_STREAM_DRAW);
+      glBufferData(GL_PIXEL_PACK_BUFFER, 3 * sizeof(float) * g_Window->GetCanvas()->GetWidth() * g_Window->GetCanvas()->GetHeight(), nullptr, GL_STREAM_DRAW);
 #endif
 	}
 
@@ -31,7 +31,7 @@ namespace editor
    {
 #ifdef OPENGL
       glBindBuffer(GL_PIXEL_PACK_BUFFER, ViewportPBO);
-      glReadPixels(0, 0, g_Window->GetCanvas()->GetWidth(), g_Window->GetCanvas()->GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, 0);
+      glReadPixels(0, 0, g_Window->GetCanvas()->GetWidth(), g_Window->GetCanvas()->GetHeight(), GL_RGB, GL_FLOAT, 0);
 
       GLubyte* ptr = (GLubyte*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 

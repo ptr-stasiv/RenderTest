@@ -97,6 +97,7 @@ namespace graphics
       std::shared_ptr<Texture2D> GeneralShadowMap;
       std::shared_ptr<Cubemap> GeneralCubeShadowMap;
       std::shared_ptr<Framebuffer> GeneralShadowFBO;
+
       mm::mat4 ortho;
       mm::mat4 view;
 

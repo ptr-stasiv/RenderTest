@@ -6,7 +6,8 @@ namespace graphics
    enum class Feature : uint8_t 
    {
       Blend,
-      Depth
+      Depth,
+      SRGB
    };
 
    enum class Attachment : uint8_t
@@ -25,7 +26,10 @@ namespace graphics
       RGBA16,
       Depth16,
       Depth24,
-      Depth32
+      Depth32,
+      RGB32F,
+      RGBA32F,
+      SRGB8
    };
 
    enum class Format : uint8_t

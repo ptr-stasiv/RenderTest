@@ -139,7 +139,7 @@ int main()
 
    auto& pistolDiffuse = g_GraphicsDevice->CreateTexture2D();
    pistolDiffuse->InitData(pistolDifData->Width, pistolDifData->Height,
-      graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      graphics::InternalFormat::SRGB8, graphics::Format::RGB,
       graphics::Type::Ubyte, params);
    pistolDiffuse->UpdateData(pistolDifData->Width, pistolDifData->Height, pistolDifData->Pixels);
 
@@ -151,7 +151,7 @@ int main()
 
    auto& cubeDiffuse = g_GraphicsDevice->CreateTexture2D();
    cubeDiffuse->InitData(brickDifData->Width, brickDifData->Height,
-      graphics::InternalFormat::RGB8, graphics::Format::RGB,
+      graphics::InternalFormat::SRGB8, graphics::Format::RGB,
       graphics::Type::Ubyte, params);
    cubeDiffuse->UpdateData(brickDifData->Width, brickDifData->Height, brickDifData->Pixels);
 

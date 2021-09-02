@@ -231,8 +231,9 @@ namespace graphics
 
       ShadowPass(camera);
 
+      GD->EnableFeature(graphics::Feature::SRGB);
       LightPass(camera);
-
+      GD-> DisableFeature(graphics::Feature::SRGB);
 
       CurrentRenderQueue.clear();
 

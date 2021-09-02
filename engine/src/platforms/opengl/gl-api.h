@@ -11,7 +11,8 @@ namespace graphics
       inline std::unordered_map<Feature, GLenum> FeatureLookupMap = 
       {
          { Feature::Blend, GL_BLEND },
-         { Feature::Depth, GL_DEPTH_TEST }
+         { Feature::Depth, GL_DEPTH_TEST },
+         { Feature::SRGB, GL_FRAMEBUFFER_SRGB }
       };
 
       inline std::unordered_map<Attachment, GLenum> AttachmentLookupMap =
@@ -20,7 +21,7 @@ namespace graphics
          { Attachment::Depth, GL_DEPTH_ATTACHMENT }
       };
 
-      inline std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap = 
+      inline std::unordered_map<InternalFormat, GLenum> InternalFormatLookupMap =
       {
          { InternalFormat::RGB, GL_RGB },
          { InternalFormat::RGB8, GL_RGB8 },
@@ -30,7 +31,10 @@ namespace graphics
          { InternalFormat::RGBA16, GL_RGBA16 },
          { InternalFormat::Depth16, GL_DEPTH_COMPONENT16 },
          { InternalFormat::Depth24, GL_DEPTH_COMPONENT24 },
-         { InternalFormat::Depth32, GL_DEPTH_COMPONENT32 }
+         { InternalFormat::Depth32, GL_DEPTH_COMPONENT32 },
+         { InternalFormat::RGB32F, GL_RGB32F },
+         { InternalFormat::RGBA32F, GL_RGBA32F },
+         { InternalFormat::SRGB8, GL_SRGB8 }
       };
 
       inline std::unordered_map<Format, GLenum> FormatLookupMap =
