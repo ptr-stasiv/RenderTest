@@ -16,7 +16,7 @@ namespace app
    public:
       inline Window(const std::shared_ptr<graphics::GraphicsDevice>& device)
       {
-         Canvas = device->CreateCanvas(1280, 720, "RenderTest"); //TODO values loading from config
+         Canvas = device->CreateCanvas(1920, 1080, "RenderTest"); //TODO values loading from config
       }
 
       ~Window() = default;
